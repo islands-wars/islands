@@ -1,0 +1,14 @@
+def projectName = 'islands-core'
+
+dependencies {
+    compile project(":api")
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': rootProject.name, 'Implementation-Version': version, 'Main-Class': 'fr.islandswars.core.IslandsCore'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

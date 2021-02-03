@@ -1,23 +1,38 @@
-apply plugin: "java"
+allprojects {
+    apply plugin: "java"
 
-group = 'fr.islandswars'
-version = '0.2'
+    group = 'fr.islandswars'
+    version = '0.2'
 
-sourceCompatibility = 1.15
-targetCompatibility = 1.15
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+    sourceCompatibility = 1.15
+    targetCompatibility = 1.15
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-repositories {
-    mavenCentral()
-    mavenLocal() //needed for spigot
-}
+    repositories {
+        mavenCentral()
+        mavenLocal() //needed for spigot
+    }
 
-dependencies {
-    compileOnly 'org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/main/java']
+            }
+        }
+        test {
+            java {
+                srcDirs = ['src/test/java']
+            }
+        }
+    }
 
-test {
-    useJUnitPlatform()
+    dependencies {
+        compileOnly 'org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
