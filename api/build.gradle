@@ -1,0 +1,10 @@
+javadoc {
+    doFirst {
+        options.setWindowTitle('Islands Wars - API')
+        options.setDocTitle('Islands Wars - API')
+        options.setUse(true)
+        options.setVersion(true)
+        options.setAuthor(true)
+        options.addBooleanOption('html5', true)
+    }
+}
