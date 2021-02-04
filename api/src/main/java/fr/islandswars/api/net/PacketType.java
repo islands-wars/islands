@@ -1,6 +1,10 @@
 package fr.islandswars.api.net;
 
 import fr.islandswars.api.net.packet.handshake.server.HandShakePacket;
+import fr.islandswars.api.net.packet.status.client.PingPacket;
+import fr.islandswars.api.net.packet.status.client.StartPacket;
+import fr.islandswars.api.net.packet.status.server.PongPacket;
+import fr.islandswars.api.net.packet.status.server.ServerInfoPacket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +118,22 @@ public class PacketType<T extends GamePacket> {
 		 * Outcomming buffer
 		 */
 		OUT
+	}
+
+	public static final class Status {
+
+		public static final class Client {
+
+			public static final PacketType<PingPacket>  PING  = new PacketType<>(PingPacket.class, PacketStatusInPing.class, Protocol.STATUS, IN);
+			public static final PacketType<StartPacket> START = new PacketType<>(StartPacket.class, PacketStatusInStart.class, Protocol.STATUS, IN);
+		}
+
+		public static final class Server {
+
+			public static final PacketType<PongPacket>       PONG        = new PacketType<>(PongPacket.class, PacketStatusOutPong.class, Protocol.STATUS, OUT);
+			public static final PacketType<ServerInfoPacket> SERVER_INFO = new PacketType<>(ServerInfoPacket.class, PacketStatusOutServerInfo.class, Protocol.STATUS, OUT);
+		}
+
 	}
 
 	public static final class Handshake {

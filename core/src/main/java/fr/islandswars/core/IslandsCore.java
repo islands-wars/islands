@@ -12,10 +12,9 @@ import fr.islandswars.api.server.ServerType;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.internal.listener.PlayerListener;
-import fr.islandswars.core.internal.listener.packet.HandShakePacketListener;
+import fr.islandswars.core.internal.listener.packet.ServerPingPacketListener;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
-import java.awt.event.ItemListener;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -99,11 +98,12 @@ public class IslandsCore extends IslandsApi {
 
 	@Override
 	public void onEnable() {
+		getInfraLogger().createDefaultLog("ze");
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Enable server in %s ms.").setServer(new Server(Status.ENABLE, ServerType.HUB)).log();
 		PacketInterceptor.inject();
 		try {
 			new PlayerListener(this);
-			new HandShakePacketListener(PacketType.Handshake.Server.HANDSHAKE);
+			getProtocolManager().subscribeHandler(new ServerPingPacketListener(PacketType.Status.Server.SERVER_INFO));
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

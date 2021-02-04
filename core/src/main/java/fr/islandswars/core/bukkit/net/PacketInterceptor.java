@@ -39,15 +39,12 @@ import org.bukkit.entity.Player;
  */
 public class PacketInterceptor {
 
-	private static final AtomicInteger                     ID                   = new AtomicInteger(0);
-	private static final Map<SocketAddress, PacketHandler> HANDLERS             = new ConcurrentHashMap<>();
-	private static final ChannelFutureHandler              channelFutureHandler = new ChannelFutureHandler();
+	private static final Map<SocketAddress, PacketHandler> HANDLERS = new ConcurrentHashMap<>();
 	private static       List<ChannelFuture>               channelFutures;
 	private static       PacketHandlerManager              manager;
 
 	PacketInterceptor(PacketHandlerManager packetHandlerManager) {
 		manager = packetHandlerManager;
-		ID.incrementAndGet();
 	}
 
 	public static void clean() {

@@ -2,6 +2,7 @@ package fr.islandswars.api.net;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.player.IslandsPlayer;
+import java.util.Optional;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
@@ -31,12 +32,15 @@ import org.bukkit.event.Cancellable;
  */
 public class PacketEvent<T extends GamePacket> implements Cancellable {
 
-	private final IslandsPlayer player;
-	private final T             packet;
-	private       boolean       cancel;
+	private final Optional<IslandsPlayer> player;
+	private final T                       packet;
+	private       boolean                 cancel;
 
 	public PacketEvent(Player player, T packet) {
-		this.player = IslandsApi.getInstance().getPlayer(player.getUniqueId()).orElseThrow(() -> new NullPointerException("Try to send a packet to a non-registered player!"));
+		if (packet.getType() == PacketType.Status.Server.SERVER_INFO) //TODO filter because at this time, player id is null
+			this.player = Optional.empty();
+		else
+			this.player = IslandsApi.getInstance().getPlayer(player.getUniqueId());
 		this.packet = packet;
 		cancel = false;
 	}
@@ -55,7 +59,7 @@ public class PacketEvent<T extends GamePacket> implements Cancellable {
 	 *
 	 * @return this packet's target
 	 */
-	public IslandsPlayer getPlayer() {
+	public Optional<IslandsPlayer> getPlayer() {
 		return player;
 	}
 

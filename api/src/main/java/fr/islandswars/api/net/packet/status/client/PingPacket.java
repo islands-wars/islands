@@ -1,15 +1,12 @@
-package fr.islandswars.core.internal.listener.packet;
+package fr.islandswars.api.net.packet.status.client;
 
-import fr.islandswars.api.net.PacketEvent;
-import fr.islandswars.api.net.PacketHandler;
+import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
-import fr.islandswars.api.net.packet.handshake.server.HandShakePacket;
-import fr.islandswars.core.IslandsCore;
-import org.bukkit.Bukkit;
+import net.minecraft.server.v1_16_R3.PacketStatusInPing;
 
 /**
- * File <b>HandShakePacketListener</b> located on fr.islandswars.core.internal.listener.packet
- * HandShakePacketListener is a part of islands.
+ * File <b>PingPacket</b> located on fr.islandswars.api.net.packet.status.client
+ * PingPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -28,17 +25,22 @@ import org.bukkit.Bukkit;
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
- * Created the 04/02/2021 at 17:58
+ * Created the 04/02/2021 at 18:52
  * @since TODO edit
  */
-public class HandShakePacketListener extends PacketHandler<HandShakePacket> {
+public class PingPacket extends GamePacket<PacketStatusInPing> {
 
-	public HandShakePacketListener(PacketType<HandShakePacket> packetType) {
-		super(packetType);
+	public PingPacket(PacketStatusInPing handle) {
+		super(handle);
+	}
+
+	public long getPayload() {
+		return handle.b();
 	}
 
 	@Override
-	public void handlePacket(PacketEvent<HandShakePacket> event) {
-		Bukkit.getConsoleSender().sendMessage(event.toString());
+	public PacketType getType() {
+		return PacketType.Status.Client.PING;
 	}
+
 }
