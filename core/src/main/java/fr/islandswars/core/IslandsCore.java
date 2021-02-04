@@ -13,6 +13,7 @@ import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.listener.packet.HandShakePacketListener;
+import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
 import java.awt.event.ItemListener;
 import java.util.Collections;
@@ -52,9 +53,11 @@ import org.bukkit.entity.Player;
 public class IslandsCore extends IslandsApi {
 
 	private final PacketHandlerManager                packetManager;
+	private final InternalLogger                      logger;
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
 
 	public IslandsCore() {
+		this.logger = new InternalLogger();
 		this.players = new CopyOnWriteArrayList<>();
 		this.packetManager = new PacketHandlerManager();
 	}
@@ -81,7 +84,7 @@ public class IslandsCore extends IslandsApi {
 
 	@Override
 	public InfraLogger getInfraLogger() {
-		return null;
+		return logger;
 	}
 
 	@Override

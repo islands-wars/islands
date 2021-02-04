@@ -39,6 +39,7 @@ import org.bukkit.entity.Player;
  */
 public class PacketHandlerManager implements ProtocolManager {
 
+
 	private final Map<String, List<PacketHandler>> handlers;
 
 	public PacketHandlerManager() {

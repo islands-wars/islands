@@ -1,11 +1,13 @@
 package fr.islandswars.core.bukkit.net;
 
+import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import io.netty.channel.*;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.server.v1_16_R3.Packet;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -37,13 +39,15 @@ import org.bukkit.entity.Player;
  */
 public class PacketInterceptor {
 
-	private static final Map<SocketAddress, PacketHandler> HANDLERS = new ConcurrentHashMap<>();
+	private static final AtomicInteger                     ID                   = new AtomicInteger(0);
+	private static final Map<SocketAddress, PacketHandler> HANDLERS             = new ConcurrentHashMap<>();
+	private static final ChannelFutureHandler              channelFutureHandler = new ChannelFutureHandler();
 	private static       List<ChannelFuture>               channelFutures;
 	private static       PacketHandlerManager              manager;
 
-
 	PacketInterceptor(PacketHandlerManager packetHandlerManager) {
 		manager = packetHandlerManager;
+		ID.incrementAndGet();
 	}
 
 	public static void clean() {
@@ -62,12 +66,14 @@ public class PacketInterceptor {
 	}
 
 	public static void inject() {
+
 		var mcServer      = NMSReflectionUtil.getValue(Bukkit.getServer(), "console");
 		var srvConnection = NMSReflectionUtil.getFirstValueOfType(mcServer, "{nms}.ServerConnection");
 		channelFutures = NMSReflectionUtil.getFirstValueOfType(srvConnection, List.class); //Steal channelFutures list
 
 		for (ChannelFuture o : channelFutures)
-			o.channel().pipeline().addFirst(ChannelFutureHandler.ID, ChannelFutureHandler.INSTANCE);
+			if (o.channel().pipeline().get(ChannelFutureHandler.ID) == null)
+				o.channel().pipeline().addFirst(ChannelFutureHandler.ID, ChannelFutureHandler.INSTANCE);
 
 		for (var player : Bukkit.getOnlinePlayers()) // /reload support
 			injectPlayer(player);                       // (inject to already connected players)
@@ -100,8 +106,8 @@ public class PacketInterceptor {
 	@ChannelHandler.Sharable
 	public static final class ChannelInitHandler extends ChannelDuplexHandler {
 
-		private static final String ID = "NMSProtocol-Init";
-		private final Channel channel;
+		private static final String  ID = "NMSProtocol-Init";
+		private final        Channel channel;
 
 		ChannelInitHandler(Channel channel) {
 			this.channel = channel;
@@ -122,8 +128,8 @@ public class PacketInterceptor {
 
 	public static final class PacketHandler extends ChannelDuplexHandler {
 
-		private static final String ID = "NMSProtocol-PacketHandler";
-		private final Channel channel;
+		private static final String  ID = "NMSProtocol-PacketHandler";
+		private final        Channel channel;
 
 		PacketHandler(Channel channel) {
 			this.channel = channel;
