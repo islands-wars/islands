@@ -15,6 +15,17 @@ Ensure your code compile and your tests run.
 
 ---
 
+# Debugging and setup
+
+In order to setup a live server, you need to run a few gradle tasks.
+
+- Build the spigot buildtools to cache dependencies in .m2 according to tjhe project [version](https://github.com/islands-wars/islands/blob/master/gradle.properties#L4)
+- To create the serv/ folder, run ```gradlew setupServer```
+- Every time you want to start it, run ```gradlew startDevServer```
+- You can test your modifications on the fly by running ``gradlew deployPlugin``
+
+---
+
 # Wiki
 
 todo
