@@ -1,6 +1,29 @@
 package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.log.InfraLogger;
+import fr.islandswars.api.log.internal.Server;
+import fr.islandswars.api.log.internal.ServerLog;
+import fr.islandswars.api.log.internal.Status;
+import fr.islandswars.api.net.PacketType;
+import fr.islandswars.api.net.ProtocolManager;
+import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.server.ServerType;
+import fr.islandswars.core.bukkit.net.PacketHandlerManager;
+import fr.islandswars.core.bukkit.net.PacketInterceptor;
+import fr.islandswars.core.internal.listener.PlayerListener;
+import fr.islandswars.core.internal.listener.packet.HandShakePacketListener;
+import fr.islandswars.core.player.InternalPlayer;
+import java.awt.event.ItemListener;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import org.bukkit.entity.Player;
 
 /**
  * File <b>IslandsCore</b> located on fr.islandswars.core
@@ -28,22 +51,67 @@ import fr.islandswars.api.IslandsApi;
  */
 public class IslandsCore extends IslandsApi {
 
-	public IslandsCore() {
+	private final PacketHandlerManager                packetManager;
+	private final CopyOnWriteArrayList<IslandsPlayer> players;
 
+	public IslandsCore() {
+		this.players = new CopyOnWriteArrayList<>();
+		this.packetManager = new PacketHandlerManager();
+	}
+
+	@Override
+	public Optional<IslandsPlayer> getPlayer(UUID playerId) {
+		return players.stream().filter(p -> p.getCraftPlayer().getUniqueId().equals(playerId)).findFirst();
+	}
+
+	@Override
+	public List<? extends IslandsPlayer> getPlayers() {
+		return Collections.unmodifiableList(players);
+	}
+
+	@Override
+	public List<IslandsPlayer> getPlayers(Predicate<IslandsPlayer> predicate) {
+		return Collections.unmodifiableList(players.stream().filter(predicate).collect(Collectors.toList()));
+	}
+
+	@Override
+	public ProtocolManager getProtocolManager() {
+		return packetManager;
+	}
+
+	@Override
+	public InfraLogger getInfraLogger() {
+		return null;
 	}
 
 	@Override
 	public void onLoad() {
-
+		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Loading server...").setServer(new Server(Status.LOAD, ServerType.HUB)).log();
 	}
 
 	@Override
 	public void onDisable() {
-
+		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Disabling server...").setServer(new Server(Status.DISABLE, ServerType.HUB)).log();
 	}
 
 	@Override
 	public void onEnable() {
-		getServer().getConsoleSender().sendMessage("salem d'intellij");
+		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Enable server in %s ms.").setServer(new Server(Status.ENABLE, ServerType.HUB)).log();
+		PacketInterceptor.inject();
+		try {
+			new PlayerListener(this);
+			new HandShakePacketListener(PacketType.Handshake.Server.HANDSHAKE);
+		} catch (Exception e) {
+			getInfraLogger().logError(e);
+		}
+	}
+
+	public void addPlayer(Player p) {
+		players.add(new InternalPlayer(p));
+	}
+
+	public void removePlayer(IslandsPlayer player) {
+		player.disconnect();
+		players.remove(player);
 	}
 }

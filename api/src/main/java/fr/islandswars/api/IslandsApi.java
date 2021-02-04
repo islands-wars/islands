@@ -1,6 +1,26 @@
 package fr.islandswars.api;
 
+import fr.islandswars.api.lang.bukkit.ErrorHandlerRegisteredListener;
+import fr.islandswars.api.lang.bukkit.ErrorHandlerRunnable;
+import fr.islandswars.api.log.InfraLogger;
+import fr.islandswars.api.log.internal.ErrorLog;
+import fr.islandswars.api.net.ProtocolManager;
+import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.utils.ErrorHandler;
+import fr.islandswars.api.utils.Preconditions;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * File <b>IslandsApi</b> located on fr.islandswars.api
@@ -28,16 +48,53 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class IslandsApi extends JavaPlugin {
 
-	private static IslandsApi instance;
+	private static IslandsApi   instance;
+	private final  ErrorHandler handler;
 
 	protected IslandsApi() {
 		if (instance == null)
 			instance = this;
+		handler = (t) -> getInfraLogger().createCustomLog(ErrorLog.class, Level.SEVERE, (t.getMessage() == null || t.getMessage().isEmpty()) ? "Error thrown" : t.getMessage()).supplyStacktrace(t).log();
 	}
 
 	public static IslandsApi getInstance() {
 		return instance;
 	}
+
+	/**
+	 * Retrieve an IslandsPlayer
+	 *
+	 * @param playerId this playerId
+	 * @return a wrapped player if online, or else null
+	 */
+	public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
+
+	/**
+	 * Retrieve all IslandsPlayer
+	 *
+	 * @return all connected players
+	 */
+	public abstract List<? extends IslandsPlayer> getPlayers();
+
+	/**
+	 * Retrieve all IslandsPlayer matching the predicate
+	 *
+	 * @param predicate a filter predicate
+	 * @return all connected players
+	 */
+	public abstract List<IslandsPlayer> getPlayers(Predicate<IslandsPlayer> predicate);
+
+	/**
+	 * Interface to easily listen and write for in/outcoming packet
+	 *
+	 * @return a protocol manager for this minecraft server version
+	 */
+	public abstract ProtocolManager getProtocolManager();
+
+	/**
+	 * @return an abstract logger to output custom log
+	 */
+	public abstract InfraLogger getInfraLogger();
 
 	@Override
 	public abstract void onLoad();
@@ -47,4 +104,32 @@ public abstract class IslandsApi extends JavaPlugin {
 
 	@Override
 	public abstract void onEnable();
+
+	public void registerEvent(Listener listener) {
+		Preconditions.checkNotNull(listener);
+
+		getPluginLoader().createRegisteredListeners(listener, this).forEach((e, l) -> getHandlerList(e).registerAll(l.stream().map(r -> new ErrorHandlerRegisteredListener(r, handler)).collect(Collectors.toList())));
+	}
+
+	public BukkitTask runTask(Runnable task) {
+		return Bukkit.getScheduler().runTask(this, new ErrorHandlerRunnable(task, handler));
+	}
+
+	public BukkitTask runTaskAsynchronously(Runnable task) {
+		return Bukkit.getScheduler().runTaskAsynchronously(this, new ErrorHandlerRunnable(task, handler));
+	}
+
+	private HandlerList getHandlerList(Class<? extends Event> event) {
+		while (event.getSuperclass() != null && Event.class.isAssignableFrom(event.getSuperclass())) {
+			try {
+				Method method = event.getDeclaredMethod("getHandlerList");
+				method.setAccessible(true);
+				return (HandlerList) method.invoke(null);
+			} catch (ReflectiveOperationException e) {
+				event = event.getSuperclass().asSubclass(Event.class);
+			}
+		}
+		throw new IllegalStateException("No HandlerList for " + event.getName());
+	}
+
 }
