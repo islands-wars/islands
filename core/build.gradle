@@ -1,14 +1,19 @@
 def projectName = 'islands-core'
 
 dependencies {
-    compile project(":api")
+    implementation project(":api")
+}
+
+processResources {
+    expand(name: project.property("plugin_name"), main: project.property("main"), version: project.property("plugin_version"))
 }
 
 jar {
+    archivesBaseName = project.property("plugin_name")
     manifest {
-        attributes 'Implementation-Title': rootProject.name, 'Implementation-Version': version, 'Main-Class': 'fr.islandswars.core.IslandsCore'
+        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': project.version.toString(), 'Main-Class': project.property("main")
     }
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }

@@ -44,6 +44,6 @@ public class IslandsCore extends IslandsApi {
 
 	@Override
 	public void onEnable() {
-
+		getServer().getConsoleSender().sendMessage("salem d'intellij");
 	}
 }

@@ -1,8 +1,17 @@
+final def mcVersion = project.property("spigot_version") as String
+final def EULA_ACCEPT = "True"
+final def folderName = (project.property("server_dir") as String) + "/"
+final def spigotGroupId = "org.spigotmc"
+final def spigotVersion = mcVersion + "-R0.1-SNAPSHOT"
+final def spigotArtifactId = "spigot"
+final def servName = spigotArtifactId + "-" + spigotVersion + ".jar"
+final def JAVA_ARGS = ['-XX:MaxPermSize=512m']
+
 allprojects {
     apply plugin: "java"
 
     group = 'fr.islandswars'
-    version = '0.2'
+    version = project.property("plugin_version")
 
     sourceCompatibility = 1.15
     targetCompatibility = 1.15
@@ -27,7 +36,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly 'org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT'
+        compileOnly spigotGroupId + ':' + spigotArtifactId + ':' + spigotVersion
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     }
@@ -35,4 +44,61 @@ allprojects {
     test {
         useJUnitPlatform()
     }
+}
+
+task setupServer {
+    group 'server'
+    description 'Setup a fresh directory to test our plugin'
+    doLast {
+        def localMavenRepo = new File(new File(ant.properties['user.home'] as String), ".m2/repository/")
+        def server = new File(localMavenRepo, spigotGroupId.replace('.', '/') + "/" + spigotArtifactId + "/" + spigotVersion + "/" + servName)
+        File folder = new File(folderName)
+
+        if (!folder.exists())
+            folder.mkdir()
+        else
+            folder.deleteDir()
+
+        copy {
+            from server.path
+            into folder
+        }
+        File eulaFile = file(folder.path + '/' + 'eula.txt')
+        eulaFile.createNewFile()
+        eulaFile.text = 'eula=' + EULA_ACCEPT
+
+        File pluginFolder = file(folder.path + '/' + 'plugins/')
+        pluginFolder.mkdir()
+    }
+}
+
+task cleanPlugin() {
+    group 'deploy'
+    description 'Cleans the plugin in the working directory up'
+
+    File folder = new File(folderName)
+    delete folder.path + 'plugins/' + project.property("plugin_name") + '-' + project.version.toString() + '.jar'
+}
+
+task deployPlugin(type: Copy, dependsOn: ['cleanPlugin', 'core:jar']) {
+    group 'deploy'
+    description 'Deploy the plugin'
+
+    File folder = new File(folderName)
+    from "core/build/libs/" + project.property("plugin_name") + '-' + project.version.toString() + '.jar'
+    into folder.path + '/plugins'
+}
+
+task startDevServer(type: JavaExec) {
+    group 'server'
+    description 'Start from gradle the spigot server'
+
+    File folder = new File(folderName)
+    workingDir = folder.path
+    classpath = fileTree(dir: workingDir, include: '*.jar')
+    main = 'org.bukkit.craftbukkit.Main'
+    standardInput = System.in
+    ignoreExitValue = true as JavaExecSpec
+    args("nogui")
+    jvmArgs JAVA_ARGS
 }
