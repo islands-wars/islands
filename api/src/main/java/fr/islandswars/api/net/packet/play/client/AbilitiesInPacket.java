@@ -50,6 +50,6 @@ public class AbilitiesInPacket extends GamePacket<PacketPlayInAbilities> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ABILITIES_IN;
 	}
 }

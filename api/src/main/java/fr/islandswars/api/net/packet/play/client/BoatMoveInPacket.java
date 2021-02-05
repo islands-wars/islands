@@ -67,6 +67,6 @@ public class BoatMoveInPacket extends GamePacket<PacketPlayInBoatMove> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.BOAT_MOVE_IN;
 	}
 }

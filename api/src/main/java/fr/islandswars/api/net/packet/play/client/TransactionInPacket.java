@@ -2,11 +2,11 @@ package fr.islandswars.api.net.packet.play.client;
 
 import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
-import net.minecraft.server.v1_16_R3.PacketPlayInDifficultyLock;
+import net.minecraft.server.v1_16_R3.PacketPlayInTransaction;
 
 /**
- * File <b>DifficultyLockPacket</b> located on fr.islandswars.api.net.packet.play.client
- * DifficultyLockPacket is a part of islands.
+ * File <b>TransactionInPacket</b> located on fr.islandswars.api.net.packet.play.client
+ * TransactionInPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -25,31 +25,19 @@ import net.minecraft.server.v1_16_R3.PacketPlayInDifficultyLock;
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
- * Created the 05/02/2021 at 15:31
+ * Created the 05/02/2021 at 17:46
  * @since 0.1
+ * <p>
+ * TODO tf is that, inventory, npc?
  */
-public class DifficultyLockPacket extends GamePacket<PacketPlayInDifficultyLock> {
+public class TransactionInPacket extends GamePacket<PacketPlayInTransaction> {
 
-	protected DifficultyLockPacket(PacketPlayInDifficultyLock handle) {
+	protected TransactionInPacket(PacketPlayInTransaction handle) {
 		super(handle);
-	}
-
-	/**
-	 * @return true if the difficulty is locked in the client's option menu
-	 */
-	public boolean isDifficultyLocked() {
-		return handle.b();
-	}
-
-	/**
-	 * @param value true if the difficulty is locked in the client's option menu
-	 */
-	public void setDifficultyLock(boolean value) {
-		setHandleValue("a", value);
 	}
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.TRANSACTION_IN;
 	}
 }

@@ -51,6 +51,6 @@ public class SpectateInPacket extends GamePacket<PacketPlayInSpectate> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.SPECTATE_IN;
 	}
 }

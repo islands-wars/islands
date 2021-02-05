@@ -65,6 +65,6 @@ public class SetCreativeSlotInPacket extends GamePacket<PacketPlayInSetCreativeS
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.SET_CREATIVE_SLOT_IN;
 	}
 }

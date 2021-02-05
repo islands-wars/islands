@@ -80,6 +80,6 @@ public class UseItemInPacket extends GamePacket<PacketPlayInUseItem> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.USE_ITEM_IN;
 	}
 }

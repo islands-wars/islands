@@ -82,6 +82,6 @@ public class SetCommandMinecartInPacket extends GamePacket<PacketPlayInSetComman
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.SET_COMMAND_MINECART_IN;
 	}
 }

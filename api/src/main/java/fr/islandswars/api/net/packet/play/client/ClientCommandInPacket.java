@@ -50,6 +50,6 @@ public class ClientCommandInPacket extends GamePacket<PacketPlayInClientCommand>
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.CLIENT_COMMAND_IN;
 	}
 }

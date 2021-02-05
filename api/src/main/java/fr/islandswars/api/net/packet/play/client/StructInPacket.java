@@ -38,6 +38,6 @@ public class StructInPacket extends GamePacket<PacketPlayInStruct> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.STRUCT_IN;
 	}
 }

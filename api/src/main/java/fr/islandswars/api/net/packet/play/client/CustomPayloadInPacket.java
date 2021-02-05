@@ -66,6 +66,6 @@ public class CustomPayloadInPacket extends GamePacket<PacketPlayInCustomPayload>
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.CUSTOM_PAYLOAD_IN;
 	}
 }

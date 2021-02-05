@@ -140,6 +140,6 @@ public class SettingsInPacket extends GamePacket<PacketPlayInSettings> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.SETTINGS_IN;
 	}
 }

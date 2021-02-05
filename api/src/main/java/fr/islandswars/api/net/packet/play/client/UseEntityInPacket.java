@@ -108,6 +108,6 @@ public class UseEntityInPacket extends GamePacket<PacketPlayInUseEntity> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.USE_ENTITY_IN;
 	}
 }

@@ -28,7 +28,7 @@ import net.minecraft.server.v1_16_R3.PacketPlayInTrSel;
  * Created the 05/02/2021 at 17:52
  * @since 0.1
  * <p>
- * TODO same question as {@link TransactionInpacket}
+ * TODO same question as {@link TransactionInPacket}
  */
 public class TrSelInPacket extends GamePacket<PacketPlayInTrSel> {
 
@@ -38,6 +38,6 @@ public class TrSelInPacket extends GamePacket<PacketPlayInTrSel> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.TR_SEL_IN;
 	}
 }

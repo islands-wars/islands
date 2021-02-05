@@ -51,6 +51,6 @@ public class ArmAnimationInPacket extends GamePacket<PacketPlayInArmAnimation> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ARM_ANIMATION_IN;
 	}
 }

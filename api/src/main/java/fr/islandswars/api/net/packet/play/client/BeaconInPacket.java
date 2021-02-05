@@ -65,6 +65,6 @@ public class BeaconInPacket extends GamePacket<PacketPlayInBeacon> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.BEACON_IN;
 	}
 }

@@ -51,6 +51,6 @@ public class DifficultyChangeInPacket extends GamePacket<PacketPlayInDifficultyC
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.DIFFICULTY_CHANGE_IN;
 	}
 }

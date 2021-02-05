@@ -5,8 +5,8 @@ import fr.islandswars.api.net.PacketType;
 import net.minecraft.server.v1_16_R3.PacketPlayInEntityNBTQuery;
 
 /**
- * File <b>EntityNBTQueryPacket</b> located on fr.islandswars.api.net.packet.play.client
- * EntityNBTQueryPacket is a part of islands.
+ * File <b>EntityNBTQueryInPacket</b> located on fr.islandswars.api.net.packet.play.client
+ * EntityNBTQueryInPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -31,9 +31,9 @@ import net.minecraft.server.v1_16_R3.PacketPlayInEntityNBTQuery;
  * Used when Shift+F3+I is pressed while looking at an entity.
  * TODO debug...
  */
-public class EntityNBTQueryPacket extends GamePacket<PacketPlayInEntityNBTQuery> {
+public class EntityNBTQueryInPacket extends GamePacket<PacketPlayInEntityNBTQuery> {
 
-	protected EntityNBTQueryPacket(PacketPlayInEntityNBTQuery handle) {
+	protected EntityNBTQueryInPacket(PacketPlayInEntityNBTQuery handle) {
 		super(handle);
 	}
 
@@ -71,6 +71,6 @@ public class EntityNBTQueryPacket extends GamePacket<PacketPlayInEntityNBTQuery>
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ENTITY_NBT_QUERY_IN;
 	}
 }

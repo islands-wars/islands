@@ -80,6 +80,6 @@ public class SetCommandBlockInPacket extends GamePacket<PacketPlayInSetCommandBl
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.SET_COMMAND_BLOCK_IN;
 	}
 }

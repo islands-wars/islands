@@ -87,6 +87,6 @@ public class BEditInPacket extends GamePacket<PacketPlayInBEdit> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.BOOK_EDIT_IN;
 	}
 }

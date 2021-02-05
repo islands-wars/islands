@@ -50,6 +50,6 @@ public class ItemNameInPacket extends GamePacket<PacketPlayInItemName> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ITEM_NAME_IN;
 	}
 }

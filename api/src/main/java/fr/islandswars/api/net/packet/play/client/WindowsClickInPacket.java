@@ -116,6 +116,6 @@ public class WindowsClickInPacket extends GamePacket<PacketPlayInWindowClick> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.WINDOWS_CLICK_IN;
 	}
 }

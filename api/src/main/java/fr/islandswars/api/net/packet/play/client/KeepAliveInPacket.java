@@ -50,6 +50,6 @@ public class KeepAliveInPacket extends GamePacket<PacketPlayInKeepAlive> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.KEEP_ALIVE_IN;
 	}
 }

@@ -50,6 +50,6 @@ public class CloseWindowsInPacket extends GamePacket<PacketPlayInCloseWindow> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.CLOSE_WINDOWS_IN;
 	}
 }

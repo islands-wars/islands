@@ -82,6 +82,6 @@ public class SetJigsawInPacket extends GamePacket<PacketPlayInSetJigsaw> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.SET_JIGSAW_IN;
 	}
 }

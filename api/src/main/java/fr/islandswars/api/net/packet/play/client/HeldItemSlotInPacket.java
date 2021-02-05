@@ -50,6 +50,6 @@ public class HeldItemSlotInPacket extends GamePacket<PacketPlayInHeldItemSlot> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.HELD_ITEM_SLOT_IN;
 	}
 }

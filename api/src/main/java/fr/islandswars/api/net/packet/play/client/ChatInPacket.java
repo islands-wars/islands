@@ -53,6 +53,6 @@ public class ChatInPacket extends GamePacket<PacketPlayInChat> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.CHAT_IN;
 	}
 }

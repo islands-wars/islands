@@ -65,6 +65,6 @@ public class TileNBTQueryInPacket extends GamePacket<PacketPlayInTileNBTQuery> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.TILE_NBT_QUERY_IN;
 	}
 }

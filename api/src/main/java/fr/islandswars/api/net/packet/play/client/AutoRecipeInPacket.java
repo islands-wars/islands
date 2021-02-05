@@ -85,6 +85,6 @@ public class AutoRecipeInPacket extends GamePacket<PacketPlayInAutoRecipe> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.AUTO_RECIPE_IN;
 	}
 }

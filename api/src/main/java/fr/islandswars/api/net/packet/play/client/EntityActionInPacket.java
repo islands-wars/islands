@@ -85,6 +85,6 @@ public class EntityActionInPacket extends GamePacket<PacketPlayInEntityAction> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ENTITY_ACTION_IN;
 	}
 }

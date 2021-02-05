@@ -152,6 +152,6 @@ public class FlyingInPacket extends GamePacket<PacketPlayInFlying> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.FLYING_IN;
 	}
 }

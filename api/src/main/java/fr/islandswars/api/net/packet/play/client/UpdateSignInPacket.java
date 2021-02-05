@@ -65,6 +65,6 @@ public class UpdateSignInPacket extends GamePacket<PacketPlayInUpdateSign> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.UPDATE_SIGN_IN;
 	}
 }

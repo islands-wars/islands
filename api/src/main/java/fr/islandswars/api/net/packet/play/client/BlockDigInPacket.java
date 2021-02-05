@@ -80,6 +80,6 @@ public class BlockDigInPacket extends GamePacket<PacketPlayInBlockDig> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.BLOCK_DIG_IN;
 	}
 }

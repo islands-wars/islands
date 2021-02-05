@@ -7,6 +7,7 @@ import fr.islandswars.api.net.packet.login.server.DisconnectPacket;
 import fr.islandswars.api.net.packet.login.server.EncryptionRequestPacket;
 import fr.islandswars.api.net.packet.login.server.SetCompressionPacket;
 import fr.islandswars.api.net.packet.login.server.SuccessPacket;
+import fr.islandswars.api.net.packet.play.client.*;
 import fr.islandswars.api.net.packet.status.client.PingPacket;
 import fr.islandswars.api.net.packet.status.client.StartPacket;
 import fr.islandswars.api.net.packet.status.server.PongPacket;
@@ -167,6 +168,75 @@ public class PacketType<T extends GamePacket> {
 			public static final PacketType<ServerInfoPacket> SERVER_INFO = new PacketType<>(ServerInfoPacket.class, PacketStatusOutServerInfo.class, Protocol.STATUS, OUT);
 		}
 
+	}
+
+	public static final class Play {
+
+		public static final class Client {
+
+			public static final PacketType<AbilitiesInPacket>           ABILITIES_IN             = new PacketType<>(AbilitiesInPacket.class, PacketPlayInAbilities.class, Protocol.PLAY, IN);
+			public static final PacketType<AdvancementsInPacket>        ADVANCEMENTS_IN          = new PacketType<>(AdvancementsInPacket.class, PacketPlayInAdvancements.class, Protocol.PLAY, IN);
+			public static final PacketType<ArmAnimationInPacket>        ARM_ANIMATION_IN         = new PacketType<>(ArmAnimationInPacket.class, PacketPlayInArmAnimation.class, Protocol.PLAY, IN);
+			public static final PacketType<AutoRecipeInPacket>          AUTO_RECIPE_IN           = new PacketType<>(AutoRecipeInPacket.class, PacketPlayInAutoRecipe.class, Protocol.PLAY, IN);
+			public static final PacketType<BeaconInPacket>              BEACON_IN                = new PacketType<>(BeaconInPacket.class, PacketPlayInBeacon.class, Protocol.PLAY, IN);
+			public static final PacketType<BEditInPacket>               BOOK_EDIT_IN             = new PacketType<>(BEditInPacket.class, PacketPlayInBEdit.class, Protocol.PLAY, IN);
+			public static final PacketType<BlockDigInPacket>            BLOCK_DIG_IN             = new PacketType<>(BlockDigInPacket.class, PacketPlayInBlockDig.class, Protocol.PLAY, IN);
+			public static final PacketType<BlockPlaceInPacket>          BLOCK_PLACE_IN           = new PacketType<>(BlockPlaceInPacket.class, PacketPlayInBlockPlace.class, Protocol.PLAY, IN);
+			public static final PacketType<BoatMoveInPacket>            BOAT_MOVE_IN             = new PacketType<>(BoatMoveInPacket.class, PacketPlayInBoatMove.class, Protocol.PLAY, IN);
+			public static final PacketType<ChatInPacket>                CHAT_IN                  = new PacketType<>(ChatInPacket.class, PacketPlayInChat.class, Protocol.PLAY, IN);
+			public static final PacketType<ClientCommandInPacket>       CLIENT_COMMAND_IN        = new PacketType<>(ClientCommandInPacket.class, PacketPlayInClientCommand.class, Protocol.PLAY, IN);
+			public static final PacketType<CloseWindowsInPacket>        CLOSE_WINDOWS_IN         = new PacketType<>(CloseWindowsInPacket.class, PacketPlayInCloseWindow.class, Protocol.PLAY, IN);
+			public static final PacketType<CustomPayloadInPacket>       CUSTOM_PAYLOAD_IN        = new PacketType<>(CustomPayloadInPacket.class, PacketPlayInCustomPayload.class, Protocol.PLAY, IN);
+			public static final PacketType<DifficultyChangeInPacket>    DIFFICULTY_CHANGE_IN     = new PacketType<>(DifficultyChangeInPacket.class, PacketPlayInDifficultyChange.class, Protocol.PLAY, IN);
+			public static final PacketType<DifficultyLockInPacket>      DIFFICULTY_LOCK_IN       = new PacketType<>(DifficultyLockInPacket.class, PacketPlayInDifficultyLock.class, Protocol.PLAY, IN);
+			public static final PacketType<EnchantItemInPacket>         ENCHANT_ITEM_IN          = new PacketType<>(EnchantItemInPacket.class, PacketPlayInEnchantItem.class, Protocol.PLAY, IN);
+			public static final PacketType<EntityActionInPacket>        ENTITY_ACTION_IN         = new PacketType<>(EntityActionInPacket.class, PacketPlayInEntityAction.class, Protocol.PLAY, IN);
+			public static final PacketType<EntityNBTQueryInPacket>      ENTITY_NBT_QUERY_IN      = new PacketType<>(EntityNBTQueryInPacket.class, PacketPlayInEntityNBTQuery.class, Protocol.PLAY, IN);
+			public static final PacketType<FlyingInPacket>              FLYING_IN                = new PacketType<>(FlyingInPacket.class, PacketPlayInFlying.class, Protocol.PLAY, IN);
+			public static final PacketType<HeldItemSlotInPacket>        HELD_ITEM_SLOT_IN        = new PacketType<>(HeldItemSlotInPacket.class, PacketPlayInHeldItemSlot.class, Protocol.PLAY, IN);
+			public static final PacketType<ItemNameInPacket>            ITEM_NAME_IN             = new PacketType<>(ItemNameInPacket.class, PacketPlayInItemName.class, Protocol.PLAY, IN);
+			public static final PacketType<JigsawGenerateInPacket>      JIGSAW_GENERATE_IN       = new PacketType<>(JigsawGenerateInPacket.class, PacketPlayInJigsawGenerate.class, Protocol.PLAY, IN);
+			public static final PacketType<KeepAliveInPacket>           KEEP_ALIVE_IN            = new PacketType<>(KeepAliveInPacket.class, PacketPlayInKeepAlive.class, Protocol.PLAY, IN);
+			public static final PacketType<PickItemInPacket>            PICK_ITEM_IN             = new PacketType<>(PickItemInPacket.class, PacketPlayInPickItem.class, Protocol.PLAY, IN);
+			public static final PacketType<RecipeDisplayedInPacket>     RECIPE_DISPLAYED_IN      = new PacketType<>(RecipeDisplayedInPacket.class, PacketPlayInRecipeDisplayed.class, Protocol.PLAY, IN);
+			public static final PacketType<RecipeSettingsInPacket>      RECIPE_SETTINGS_IN       = new PacketType<>(RecipeSettingsInPacket.class, PacketPlayInRecipeSettings.class, Protocol.PLAY, IN);
+			public static final PacketType<RessourcePackStatusInPacket> RESSOURCE_PACK_STATUS_IN = new PacketType<>(RessourcePackStatusInPacket.class, PacketPlayInResourcePackStatus.class, Protocol.PLAY, IN);
+			public static final PacketType<SetCommandBlockInPacket>     SET_COMMAND_BLOCK_IN     = new PacketType<>(SetCommandBlockInPacket.class, PacketPlayInSetCommandBlock.class, Protocol.PLAY, IN);
+			public static final PacketType<SetCommandMinecartInPacket>  SET_COMMAND_MINECART_IN  = new PacketType<>(SetCommandMinecartInPacket.class, PacketPlayInSetCommandMinecart.class, Protocol.PLAY, IN);
+			public static final PacketType<SetCreativeSlotInPacket>     SET_CREATIVE_SLOT_IN     = new PacketType<>(SetCreativeSlotInPacket.class, PacketPlayInSetCreativeSlot.class, Protocol.PLAY, IN);
+			public static final PacketType<SetJigsawInPacket>           SET_JIGSAW_IN            = new PacketType<>(SetJigsawInPacket.class, PacketPlayInSetJigsaw.class, Protocol.PLAY, IN);
+			public static final PacketType<SettingsInPacket>            SETTINGS_IN              = new PacketType<>(SettingsInPacket.class, PacketPlayInSettings.class, Protocol.PLAY, IN);
+			public static final PacketType<SpectateInPacket>            SPECTATE_IN              = new PacketType<>(SpectateInPacket.class, PacketPlayInSpectate.class, Protocol.PLAY, IN);
+			public static final PacketType<SteerVehicleInPacket>        STEER_VEHICLE_IN         = new PacketType<>(SteerVehicleInPacket.class, PacketPlayInSteerVehicle.class, Protocol.PLAY, IN);
+			public static final PacketType<StructInPacket>              STRUCT_IN                = new PacketType<>(StructInPacket.class, PacketPlayInStruct.class, Protocol.PLAY, IN);
+			public static final PacketType<TabCompleteInPacket>         TAB_COMPLETE_IN          = new PacketType<>(TabCompleteInPacket.class, PacketPlayInTabComplete.class, Protocol.PLAY, IN);
+			public static final PacketType<TeleportAcceptInPacket>      TELEPORT_ACCEPT_IN       = new PacketType<>(TeleportAcceptInPacket.class, PacketPlayInTeleportAccept.class, Protocol.PLAY, IN);
+			public static final PacketType<TileNBTQueryInPacket>        TILE_NBT_QUERY_IN        = new PacketType<>(TileNBTQueryInPacket.class, PacketPlayInTileNBTQuery.class, Protocol.PLAY, IN);
+			public static final PacketType<TransactionInPacket>         TRANSACTION_IN           = new PacketType<>(TransactionInPacket.class, PacketPlayInTransaction.class, Protocol.PLAY, IN);
+			public static final PacketType<TrSelInPacket>               TR_SEL_IN                = new PacketType<>(TrSelInPacket.class, PacketPlayInTrSel.class, Protocol.PLAY, IN);
+			public static final PacketType<UpdateSignInPacket>          UPDATE_SIGN_IN           = new PacketType<>(UpdateSignInPacket.class, PacketPlayInUpdateSign.class, Protocol.PLAY, IN);
+			public static final PacketType<UseEntityInPacket>           USE_ENTITY_IN            = new PacketType<>(UseEntityInPacket.class, PacketPlayInUseEntity.class, Protocol.PLAY, IN);
+			public static final PacketType<UseItemInPacket>             USE_ITEM_IN              = new PacketType<>(UseItemInPacket.class, PacketPlayInUseItem.class, Protocol.PLAY, IN);
+			public static final PacketType<WindowsClickInPacket>        WINDOWS_CLICK_IN         = new PacketType<>(WindowsClickInPacket.class, PacketPlayInWindowClick.class, Protocol.PLAY, IN);
+		}
+
+		public static final class Server {
+
+			//public static final PacketType<WindowItemsPacket>                WINDOW_ITEMS      = new PacketType<>(WindowItemsPacket.class, PacketPlayOutWindowItems.class, PLAY, OUT);
+			//public static final PacketType<SetSlotPacket>                    SET_SLOT          = new PacketType<>(SetSlotPacket.class, PacketPlayOutSetSlot.class, PLAY, OUT);
+			//public static final PacketType<ChatOutPacket>                    CHAT_OUT          = new PacketType<>(ChatOutPacket.class, PacketPlayOutChat.class, PLAY, OUT);
+			//public static final PacketType<BossPacket>                       BOSS              = new PacketType<>(BossPacket.class, PacketPlayOutBoss.class, PLAY, OUT);
+			//public static final PacketType<ScoreboardTeamPacket>             TEAM              = new PacketType<>(ScoreboardTeamPacket.class, PacketPlayOutScoreboardTeam.class, PLAY, OUT);
+			//public static final PacketType<ScoreboardObjectivePacket>        OBJECTIVE         = new PacketType<>(ScoreboardObjectivePacket.class, PacketPlayOutScoreboardObjective.class, PLAY, OUT);
+			//public static final PacketType<ScoreboardDisplayObjectivePacket> DISPLAY_OBJECTIVE = new PacketType<>(ScoreboardDisplayObjectivePacket.class,
+			//																									   PacketPlayOutScoreboardDisplayObjective.class, PLAY, OUT);
+			//public static final PacketType<ScoreboardScorePacket>            SCORE             = new PacketType<>(ScoreboardScorePacket.class, PacketPlayOutScoreboardDisplayObjective.class, PLAY,
+			//																									   OUT);
+			//public static final PacketType<TabCompleteOutPacket>             TAB_COMPLETE      = new PacketType<>(TabCompleteOutPacket.class, PacketPlayOutTabComplete.class, PLAY, OUT);
+			//public static final PacketType<WorldParticlesPacket>             WORLD_PARTICLES   = new PacketType<>(WorldParticlesPacket.class, PacketPlayOutWorldParticles.class, PLAY, OUT);
+			//public static final PacketType<TitlePacket>                      TITLE             = new PacketType<>(TitlePacket.class, PacketPlayOutTitle.class, PLAY, OUT);
+			//public static final PacketType<OpenWindowPacket>                 OPEN_WINDOW       = new PacketType<>(OpenWindowPacket.class, PacketPlayOutOpenWindow.class, PLAY, OUT);
+		}
 	}
 
 }

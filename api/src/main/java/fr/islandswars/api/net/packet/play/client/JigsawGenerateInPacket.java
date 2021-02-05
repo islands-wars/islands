@@ -6,8 +6,8 @@ import net.minecraft.server.v1_16_R3.BlockPosition;
 import net.minecraft.server.v1_16_R3.PacketPlayInJigsawGenerate;
 
 /**
- * File <b>JigswaGenerateInPacket</b> located on fr.islandswars.api.net.packet.play.client
- * JigswaGenerateInPacket is a part of islands.
+ * File <b>JigsawGenerateInPacket</b> located on fr.islandswars.api.net.packet.play.client
+ * JigsawGenerateInPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -29,9 +29,9 @@ import net.minecraft.server.v1_16_R3.PacketPlayInJigsawGenerate;
  * Created the 05/02/2021 at 16:27
  * @since 0.1
  */
-public class JigswaGenerateInPacket extends GamePacket<PacketPlayInJigsawGenerate> {
+public class JigsawGenerateInPacket extends GamePacket<PacketPlayInJigsawGenerate> {
 
-	protected JigswaGenerateInPacket(PacketPlayInJigsawGenerate handle) {
+	protected JigsawGenerateInPacket(PacketPlayInJigsawGenerate handle) {
 		super(handle);
 	}
 
@@ -79,6 +79,6 @@ public class JigswaGenerateInPacket extends GamePacket<PacketPlayInJigsawGenerat
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.JIGSAW_GENERATE_IN;
 	}
 }

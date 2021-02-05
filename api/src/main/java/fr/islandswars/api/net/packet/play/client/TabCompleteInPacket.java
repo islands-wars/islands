@@ -64,6 +64,6 @@ public class TabCompleteInPacket extends GamePacket<PacketPlayInTabComplete> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.TAB_COMPLETE_IN;
 	}
 }

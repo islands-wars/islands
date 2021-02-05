@@ -38,7 +38,7 @@ public class EnchantItemInPacket extends GamePacket<PacketPlayInEnchantItem> {
 	}
 
 	/**
-	 * @return the windows id send by {@link OpenWindowsInPacket}
+	 * @return the windows id send by {@link net.minecraft.server.v1_16_R3.PacketPlayOutOpenWindow}
 	 */
 	public int getWindowsID() {
 		return handle.b();
@@ -55,7 +55,7 @@ public class EnchantItemInPacket extends GamePacket<PacketPlayInEnchantItem> {
 	}
 
 	/**
-	 * @param id the windows id send by {@link OpenWindowsInPacket}
+	 * @param id the windows id send by {@link net.minecraft.server.v1_16_R3.PacketPlayOutOpenWindow}
 	 */
 	public void setWindowsID(int id) {
 		setHandleValue("a", id);
@@ -73,6 +73,6 @@ public class EnchantItemInPacket extends GamePacket<PacketPlayInEnchantItem> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ENCHANT_ITEM_IN;
 	}
 }

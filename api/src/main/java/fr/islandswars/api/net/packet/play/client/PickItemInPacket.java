@@ -46,6 +46,6 @@ public class PickItemInPacket extends GamePacket<PacketPlayInPickItem> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.PICK_ITEM_IN;
 	}
 }

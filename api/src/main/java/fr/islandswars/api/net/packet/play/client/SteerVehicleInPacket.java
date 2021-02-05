@@ -5,8 +5,8 @@ import fr.islandswars.api.net.PacketType;
 import net.minecraft.server.v1_16_R3.PacketPlayInSteerVehicle;
 
 /**
- * File <b>SteerVehicleInpacket</b> located on fr.islandswars.api.net.packet.play.client
- * SteerVehicleInpacket is a part of islands.
+ * File <b>SteerVehicleInPacket</b> located on fr.islandswars.api.net.packet.play.client
+ * SteerVehicleInPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -30,9 +30,9 @@ import net.minecraft.server.v1_16_R3.PacketPlayInSteerVehicle;
  * <p>
  * TODO debug
  */
-public class SteerVehicleInpacket extends GamePacket<PacketPlayInSteerVehicle> {
+public class SteerVehicleInPacket extends GamePacket<PacketPlayInSteerVehicle> {
 
-	protected SteerVehicleInpacket(PacketPlayInSteerVehicle handle) {
+	protected SteerVehicleInPacket(PacketPlayInSteerVehicle handle) {
 		super(handle);
 	}
 
@@ -94,6 +94,6 @@ public class SteerVehicleInpacket extends GamePacket<PacketPlayInSteerVehicle> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.STEER_VEHICLE_IN;
 	}
 }

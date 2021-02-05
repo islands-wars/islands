@@ -81,6 +81,6 @@ public class RecipeSettingsInPacket extends GamePacket<PacketPlayInRecipeSetting
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.RECIPE_SETTINGS_IN;
 	}
 }

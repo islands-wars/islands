@@ -65,6 +65,6 @@ public class AdvancementsInPacket extends GamePacket<PacketPlayInAdvancements> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.ADVANCEMENTS_IN;
 	}
 }

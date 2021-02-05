@@ -51,6 +51,6 @@ public class RecipeDisplayedInPacket extends GamePacket<PacketPlayInRecipeDispla
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.RECIPE_DISPLAYED_IN;
 	}
 }

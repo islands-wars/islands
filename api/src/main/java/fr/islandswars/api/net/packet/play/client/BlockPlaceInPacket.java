@@ -67,6 +67,6 @@ public class BlockPlaceInPacket extends GamePacket<PacketPlayInBlockPlace> {
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.BLOCK_PLACE_IN;
 	}
 }

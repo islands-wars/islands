@@ -50,6 +50,6 @@ public class RessourcePackStatusInPacket extends GamePacket<PacketPlayInResource
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.RESSOURCE_PACK_STATUS_IN;
 	}
 }

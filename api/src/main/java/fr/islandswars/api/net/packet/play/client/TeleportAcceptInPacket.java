@@ -50,6 +50,6 @@ public class TeleportAcceptInPacket extends GamePacket<PacketPlayInTeleportAccep
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Client.TELEPORT_ACCEPT_IN;
 	}
 }
