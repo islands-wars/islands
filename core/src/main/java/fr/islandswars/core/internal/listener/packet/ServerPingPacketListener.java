@@ -4,10 +4,8 @@ import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.net.PacketEvent;
 import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.net.PacketType;
-import fr.islandswars.api.net.packet.handshake.server.HandShakePacket;
 import fr.islandswars.api.net.packet.status.server.ServerInfoPacket;
 import net.minecraft.server.v1_16_R3.ChatComponentText;
-import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 
 /**
  * File <b>HandShakePacketListener</b> located on fr.islandswars.core.internal.listener.packet
@@ -26,7 +24,7 @@ import net.minecraft.server.v1_16_R3.IChatBaseComponent;
  * GNU General Public License for more details.
  * <p>
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}

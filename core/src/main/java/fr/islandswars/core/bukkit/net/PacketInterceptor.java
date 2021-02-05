@@ -1,13 +1,11 @@
 package fr.islandswars.core.bukkit.net;
 
-import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import io.netty.channel.*;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.server.v1_16_R3.Packet;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -30,7 +28,7 @@ import org.bukkit.entity.Player;
  * GNU General Public License for more details.
  * <p>
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
