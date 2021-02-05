@@ -1,6 +1,12 @@
 package fr.islandswars.api.net;
 
-import fr.islandswars.api.net.packet.handshake.server.HandShakePacket;
+import fr.islandswars.api.net.packet.handshake.client.HandShakePacket;
+import fr.islandswars.api.net.packet.login.client.EncryptionResponsePacket;
+import fr.islandswars.api.net.packet.login.client.LoginStartPacket;
+import fr.islandswars.api.net.packet.login.server.DisconnectPacket;
+import fr.islandswars.api.net.packet.login.server.EncryptionRequestPacket;
+import fr.islandswars.api.net.packet.login.server.SetCompressionPacket;
+import fr.islandswars.api.net.packet.login.server.SuccessPacket;
 import fr.islandswars.api.net.packet.status.client.PingPacket;
 import fr.islandswars.api.net.packet.status.client.StartPacket;
 import fr.islandswars.api.net.packet.status.server.PongPacket;
@@ -120,6 +126,32 @@ public class PacketType<T extends GamePacket> {
 		OUT
 	}
 
+	public static final class Handshake {
+
+		public static final class Client {
+
+			public static final PacketType<HandShakePacket> HANDSHAKE = new PacketType<>(HandShakePacket.class, PacketHandshakingInSetProtocol.class, Protocol.HANDSHAKE, OUT);
+		}
+
+	}
+
+	public static final class Login {
+
+		public static final class Client {
+
+			public static final PacketType<EncryptionResponsePacket> ENCRYPION_RESPONSE = new PacketType<>(EncryptionResponsePacket.class, PacketLoginInEncryptionBegin.class, Protocol.LOGIN, IN);
+			public static final PacketType<LoginStartPacket>         LOGIN_START        = new PacketType<>(LoginStartPacket.class, PacketLoginInStart.class, Protocol.LOGIN, IN);
+		}
+
+		public static final class Server {
+
+			public static final PacketType<DisconnectPacket>        DISCONNECT         = new PacketType<>(DisconnectPacket.class, PacketLoginOutDisconnect.class, Protocol.LOGIN, OUT);
+			public static final PacketType<EncryptionRequestPacket> ENCRYPTION_REQUEST = new PacketType<>(EncryptionRequestPacket.class, PacketLoginOutEncryptionBegin.class, Protocol.LOGIN, OUT);
+			public static final PacketType<SetCompressionPacket>    COMPRESSION        = new PacketType<>(SetCompressionPacket.class, PacketLoginOutSetCompression.class, Protocol.LOGIN, OUT);
+			public static final PacketType<SuccessPacket>           SUCCESS            = new PacketType<>(SuccessPacket.class, PacketLoginOutSuccess.class, Protocol.LOGIN, OUT);
+		}
+	}
+
 	public static final class Status {
 
 		public static final class Client {
@@ -136,12 +168,4 @@ public class PacketType<T extends GamePacket> {
 
 	}
 
-	public static final class Handshake {
-
-		public static final class Server {
-
-			public static final PacketType<HandShakePacket> HANDSHAKE = new PacketType<>(HandShakePacket.class, PacketHandshakingInSetProtocol.class, Protocol.HANDSHAKE, OUT);
-		}
-
-	}
 }

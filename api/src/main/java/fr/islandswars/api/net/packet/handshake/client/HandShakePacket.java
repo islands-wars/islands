@@ -1,4 +1,4 @@
-package fr.islandswars.api.net.packet.handshake.server;
+package fr.islandswars.api.net.packet.handshake.client;
 
 import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
@@ -6,7 +6,7 @@ import net.minecraft.server.v1_16_R3.EnumProtocol;
 import net.minecraft.server.v1_16_R3.PacketHandshakingInSetProtocol;
 
 /**
- * File <b>HandShakePacket</b> located on fr.islandswars.api.net.packet.handshake.server
+ * File <b>HandShakePacket</b> located on fr.islandswars.api.net.packet.handshake.client
  * HandShakePacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
@@ -65,7 +65,7 @@ public class HandShakePacket extends GamePacket<PacketHandshakingInSetProtocol> 
 
 	@Override
 	public PacketType getType() {
-		return PacketType.Handshake.Server.HANDSHAKE;
+		return PacketType.Handshake.Client.HANDSHAKE;
 	}
 
 	/**
