@@ -3,11 +3,11 @@ package fr.islandswars.api.net.packet.play.client;
 import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
 import net.minecraft.server.v1_16_R3.BlockPosition;
-import net.minecraft.server.v1_16_R3.PacketPlayInTileNBTQuery;
+import net.minecraft.server.v1_16_R3.PacketPlayInUpdateSign;
 
 /**
- * File <b>TileNBTQueryInPacket</b> located on fr.islandswars.api.net.packet.play.client
- * TileNBTQueryInPacket is a part of islands.
+ * File <b>UpdateSignInPacket</b> located on fr.islandswars.api.net.packet.play.client
+ * UpdateSignInPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -26,41 +26,41 @@ import net.minecraft.server.v1_16_R3.PacketPlayInTileNBTQuery;
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
- * Created the 05/02/2021 at 17:37
+ * Created the 05/02/2021 at 17:54
  * @since 0.1
  */
-public class TileNBTQueryInPacket extends GamePacket<PacketPlayInTileNBTQuery> {
+public class UpdateSignInPacket extends GamePacket<PacketPlayInUpdateSign> {
 
-	protected TileNBTQueryInPacket(PacketPlayInTileNBTQuery handle) {
+	protected UpdateSignInPacket(PacketPlayInUpdateSign handle) {
 		super(handle);
 	}
 
 	/**
-	 * @return the block query by the player
+	 * @return sign position
 	 */
-	public BlockPosition getPosition() {
-		return handle.c();
-	}
-
-	/**
-	 * @param position a new block position
-	 */
-	public void setPosition(BlockPosition position) {
-		setHandleValue("b", position);
-	}
-
-	/**
-	 * @return an incremental ID so that the client can verify that the response matches
-	 */
-	public int getTransactionID() {
+	public BlockPosition getSignPosition() {
 		return handle.b();
 	}
 
 	/**
-	 * @param id an incremental ID so that the client can verify that the response matches
+	 * @param position sign position
 	 */
-	public void setTransactionID(int id) {
-		setHandleValue("a", id);
+	public void setBlockPosition(BlockPosition position) {
+		setHandleValue("a", position);
+	}
+
+	/**
+	 * @return sign text
+	 */
+	public String[] getLines() {
+		return handle.c();
+	}
+
+	/**
+	 * @param lines sign text
+	 */
+	public void setLines(String[] lines) {
+		setHandleValue("b", lines);
 	}
 
 	@Override

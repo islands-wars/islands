@@ -2,12 +2,13 @@ package fr.islandswars.api.net.packet.play.client;
 
 import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
-import net.minecraft.server.v1_16_R3.BlockPosition;
-import net.minecraft.server.v1_16_R3.PacketPlayInTileNBTQuery;
+import net.minecraft.server.v1_16_R3.EnumHand;
+import net.minecraft.server.v1_16_R3.MovingObjectPositionBlock;
+import net.minecraft.server.v1_16_R3.PacketPlayInUseItem;
 
 /**
- * File <b>TileNBTQueryInPacket</b> located on fr.islandswars.api.net.packet.play.client
- * TileNBTQueryInPacket is a part of islands.
+ * File <b>UseItemInPacket</b> located on fr.islandswars.api.net.packet.play.client
+ * UseItemInPacket is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -26,41 +27,55 @@ import net.minecraft.server.v1_16_R3.PacketPlayInTileNBTQuery;
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
- * Created the 05/02/2021 at 17:37
+ * Created the 05/02/2021 at 18:06
  * @since 0.1
  */
-public class TileNBTQueryInPacket extends GamePacket<PacketPlayInTileNBTQuery> {
+public class UseItemInPacket extends GamePacket<PacketPlayInUseItem> {
 
-	protected TileNBTQueryInPacket(PacketPlayInTileNBTQuery handle) {
+	protected UseItemInPacket(PacketPlayInUseItem handle) {
 		super(handle);
 	}
 
 	/**
-	 * @return the block query by the player
+	 * @return block data
 	 */
-	public BlockPosition getPosition() {
+	public MovingObjectPositionBlock getMovingPosBlock() {
 		return handle.c();
 	}
 
 	/**
-	 * @param position a new block position
+	 * @param pos block data
 	 */
-	public void setPosition(BlockPosition position) {
-		setHandleValue("b", position);
+	public void setMovingPosBlock(MovingObjectPositionBlock pos) {
+		setHandleValue("a", pos);
 	}
 
 	/**
-	 * @return an incremental ID so that the client can verify that the response matches
+	 * @return hand
 	 */
-	public int getTransactionID() {
+	public EnumHand getHand() {
 		return handle.b();
 	}
 
 	/**
-	 * @param id an incremental ID so that the client can verify that the response matches
+	 * @param hand who interact
 	 */
-	public void setTransactionID(int id) {
-		setHandleValue("a", id);
+	public void setHand(EnumHand hand) {
+		setHandleValue("b", hand);
+	}
+
+	/**
+	 * @return timestamp
+	 */
+	public long getTimestamp() {
+		return handle.timestamp;
+	}
+
+	/**
+	 * @param timestamp init on constructor
+	 */
+	public void setTimestamp(long timestamp) {
+		handle.timestamp = timestamp;
 	}
 
 	@Override
