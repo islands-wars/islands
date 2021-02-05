@@ -26,7 +26,7 @@ import net.minecraft.server.v1_16_R3.PacketStatusInStart;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 18:52
- * @since TODO edit
+ * @since 0.1
  */
 public class StartPacket extends GamePacket<PacketStatusInStart> {
 

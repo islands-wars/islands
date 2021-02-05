@@ -24,7 +24,7 @@ import java.util.UUID;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:30
- * @since TODO edit
+ * @since 0.1
  */
 class PlayerAction {
 

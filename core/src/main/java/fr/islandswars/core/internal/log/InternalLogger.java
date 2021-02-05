@@ -30,7 +30,7 @@ import java.io.PrintStream;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:46
- * @since TODO edit
+ * @since 0.1
  */
 public class InternalLogger implements InfraLogger {
 

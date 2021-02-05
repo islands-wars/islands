@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:42
- * @since TODO edit
+ * @since 0.1
  */
 public class InternalPlayer implements IslandsPlayer {
 

@@ -38,9 +38,10 @@ import static fr.islandswars.api.net.PacketType.Bound.OUT;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
  *
+ * @author Gogume1er
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:12
- * @since TODO edit
+ * @since 0.1
  */
 public class PacketType<T extends GamePacket> {
 

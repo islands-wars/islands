@@ -27,7 +27,7 @@ import org.bukkit.event.Listener;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:47
- * @since TODO edit
+ * @since 0.1
  */
 public abstract class LazyListener implements Listener {
 

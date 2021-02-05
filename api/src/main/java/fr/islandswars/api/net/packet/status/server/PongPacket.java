@@ -26,7 +26,7 @@ import net.minecraft.server.v1_16_R3.PacketStatusOutPong;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 18:52
- * @since TODO edit
+ * @since 0.1
  */
 public class PongPacket extends GamePacket<PacketStatusOutPong> {
 

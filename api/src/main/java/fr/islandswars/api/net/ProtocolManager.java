@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
  *
+ * @author Gogume1er
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:10
  * @since 0.1

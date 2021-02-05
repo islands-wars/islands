@@ -24,7 +24,7 @@ import net.md_5.bungee.api.ChatColor;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:34
- * @since TODO edit
+ * @since 0.1
  */
 public interface IslandsRank {
 

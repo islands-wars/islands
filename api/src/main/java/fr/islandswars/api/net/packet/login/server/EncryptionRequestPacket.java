@@ -26,7 +26,7 @@ import net.minecraft.server.v1_16_R3.PacketLoginOutEncryptionBegin;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 05/02/2021 at 14:12
- * @since TODO edit
+ * @since 0.1
  */
 public class EncryptionRequestPacket extends GamePacket<PacketLoginOutEncryptionBegin> {
 
