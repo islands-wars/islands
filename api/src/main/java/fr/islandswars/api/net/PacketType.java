@@ -236,5 +236,4 @@ public class PacketType<T extends GamePacket> {
 			public static final PacketType<WorldParticlesOutPacket>             WORLD_PARTICLES_OUT              = new PacketType<>(WorldParticlesOutPacket.class, PacketPlayOutWorldParticles.class, Protocol.PLAY, OUT);
 		}
 	}
-
 }

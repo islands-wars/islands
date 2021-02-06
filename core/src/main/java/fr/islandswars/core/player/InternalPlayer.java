@@ -2,8 +2,6 @@ package fr.islandswars.core.player;
 
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.IslandsRank;
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 

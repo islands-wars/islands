@@ -5,15 +5,12 @@ import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
-import fr.islandswars.api.net.*;
-import fr.islandswars.api.net.packet.play.client.*;
-import fr.islandswars.api.net.packet.status.server.ServerInfoPacket;
+import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.internal.listener.PlayerListener;
-import fr.islandswars.core.internal.listener.packet.ServerPingPacketListener;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
 import java.util.Collections;
@@ -103,14 +100,6 @@ public class IslandsCore extends IslandsApi {
 		PacketInterceptor.inject();
 		try {
 			new PlayerListener(this);
-			getProtocolManager().subscribeHandler(new ServerPingPacketListener(PacketType.Status.Server.SERVER_INFO));
-			getProtocolManager().subscribeHandler(new PacketHandler<TrSelInPacket>(PacketType.Play.Client.TR_SEL_IN) {
-				@Override
-				public void handlePacket(PacketEvent<TrSelInPacket> event) {
-					System.out.println(event.getPacket().getTradesCount());
-				}
-			});
-
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

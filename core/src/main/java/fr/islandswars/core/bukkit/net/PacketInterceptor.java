@@ -1,6 +1,5 @@
 package fr.islandswars.core.bukkit.net;
 
-import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import io.netty.channel.*;
 import java.net.SocketAddress;

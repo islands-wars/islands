@@ -46,16 +46,6 @@ public class PlayerListener extends LazyListener {
 		var p = event.getPlayer();
 		((IslandsCore) api).addPlayer(p);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
-		api.runTask(new Runnable() {
-			long time = System.currentTimeMillis();
-			@Override
-			public void run() {
-				if(System.currentTimeMillis() - time > 10) {
-					event.getPlayer().setResourcePack("https://www.planetminecraft.com/texture-pack/g-u-n-pack/download/file/13952730/");
-					time = System.currentTimeMillis();
-				}
-			}
-		});
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
