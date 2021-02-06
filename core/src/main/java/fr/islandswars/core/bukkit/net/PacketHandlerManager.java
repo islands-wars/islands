@@ -58,7 +58,6 @@ public class PacketHandlerManager implements ProtocolManager {
 			else
 				System.out.println("Cannot send " + packet.getType().getProtocol().name() + " to " + target.getName());
 		else System.err.println("Try to send an input packet \"" + packet.getNMSPacket() + "\" to " + target.getName());
-		//TODO remove debug message
 	}
 
 	@Override
@@ -91,13 +90,11 @@ public class PacketHandlerManager implements ProtocolManager {
 			var reflectPacket = PacketType.getPacketList().get(packet.getClass());
 			if (reflectPacket != null) {
 				System.out.println(packet.getClass().getSimpleName());
-				//TODO filter packet where player is not connected
 				Player p = Bukkit.getOnlinePlayers().stream()
 						.map(CraftPlayer.class::cast)
 						.filter(cp -> cp.getHandle().playerConnection.networkManager.channel.equals(playerChannel))
 						.findFirst()
 						.orElse(null);
-				//TODO check which thread handle this, thread safe?
 				try {
 					var event = new PacketEvent<GamePacket>(p, NMSReflectionUtil.getConstructorAccessor(reflectPacket, packet.getClass()).newInstance(packet));
 					return post(event, handlers.get(packet.getClass().getSimpleName()));

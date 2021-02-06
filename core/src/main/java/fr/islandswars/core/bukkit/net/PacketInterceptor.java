@@ -1,5 +1,6 @@
 package fr.islandswars.core.bukkit.net;
 
+import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import io.netty.channel.*;
 import java.net.SocketAddress;
@@ -30,8 +31,9 @@ import org.bukkit.entity.Player;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
- *
+ * <p>
  * Inspired by TinyProtocol & SkyBeast https://github.com/cchudant/NMSProtocol/blob/master/src/main/java/me/skybeast/nmsprotocol/Protocol.java
+ *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:50
  * @since 0.1
@@ -62,17 +64,20 @@ public class PacketInterceptor {
 	}
 
 	public static void inject() {
+		synchronized (manager) {
+			var mcServer      = NMSReflectionUtil.getValue(Bukkit.getServer(), "console");
+			var srvConnection = NMSReflectionUtil.getFirstValueOfType(mcServer, "{nms}.ServerConnection");
+			channelFutures = NMSReflectionUtil.getFirstValueOfType(srvConnection, List.class); //Steal channelFutures list
 
-		var mcServer      = NMSReflectionUtil.getValue(Bukkit.getServer(), "console");
-		var srvConnection = NMSReflectionUtil.getFirstValueOfType(mcServer, "{nms}.ServerConnection");
-		channelFutures = NMSReflectionUtil.getFirstValueOfType(srvConnection, List.class); //Steal channelFutures list
-
-		for (ChannelFuture o : channelFutures)
-			if (o.channel().pipeline().get(ChannelFutureHandler.ID) == null)
-				o.channel().pipeline().addFirst(ChannelFutureHandler.ID, ChannelFutureHandler.INSTANCE);
-
-		for (var player : Bukkit.getOnlinePlayers()) // /reload support
-			injectPlayer(player);                       // (inject to already connected players)
+			for (ChannelFuture o : channelFutures) {
+				o.channel().eventLoop().execute(() -> {
+					if (o.channel().pipeline().get(ChannelFutureHandler.ID) == null)
+						o.channel().pipeline().addFirst(ChannelFutureHandler.ID, ChannelFutureHandler.INSTANCE);
+				});
+			}
+			for (var player : Bukkit.getOnlinePlayers())
+				injectPlayer(player);
+		}
 	}
 
 	private static void injectPlayer(Player player) {
