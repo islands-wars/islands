@@ -8,6 +8,7 @@ import fr.islandswars.api.net.packet.login.server.EncryptionRequestPacket;
 import fr.islandswars.api.net.packet.login.server.SetCompressionPacket;
 import fr.islandswars.api.net.packet.login.server.SuccessPacket;
 import fr.islandswars.api.net.packet.play.client.*;
+import fr.islandswars.api.net.packet.play.server.*;
 import fr.islandswars.api.net.packet.status.client.PingPacket;
 import fr.islandswars.api.net.packet.status.client.StartPacket;
 import fr.islandswars.api.net.packet.status.server.PongPacket;
@@ -222,20 +223,17 @@ public class PacketType<T extends GamePacket> {
 
 		public static final class Server {
 
-			//public static final PacketType<WindowItemsPacket>                WINDOW_ITEMS      = new PacketType<>(WindowItemsPacket.class, PacketPlayOutWindowItems.class, PLAY, OUT);
-			//public static final PacketType<SetSlotPacket>                    SET_SLOT          = new PacketType<>(SetSlotPacket.class, PacketPlayOutSetSlot.class, PLAY, OUT);
-			//public static final PacketType<ChatOutPacket>                    CHAT_OUT          = new PacketType<>(ChatOutPacket.class, PacketPlayOutChat.class, PLAY, OUT);
-			//public static final PacketType<BossPacket>                       BOSS              = new PacketType<>(BossPacket.class, PacketPlayOutBoss.class, PLAY, OUT);
-			//public static final PacketType<ScoreboardTeamPacket>             TEAM              = new PacketType<>(ScoreboardTeamPacket.class, PacketPlayOutScoreboardTeam.class, PLAY, OUT);
-			//public static final PacketType<ScoreboardObjectivePacket>        OBJECTIVE         = new PacketType<>(ScoreboardObjectivePacket.class, PacketPlayOutScoreboardObjective.class, PLAY, OUT);
-			//public static final PacketType<ScoreboardDisplayObjectivePacket> DISPLAY_OBJECTIVE = new PacketType<>(ScoreboardDisplayObjectivePacket.class,
-			//																									   PacketPlayOutScoreboardDisplayObjective.class, PLAY, OUT);
-			//public static final PacketType<ScoreboardScorePacket>            SCORE             = new PacketType<>(ScoreboardScorePacket.class, PacketPlayOutScoreboardDisplayObjective.class, PLAY,
-			//																									   OUT);
-			//public static final PacketType<TabCompleteOutPacket>             TAB_COMPLETE      = new PacketType<>(TabCompleteOutPacket.class, PacketPlayOutTabComplete.class, PLAY, OUT);
-			//public static final PacketType<WorldParticlesPacket>             WORLD_PARTICLES   = new PacketType<>(WorldParticlesPacket.class, PacketPlayOutWorldParticles.class, PLAY, OUT);
-			//public static final PacketType<TitlePacket>                      TITLE             = new PacketType<>(TitlePacket.class, PacketPlayOutTitle.class, PLAY, OUT);
-			//public static final PacketType<OpenWindowPacket>                 OPEN_WINDOW       = new PacketType<>(OpenWindowPacket.class, PacketPlayOutOpenWindow.class, PLAY, OUT);
+			public static final PacketType<BossOutPacket>                       BOSS_OUT                         = new PacketType<>(BossOutPacket.class, PacketPlayOutBoss.class, Protocol.PLAY, OUT);
+			public static final PacketType<ChatOutPacket>                       CHAT_OUT                         = new PacketType<>(ChatOutPacket.class, PacketPlayOutChat.class, Protocol.PLAY, OUT);
+			public static final PacketType<OpenWindowOutPacket>                 OPEN_WINDOW_OUT                  = new PacketType<>(OpenWindowOutPacket.class, PacketPlayOutOpenWindow.class, Protocol.PLAY, OUT);
+			public static final PacketType<ScoreboardDisplayObjectiveOutPacket> SCOREBOARD_DISPLAY_OBJECTIVE_OUT = new PacketType<>(ScoreboardDisplayObjectiveOutPacket.class, PacketPlayOutScoreboardDisplayObjective.class, Protocol.PLAY, OUT);
+			public static final PacketType<ScoreboardScoreOutPacket>            SCOREBOARD_SCORE_OUT             = new PacketType<>(ScoreboardScoreOutPacket.class, PacketPlayOutScoreboardScore.class, Protocol.PLAY, OUT);
+			public static final PacketType<ScoreboardTeamOutPacket>             SCOREBOARD_TEAM_OUT              = new PacketType<>(ScoreboardTeamOutPacket.class, PacketPlayOutScoreboardTeam.class, Protocol.PLAY, OUT);
+			public static final PacketType<SetSlotOutPacket>                    SET_SLOT_OUT                     = new PacketType<>(SetSlotOutPacket.class, PacketPlayOutSetSlot.class, Protocol.PLAY, OUT);
+			public static final PacketType<TabCompleteOutPacket>                TAB_COMPLETE_OUT                 = new PacketType<>(TabCompleteOutPacket.class, PacketPlayOutTabComplete.class, Protocol.PLAY, OUT);
+			public static final PacketType<TitleOutPacket>                      TITLE_OUT                        = new PacketType<>(TitleOutPacket.class, PacketPlayOutTitle.class, Protocol.PLAY, OUT);
+			public static final PacketType<WindowItemsOutPacket>                WINDOW_ITEMS_OUT                 = new PacketType<>(WindowItemsOutPacket.class, PacketPlayOutWindowItems.class, Protocol.PLAY, OUT);
+			public static final PacketType<WorldParticlesOutPacket>             WORLD_PARTICLES_OUT              = new PacketType<>(WorldParticlesOutPacket.class, PacketPlayOutWorldParticles.class, Protocol.PLAY, OUT);
 		}
 	}
 
