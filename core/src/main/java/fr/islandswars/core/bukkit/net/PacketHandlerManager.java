@@ -100,7 +100,6 @@ public class PacketHandlerManager implements ProtocolManager {
 					return post(event, handlers.get(packet.getClass().getSimpleName()));
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.out.println("error");
 					return false;
 				}
 			}

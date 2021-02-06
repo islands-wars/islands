@@ -2,6 +2,7 @@ package fr.islandswars.api.listener;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.player.IslandsPlayer;
+import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 

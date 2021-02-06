@@ -39,8 +39,9 @@ public class ServerPingPacketListener extends PacketHandler<ServerInfoPacket> {
 
 	@Override
 	public void handlePacket(PacketEvent<ServerInfoPacket> event) {
-		event.getPacket().getResponse().setDescription(new ChatComponentText("mdr"));
-		event.getPacket().getResponse().setOnlinePlayer(40);
+		event.getPacket().getResponse().setDescription(new ChatComponentText("Islands Wars - Dev server"));
+		event.getPacket().getResponse().setOnlinePlayer(0);
+		event.getPacket().getResponse().setMaxPlayer(1);
 		IslandsApi.getInstance().getInfraLogger().createDefaultLog("test");
 	}
 }
