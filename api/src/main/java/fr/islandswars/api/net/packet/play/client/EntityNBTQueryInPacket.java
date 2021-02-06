@@ -29,7 +29,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInEntityNBTQuery;
  * @since 0.1
  * <p>
  * Used when Shift+F3+I is pressed while looking at an entity.
- * TODO debug...
  */
 public class EntityNBTQueryInPacket extends GamePacket<PacketPlayInEntityNBTQuery> {
 

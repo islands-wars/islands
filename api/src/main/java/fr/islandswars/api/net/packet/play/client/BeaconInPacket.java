@@ -27,7 +27,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInBeacon;
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 05/02/2021 at 14:47
  * @since 0.1
- * TODO debug which int is primary and secondary
  */
 public class BeaconInPacket extends GamePacket<PacketPlayInBeacon> {
 
@@ -36,28 +35,28 @@ public class BeaconInPacket extends GamePacket<PacketPlayInBeacon> {
 	}
 
 	/**
-	 * @return primary potion ID
+	 * @return primary potion ID, correspond to primary power (left UI side)
 	 */
 	public int getPrimaryEffect() {
 		return handle.b();
 	}
 
 	/**
-	 * @param effect a potion id
+	 * @param effect a potion id of the first parameter
 	 */
 	public void setPrimaryEffect(int effect) {
 		setHandleValue("a", effect);
 	}
 
 	/**
-	 * @return secondary potion ID
+	 * @return secondary potion ID (regeneration on the right side)
 	 */
 	public int getSecondaryEffect() {
 		return handle.c();
 	}
 
 	/**
-	 * @param effect a potion id
+	 * @param effect a potion id for the right ui side
 	 */
 	public void setSecondaryEffect(int effect) {
 		setHandleValue("b", effect);

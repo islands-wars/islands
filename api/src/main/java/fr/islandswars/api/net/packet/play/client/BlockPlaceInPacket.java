@@ -29,7 +29,7 @@ import net.minecraft.server.v1_16_R3.PacketPlayInBlockPlace;
  * Created the 05/02/2021 at 15:10
  * @since 0.1
  * <p>
- * TODO wtf is this packet
+ * Right clicking in air with an item selected
  */
 public class BlockPlaceInPacket extends GamePacket<PacketPlayInBlockPlace> {
 

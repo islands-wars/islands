@@ -28,7 +28,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInEntityAction;
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 05/02/2021 at 15:40
  * @since 0.1
- * TODO debug :/
  */
 public class EntityActionInPacket extends GamePacket<PacketPlayInEntityAction> {
 

@@ -5,8 +5,9 @@ import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
-import fr.islandswars.api.net.PacketType;
-import fr.islandswars.api.net.ProtocolManager;
+import fr.islandswars.api.net.*;
+import fr.islandswars.api.net.packet.play.client.*;
+import fr.islandswars.api.net.packet.status.server.ServerInfoPacket;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
@@ -98,12 +99,18 @@ public class IslandsCore extends IslandsApi {
 
 	@Override
 	public void onEnable() {
-		getInfraLogger().createDefaultLog("ze");
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Enable server in %s ms.").setServer(new Server(Status.ENABLE, ServerType.HUB)).log();
 		PacketInterceptor.inject();
 		try {
 			new PlayerListener(this);
 			getProtocolManager().subscribeHandler(new ServerPingPacketListener(PacketType.Status.Server.SERVER_INFO));
+			getProtocolManager().subscribeHandler(new PacketHandler<TrSelInPacket>(PacketType.Play.Client.TR_SEL_IN) {
+				@Override
+				public void handlePacket(PacketEvent<TrSelInPacket> event) {
+					System.out.println(event.getPacket().getTradesCount());
+				}
+			});
+
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

@@ -29,7 +29,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInBoatMove;
  * @since 0.1
  * <p>
  * Used to visually update whether boat paddles are turning.
- * TODO test which value is left & right...
  */
 public class BoatMoveInPacket extends GamePacket<PacketPlayInBoatMove> {
 
@@ -41,28 +40,28 @@ public class BoatMoveInPacket extends GamePacket<PacketPlayInBoatMove> {
 	 * @return is the left paddle of the boat active
 	 */
 	public boolean isLeftPaddleTurning() {
-		return handle.b();
+		return handle.c();
 	}
 
 	/**
 	 * @return is the right paddle of the boat active
 	 */
 	public boolean isRightPaddleTurning() {
-		return handle.c();
+		return handle.b();
 	}
 
 	/**
 	 * @param active state of the left paddle
 	 */
 	public void setLeftPaddleTurning(boolean active) {
-		setHandleValue("a", active);
+		setHandleValue("b", active);
 	}
 
 	/**
 	 * @param active state of the right paddle
 	 */
 	public void setRightPaddleTurning(boolean active) {
-		setHandleValue("b", active);
+		setHandleValue("a", active);
 	}
 
 	@Override

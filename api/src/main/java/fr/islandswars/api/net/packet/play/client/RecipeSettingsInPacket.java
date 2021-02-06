@@ -28,8 +28,6 @@ import net.minecraft.server.v1_16_R3.RecipeBookType;
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 05/02/2021 at 16:43
  * @since 0.1
- * <p>
- * TODO debug
  */
 public class RecipeSettingsInPacket extends GamePacket<PacketPlayInRecipeSettings> {
 

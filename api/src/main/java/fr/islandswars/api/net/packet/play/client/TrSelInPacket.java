@@ -28,12 +28,26 @@ import net.minecraft.server.v1_16_R3.PacketPlayInTrSel;
  * Created the 05/02/2021 at 17:52
  * @since 0.1
  * <p>
- * TODO same question as {@link TransactionInPacket}
+ * Call when clicking in villager trade menu in trades list
  */
 public class TrSelInPacket extends GamePacket<PacketPlayInTrSel> {
 
 	protected TrSelInPacket(PacketPlayInTrSel handle) {
 		super(handle);
+	}
+
+	/**
+	 * @return trade position in the list, start at 0
+	 */
+	public int getTradesCount() {
+		return handle.b();
+	}
+
+	/**
+	 * @param pos the trades position
+	 */
+	public void seti(int pos) {
+		setHandleValue("a", pos);
 	}
 
 	@Override

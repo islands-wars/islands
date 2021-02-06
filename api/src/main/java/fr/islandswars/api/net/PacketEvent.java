@@ -38,7 +38,7 @@ public class PacketEvent<T extends GamePacket> implements Cancellable {
 	private       boolean                 cancel;
 
 	public PacketEvent(Player player, T packet) {
-		if (packet.getType() == PacketType.Status.Server.SERVER_INFO) //TODO filter because at this time, player id is null
+		if (packet.getType() == PacketType.Status.Server.SERVER_INFO) //add filter because at this time, player id is null
 			this.player = Optional.empty();
 		else
 			this.player = IslandsApi.getInstance().getPlayer(player.getUniqueId());

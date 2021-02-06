@@ -28,7 +28,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInSteerVehicle;
  * Created the 05/02/2021 at 17:18
  * @since 0.1
  * <p>
- * TODO debug
  */
 public class SteerVehicleInPacket extends GamePacket<PacketPlayInSteerVehicle> {
 

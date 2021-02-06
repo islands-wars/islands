@@ -29,7 +29,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayInEnchantItem;
  * @since 0.1
  * <p>
  * Used when clicking on window buttons. Until 1.14, this was only used by enchantment tables.
- * TODO debug...
  */
 public class EnchantItemInPacket extends GamePacket<PacketPlayInEnchantItem> {
 

@@ -28,12 +28,55 @@ import net.minecraft.server.v1_16_R3.PacketPlayInTransaction;
  * Created the 05/02/2021 at 17:46
  * @since 0.1
  * <p>
- * TODO tf is that, inventory, npc?
+ * If a confirmation sent by the client was not accepted, the server will reply with a Window Confirmation (clientbound) packet with the Accepted field set to false.
+ * When this happens, the client must send this packet to apologize (as with movement), otherwise the server ignores any successive confirmations.
  */
 public class TransactionInPacket extends GamePacket<PacketPlayInTransaction> {
 
 	protected TransactionInPacket(PacketPlayInTransaction handle) {
 		super(handle);
+	}
+
+	/**
+	 * @return window id
+	 */
+	public int getWindowID() {
+		return handle.b();
+	}
+
+	/**
+	 * @param id the window id
+	 */
+	public void setWindowID(int id) {
+		setHandleValue("a", id);
+	}
+
+	/**
+	 * @return an incremental action number
+	 */
+	public short getActionNumber() {
+		return handle.c();
+	}
+
+	/**
+	 * @param number the action numbner
+	 */
+	public void setActionNumber(short number) {
+		setHandleValue("b", number);
+	}
+
+	/**
+	 * @return client response
+	 */
+	public boolean getAccepted() {
+		return (boolean) getHandleValue("c");
+	}
+
+	/**
+	 * @param value custom response
+	 */
+	public void setAccepted(boolean value) {
+		setHandleValue("c", value);
 	}
 
 	@Override
