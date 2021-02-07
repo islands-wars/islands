@@ -1,6 +1,9 @@
 package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.i18n.I18nLoader;
+import fr.islandswars.api.i18n.Locale;
+import fr.islandswars.api.i18n.Translatable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
@@ -11,6 +14,7 @@ import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
+import fr.islandswars.core.internal.i18n.LocaleTranslatable;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.listener.packet.ItemListener;
 import fr.islandswars.core.internal.log.InternalLogger;
@@ -54,11 +58,13 @@ public class IslandsCore extends IslandsApi {
 	private final PacketHandlerManager                packetManager;
 	private final InternalLogger                      logger;
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
+	private final LocaleTranslatable                  translatable;
 
 	public IslandsCore() {
 		this.logger = new InternalLogger();
 		this.players = new CopyOnWriteArrayList<>();
 		this.packetManager = new PacketHandlerManager();
+		this.translatable = new LocaleTranslatable();
 	}
 
 	@Override
@@ -87,7 +93,18 @@ public class IslandsCore extends IslandsApi {
 	}
 
 	@Override
+	public I18nLoader getI18nLoader() {
+		return translatable.getLoader();
+	}
+
+	@Override
+	public Translatable getTranslatable() {
+		return translatable;
+	}
+
+	@Override
 	public void onLoad() {
+		translatable.getLoader().registerCustomProperties(this);
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Loading server...").setServer(new Server(Status.LOAD, ServerType.HUB)).log();
 	}
 

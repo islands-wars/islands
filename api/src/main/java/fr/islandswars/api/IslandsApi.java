@@ -1,5 +1,7 @@
 package fr.islandswars.api;
 
+import fr.islandswars.api.i18n.I18nLoader;
+import fr.islandswars.api.i18n.Translatable;
 import fr.islandswars.api.lang.bukkit.ErrorHandlerRegisteredListener;
 import fr.islandswars.api.lang.bukkit.ErrorHandlerRunnable;
 import fr.islandswars.api.log.InfraLogger;
@@ -95,6 +97,20 @@ public abstract class IslandsApi extends JavaPlugin {
 	 * @return an abstract logger to output custom log
 	 */
 	public abstract InfraLogger getInfraLogger();
+
+	/**
+	 * Interface to register and save translation
+	 *
+	 * @return a String storage according to i18n format
+	 */
+	public abstract I18nLoader getI18nLoader();
+
+	/**
+	 * Interface to format key to a valid String, according to user preferences
+	 *
+	 * @return a way to format message according to a given language
+	 */
+	public abstract Translatable getTranslatable();
 
 	@Override
 	public abstract void onLoad();
