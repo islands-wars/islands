@@ -2,6 +2,7 @@ package fr.islandswars.core.player;
 
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.IslandsRank;
+import java.util.Locale;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -40,6 +41,11 @@ public class InternalPlayer implements IslandsPlayer {
 	@Override
 	public void disconnect() {
 
+	}
+
+	@Override
+	public Locale getPlayerLocale() {
+		return Locale.FRENCH;
 	}
 
 	@Override

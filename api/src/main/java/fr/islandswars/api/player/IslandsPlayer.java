@@ -1,6 +1,7 @@
 package fr.islandswars.api.player;
 
 import fr.islandswars.api.player.rank.IslandsRank;
+import java.util.Locale;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 
 /**
@@ -43,5 +44,10 @@ public interface IslandsPlayer {
 	 * @return the rank with the highest level
 	 */
 	IslandsRank getDisplayedRank();
+
+	/**
+	 * @return the current player language
+	 */
+	Locale getPlayerLocale();
 
 }

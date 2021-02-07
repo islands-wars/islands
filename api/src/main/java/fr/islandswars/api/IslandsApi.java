@@ -8,6 +8,7 @@ import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.ErrorLog;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.storage.StorageManager;
 import fr.islandswars.api.utils.ErrorHandler;
 import fr.islandswars.api.utils.Preconditions;
 import java.lang.reflect.Method;
@@ -99,6 +100,7 @@ public abstract class IslandsApi extends JavaPlugin {
 	public abstract InfraLogger getInfraLogger();
 
 	/**
+	 * <<<<<<< Updated upstream
 	 * Interface to register and save translation
 	 *
 	 * @return a String storage according to i18n format
@@ -111,6 +113,13 @@ public abstract class IslandsApi extends JavaPlugin {
 	 * @return a way to format message according to a given language
 	 */
 	public abstract Translatable getTranslatable();
+
+	/*
+	 * interface to deal with item and internalisation
+	 *
+	 * @return a way to create and open inventory
+	 */
+	public abstract StorageManager getStorageManager();
 
 	@Override
 	public abstract void onLoad();

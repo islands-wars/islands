@@ -1,19 +1,24 @@
 package fr.islandswars.core.internal.listener;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.item.IslandsItem;
 import fr.islandswars.api.item.ItemType;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.log.internal.Action;
 import fr.islandswars.api.log.internal.PlayerLog;
+import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.bukkit.item.InternalIslandsItem;
 import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * File <b>PlayerListener</b> located on fr.islandswars.core.internal.listener
@@ -47,13 +52,19 @@ public class PlayerListener extends LazyListener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onConnect(PlayerJoinEvent event) {
-		var p = event.getPlayer();
-		((IslandsCore) api).addPlayer(p);
-		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
+		var player = event.getPlayer();
+		((IslandsCore) api).addPlayer(player);
+		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + player.getName() + " joined the game.").setPlayer(player, Action.CONNECT).log();
 
-		ItemType            item         = new ItemType(Material.PLAYER_HEAD);
-		InternalIslandsItem internalItem = new InternalIslandsItem(item);
-		System.out.println(item.getMaterial());
+		IslandsItem item = api.getStorageManager().newItem(new ItemType(Material.DIAMOND_SWORD)).onClick((p, c) -> {
+			p.getCraftPlayer().sendMessage("tudu");
+			c.setCancelled(true);
+		}).withProperties(prop -> {
+			prop.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			prop.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+		});
+		ItemStack it = item.toBukkitItem();
+		player.getInventory().setItem(0, it);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

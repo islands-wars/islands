@@ -2,21 +2,23 @@ package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.i18n.I18nLoader;
-import fr.islandswars.api.i18n.Locale;
 import fr.islandswars.api.i18n.Translatable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
-import fr.islandswars.api.net.PacketType;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
+import fr.islandswars.api.storage.StorageManager;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
+import fr.islandswars.core.bukkit.storage.StorageFactory;
 import fr.islandswars.core.internal.i18n.LocaleTranslatable;
+import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
-import fr.islandswars.core.internal.listener.packet.ItemListener;
+import fr.islandswars.core.internal.listener.packet.SetSlotHandler;
+import fr.islandswars.core.internal.listener.packet.WindowItemHandler;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
 import java.util.Collections;
@@ -57,14 +59,21 @@ public class IslandsCore extends IslandsApi {
 
 	private final PacketHandlerManager                packetManager;
 	private final InternalLogger                      logger;
+	private final StorageFactory                      storageManager;
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
 	private final LocaleTranslatable                  translatable;
 
 	public IslandsCore() {
-		this.logger = new InternalLogger();
-		this.players = new CopyOnWriteArrayList<>();
 		this.packetManager = new PacketHandlerManager();
 		this.translatable = new LocaleTranslatable();
+		this.players = new CopyOnWriteArrayList<>();
+		this.storageManager = new StorageFactory();
+		this.logger = new InternalLogger();
+	}
+
+	@Override
+	public StorageManager getStorageManager() {
+		return storageManager;
 	}
 
 	@Override
@@ -119,7 +128,9 @@ public class IslandsCore extends IslandsApi {
 		PacketInterceptor.inject();
 		try {
 			new PlayerListener(this);
-			getProtocolManager().subscribeHandler(new ItemListener(PacketType.Play.Server.SET_SLOT_OUT));
+			new ItemListener(this);
+			getProtocolManager().subscribeHandler(new SetSlotHandler(this));
+			getProtocolManager().subscribeHandler(new WindowItemHandler(this));
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

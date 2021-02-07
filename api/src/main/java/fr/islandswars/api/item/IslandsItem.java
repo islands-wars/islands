@@ -1,6 +1,10 @@
 package fr.islandswars.api.item;
 
+import fr.islandswars.api.player.IslandsPlayer;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import net.minecraft.server.v1_16_R3.ItemStack;
+import org.bukkit.event.Cancellable;
 
 /**
  * File <b>IslandsItem</b> located on fr.islandswars.api.item
@@ -32,5 +36,40 @@ public interface IslandsItem {
 	 * @return this item wrapped in nms item
 	 */
 	ItemStack toNMSItem();
+
+	/**
+	 * @return this item wrapped in bukkit item
+	 */
+	org.bukkit.inventory.ItemStack toBukkitItem();
+
+	/**
+	 * Provide name and lore key for this item, can be null
+	 *
+	 * @param nameKey an i18n key
+	 * @param loreKey another one ;)
+	 * @return this item instance
+	 */
+	IslandsItem withInternalisation(String nameKey, String loreKey);
+
+	/**
+	 * Supply custom properties to this item
+	 *
+	 * @param propertiesConsumer a consumer to fill existing properties
+	 * @return this item builder
+	 */
+	IslandsItem withProperties(Consumer<ItemProperties> propertiesConsumer);
+
+	/**
+	 * Param an event when a player click on this item
+	 *
+	 * @param event an event to execute
+	 * @return this item instance
+	 */
+	IslandsItem onClick(BiConsumer<IslandsPlayer, Cancellable> event);
+
+	/**
+	 * @return this internal item id
+	 */
+	int getId();
 
 }

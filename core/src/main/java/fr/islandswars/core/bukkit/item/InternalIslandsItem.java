@@ -1,9 +1,16 @@
 package fr.islandswars.core.bukkit.item;
 
 import fr.islandswars.api.item.IslandsItem;
+import fr.islandswars.api.item.ItemProperties;
 import fr.islandswars.api.item.ItemType;
+import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.utils.Preconditions;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.event.Cancellable;
 
 /**
  * File <b>InternalItem</b> located on fr.islandswars.core.bukkit.item
@@ -31,14 +38,19 @@ import net.minecraft.server.v1_16_R3.NBTTagCompound;
  */
 public class InternalIslandsItem implements IslandsItem {
 
-	private final ItemType          type;
-	private final PropertiesWrapper properties;
-	private       ItemStack         wrapper;
+	private final int                                    id;
+	private final ItemType                               type;
+	private final PropertiesWrapper                      properties;
+	private       BiConsumer<IslandsPlayer, Cancellable> clickEvent;
+	private       ItemStack                              wrapper;
+	private       String                                 loreKey, nameKey;
 
-	public InternalIslandsItem(ItemType type) {
+	public InternalIslandsItem(ItemType type, int id) {
 		this.properties = new PropertiesWrapper(type);
 		this.type = type;
+		this.id = id;
 		type.getCompound().set("tag", new NBTTagCompound());
+		type.getCompound().getCompound("tag").setInt("id", id);
 	}
 
 	public PropertiesWrapper getProperties() {
@@ -46,10 +58,45 @@ public class InternalIslandsItem implements IslandsItem {
 	}
 
 	@Override
+	public org.bukkit.inventory.ItemStack toBukkitItem() {
+		return CraftItemStack.asBukkitCopy(toNMSItem());
+	}
+
+	@Override
+	public IslandsItem withInternalisation(String nameKey, String loreKey) {
+		this.nameKey = nameKey;
+		this.loreKey = loreKey;
+		return this;
+	}
+
+	@Override
+	public IslandsItem withProperties(Consumer<ItemProperties> propertiesConsumer) {
+		propertiesConsumer.accept(properties);
+		return this;
+	}
+
+	@Override
+	public IslandsItem onClick(BiConsumer<IslandsPlayer, Cancellable> event) {
+		Preconditions.checkNotNull(event);
+
+		this.clickEvent = event;
+		return this;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
 	public ItemStack toNMSItem() {
 		if (wrapper == null)
 			this.wrapper = ItemStack.a(type.getCompound());
-		System.out.println("Wrapper is : "+this.getProperties().getCompound().toString());
 		return wrapper;
+	}
+
+	public void callEvent(IslandsPlayer player, Cancellable cancellable) {
+		if (clickEvent != null)
+			clickEvent.accept(player, cancellable);
 	}
 }

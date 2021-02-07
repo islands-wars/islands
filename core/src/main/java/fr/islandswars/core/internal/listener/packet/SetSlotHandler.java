@@ -4,10 +4,12 @@ import fr.islandswars.api.net.PacketEvent;
 import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.net.PacketType;
 import fr.islandswars.api.net.packet.play.server.SetSlotOutPacket;
+import fr.islandswars.core.IslandsCore;
+import fr.islandswars.core.bukkit.storage.StorageFactory;
 
 /**
- * File <b>ItemListener</b> located on fr.islandswars.core.internal.listener.packet
- * ItemListener is a part of islands.
+ * File <b>SetSlotHandler</b> located on fr.islandswars.core.internal.listener.packet
+ * SetSlotHandler is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -29,14 +31,21 @@ import fr.islandswars.api.net.packet.play.server.SetSlotOutPacket;
  * Created the 07/02/2021 at 18:14
  * @since 0.1
  */
-public class ItemListener extends PacketHandler<SetSlotOutPacket> {
+public class SetSlotHandler extends PacketHandler<SetSlotOutPacket> {
 
-	public ItemListener(PacketType<SetSlotOutPacket> packetType) {
-		super(packetType);
+	private final StorageFactory storageManager;
+
+	public SetSlotHandler(IslandsCore core) {
+		super(PacketType.Play.Server.SET_SLOT_OUT);
+		this.storageManager = (StorageFactory) core.getStorageManager();
 	}
 
 	@Override
 	public void handlePacket(PacketEvent<SetSlotOutPacket> event) {
-		System.out.println(event.getPacket().getItemStack().getOrCreateTag());
+		var item   = event.getPacket().getItemStack();
+		var locale = event.getPlayer().get();
+		if (item == null || !item.hasTag() || !item.getTag().hasKeyOfType("id", 3))
+			return;
+		storageManager.translateItem(event.getPlayer(), item);
 	}
 }

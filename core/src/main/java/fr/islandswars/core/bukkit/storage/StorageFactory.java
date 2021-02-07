@@ -2,6 +2,7 @@ package fr.islandswars.core.bukkit.storage;
 
 import fr.islandswars.api.item.IslandsItem;
 import fr.islandswars.api.item.ItemType;
+import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.storage.Storage;
 import fr.islandswars.api.storage.StorageBuilder;
 import fr.islandswars.api.storage.StorageManager;
@@ -73,5 +74,9 @@ public class StorageFactory implements StorageManager {
 		InternalIslandsItem item = new InternalIslandsItem(type, count.incrementAndGet());
 		itemsCache.put(item.getId(), item);
 		return item;
+	}
+
+	public void translateItem(Optional<IslandsPlayer> player, net.minecraft.server.v1_16_R3.ItemStack item) {
+
 	}
 }
