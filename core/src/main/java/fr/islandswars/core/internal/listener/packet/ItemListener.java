@@ -4,7 +4,6 @@ import fr.islandswars.api.net.PacketEvent;
 import fr.islandswars.api.net.PacketHandler;
 import fr.islandswars.api.net.PacketType;
 import fr.islandswars.api.net.packet.play.server.SetSlotOutPacket;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 
 /**
  * File <b>ItemListener</b> located on fr.islandswars.core.internal.listener.packet
