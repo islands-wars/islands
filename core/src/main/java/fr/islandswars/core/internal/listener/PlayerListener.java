@@ -1,11 +1,15 @@
 package fr.islandswars.core.internal.listener;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.item.ItemType;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.log.internal.Action;
 import fr.islandswars.api.log.internal.PlayerLog;
 import fr.islandswars.core.IslandsCore;
+import fr.islandswars.core.bukkit.item.InternalIslandsItem;
 import java.util.logging.Level;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -46,6 +50,10 @@ public class PlayerListener extends LazyListener {
 		var p = event.getPlayer();
 		((IslandsCore) api).addPlayer(p);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
+
+		ItemType            item         = new ItemType(Material.PLAYER_HEAD);
+		InternalIslandsItem internalItem = new InternalIslandsItem(item);
+		System.out.println(item.getMaterial());
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

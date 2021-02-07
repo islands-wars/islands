@@ -5,12 +5,14 @@ import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
+import fr.islandswars.api.net.PacketType;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.internal.listener.PlayerListener;
+import fr.islandswars.core.internal.listener.packet.ItemListener;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
 import java.util.Collections;
@@ -100,6 +102,7 @@ public class IslandsCore extends IslandsApi {
 		PacketInterceptor.inject();
 		try {
 			new PlayerListener(this);
+			getProtocolManager().subscribeHandler(new ItemListener(PacketType.Play.Server.SET_SLOT_OUT));
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

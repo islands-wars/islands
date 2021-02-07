@@ -30,7 +30,6 @@ import net.minecraft.server.v1_16_R3.ParticleParam;
  * Created the 06/02/2021 at 19:22
  * @since 0.1
  * <p>
- * TODO proper builder
  */
 public class WorldParticlesOutPacket extends GamePacket<PacketPlayOutWorldParticles> {
 

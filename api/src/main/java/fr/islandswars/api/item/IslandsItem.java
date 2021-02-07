@@ -1,8 +1,10 @@
-package fr.islandswars.core.bukkit;
+package fr.islandswars.api.item;
+
+import net.minecraft.server.v1_16_R3.ItemStack;
 
 /**
- * File <b>sd</b> located on fr.islandswars.core.bukkit
- * sd is a part of islands.
+ * File <b>IslandsItem</b> located on fr.islandswars.api.item
+ * IslandsItem is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -17,13 +19,18 @@ package fr.islandswars.core.bukkit;
  * GNU General Public License for more details.
  * <p>
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
- * Created the 04/02/2021 at 17:50
- * @since TODO edit
+ * Created the 07/02/2021 at 08:58
+ * @since 0.1
  */
-public class sd {
+public interface IslandsItem {
+
+	/**
+	 * @return this item wrapped in nms item
+	 */
+	ItemStack toNMSItem();
 
 }

@@ -19,6 +19,10 @@ allprojects {
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     repositories {
+        maven {
+            name = "sonatype-oss-snapshots"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
         mavenCentral()
         mavenLocal() //needed for spigot
     }
