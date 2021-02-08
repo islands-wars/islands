@@ -1,10 +1,10 @@
-final def mcVersion = project.property("spigot_version") as String
+final def mcVersion = project.property("paper_version") as String
 final def EULA_ACCEPT = "True"
 final def folderName = (project.property("server_dir") as String) + "/"
-final def spigotGroupId = "org.spigotmc"
-final def spigotVersion = mcVersion + "-R0.1-SNAPSHOT"
-final def spigotArtifactId = "spigot"
-final def servName = spigotArtifactId + "-" + spigotVersion + ".jar"
+final def paperGroupId = "com.destroystokyo.paper"
+final def paperVersion = mcVersion + "-R0.1-SNAPSHOT"
+final def paperArtifactId = "paper"
+final def servName = paperArtifactId + "-" + paperVersion + ".jar"
 final def JAVA_ARGS = ['-Xms512m', '-Xmx512m', '-XX:+UseG1GC', '-XX:+UnlockExperimentalVMOptions', '-XX:MaxGCPauseMillis=100', '-XX:+DisableExplicitGC', '-XX:TargetSurvivorRatio=90',
                        '-XX:G1NewSizePercent=50', '-XX:G1MaxNewSizePercent=80', '-XX:G1MixedGCLiveThresholdPercent=50', '-XX:+AlwaysPreTouch']
 
@@ -20,7 +20,7 @@ allprojects {
 
     repositories {
         mavenCentral()
-        mavenLocal() //needed for spigot
+        mavenLocal() //needed for paper
     }
 
     sourceSets {
@@ -37,7 +37,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly spigotGroupId + ':' + spigotArtifactId + ':' + spigotVersion
+        compileOnly paperGroupId + ':' + paperArtifactId + ':' + paperVersion
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     }
@@ -52,7 +52,7 @@ task setupServer {
     description 'Setup a fresh directory to test our plugin'
     doLast {
         def localMavenRepo = new File(new File(ant.properties['user.home'] as String), ".m2/repository/")
-        def server = new File(localMavenRepo, spigotGroupId.replace('.', '/') + "/" + spigotArtifactId + "/" + spigotVersion + "/" + servName)
+        def server = new File(localMavenRepo, paperGroupId.replace('.', '/') + "/" + paperArtifactId + "/" + paperVersion + "/" + servName)
         File folder = new File(folderName)
 
         if (!folder.exists())
@@ -92,7 +92,7 @@ task deployPlugin(type: Copy, dependsOn: ['cleanPlugin', 'core:jar']) {
 
 task startDevServer(type: JavaExec) {
     group 'server'
-    description 'Start from gradle the spigot server'
+    description 'Start from gradle the paper server'
 
     File folder = new File(folderName)
     workingDir = folder.path
