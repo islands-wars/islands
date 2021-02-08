@@ -6,6 +6,7 @@ import fr.islandswars.api.lang.bukkit.ErrorHandlerRegisteredListener;
 import fr.islandswars.api.lang.bukkit.ErrorHandlerRunnable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.ErrorLog;
+import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.utils.ErrorHandler;
@@ -48,7 +49,7 @@ import org.bukkit.scheduler.BukkitTask;
  * Created the 03/02/2021 at 19:08
  * @since 0.1
  */
-public abstract class IslandsApi extends JavaPlugin {
+public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
 	private static IslandsApi   instance;
 	private final  ErrorHandler handler;
