@@ -2,25 +2,25 @@ package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.i18n.I18nLoader;
-import fr.islandswars.api.i18n.Locale;
 import fr.islandswars.api.i18n.Translatable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
+import fr.islandswars.api.module.Module;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
+import fr.islandswars.api.task.UpdaterManager;
+import fr.islandswars.api.utils.NMSReflectionUtil;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
+import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.i18n.LocaleTranslatable;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -57,12 +57,47 @@ public class IslandsCore extends IslandsApi {
 	private final InternalLogger                      logger;
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
 	private final LocaleTranslatable                  translatable;
+	private final UpdaterManager                      updaterManager;
+	private final List<Module>                        modules;
 
 	public IslandsCore() {
-		this.logger = new InternalLogger();
-		this.players = new CopyOnWriteArrayList<>();
 		this.packetManager = new PacketHandlerManager();
 		this.translatable = new LocaleTranslatable();
+		this.players = new CopyOnWriteArrayList<>();
+		this.updaterManager = new TaskManager();
+		this.logger = new InternalLogger();
+		this.modules = new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends Module> Optional<T> getModule(Class<T> module) {
+		return (Optional<T>) modules.stream().filter(m -> m.getClass().equals(module)).findFirst();
+	}
+
+	@Override
+	public <T extends Module> T registerModule(Class<T> module) {
+		try {
+			T mod = NMSReflectionUtil.getConstructorAccessor(module, IslandsApi.class).newInstance(IslandsApi.getInstance());
+			if (isEnabled()) {
+				mod.onLoad();
+				mod.onEnable();
+			}
+			modules.add(mod);
+			return mod;
+		} catch (Exception e) {
+			getInfraLogger().logError(e);
+			return null;
+		}
+	}
+
+	@Override
+	public <T extends Module> void unregisterModule(Class<T> module) {
+		Optional<? extends Module> optionalModule = modules.stream().filter(m -> m.getClass().equals(module)).findFirst();
+		optionalModule.ifPresent(mod -> {
+			mod.onDisable();
+			modules.remove(mod);
+		});
 	}
 
 	@Override
@@ -104,17 +139,26 @@ public class IslandsCore extends IslandsApi {
 	public void onLoad() {
 		translatable.getLoader().registerCustomProperties(this);
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Loading server...").setServer(new Server(Status.LOAD, ServerType.HUB)).log();
+		modules.forEach(Module::onLoad);
 	}
 
 	@Override
 	public void onDisable() {
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Disabling server...").setServer(new Server(Status.DISABLE, ServerType.HUB)).log();
+		modules.forEach(Module::onDisable);
+		PacketInterceptor.clean();
+	}
+
+	@Override
+	public UpdaterManager getUpdaterManager() {
+		return updaterManager;
 	}
 
 	@Override
 	public void onEnable() {
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Enable server in %s ms.").setServer(new Server(Status.ENABLE, ServerType.HUB)).log();
 		PacketInterceptor.inject();
+		modules.forEach(Module::onEnable);
 		try {
 			new PlayerListener(this);
 		} catch (Exception e) {
