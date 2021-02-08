@@ -9,6 +9,7 @@ import fr.islandswars.api.log.internal.ErrorLog;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ErrorHandler;
 import fr.islandswars.api.utils.Preconditions;
 import java.lang.reflect.Method;
@@ -112,6 +113,13 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	 * @return a way to format message according to a given language
 	 */
 	public abstract Translatable getTranslatable();
+
+	/**
+	 * Interface to register and schedule task from method annotations
+	 *
+	 * @return an interface to register and run task
+	 */
+	public abstract UpdaterManager getUpdaterManager();
 
 	@Override
 	public abstract void onLoad();

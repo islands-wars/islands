@@ -7,14 +7,15 @@ import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
-import fr.islandswars.api.module.ApiModule;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
+import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
+import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.i18n.LocaleTranslatable;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.log.InternalLogger;
@@ -56,12 +57,14 @@ public class IslandsCore extends IslandsApi {
 	private final InternalLogger                      logger;
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
 	private final LocaleTranslatable                  translatable;
+	private final UpdaterManager                      updaterManager;
 	private final List<Module>                        modules;
 
 	public IslandsCore() {
 		this.packetManager = new PacketHandlerManager();
 		this.translatable = new LocaleTranslatable();
 		this.players = new CopyOnWriteArrayList<>();
+		this.updaterManager = new TaskManager();
 		this.logger = new InternalLogger();
 		this.modules = new ArrayList<>();
 	}
@@ -144,6 +147,11 @@ public class IslandsCore extends IslandsApi {
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Disabling server...").setServer(new Server(Status.DISABLE, ServerType.HUB)).log();
 		modules.forEach(Module::onDisable);
 		PacketInterceptor.clean();
+	}
+
+	@Override
+	public UpdaterManager getUpdaterManager() {
+		return updaterManager;
 	}
 
 	@Override

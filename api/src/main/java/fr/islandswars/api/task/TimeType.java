@@ -1,8 +1,8 @@
-package fr.islandswars.core.bukkit;
+package fr.islandswars.api.task;
 
 /**
- * File <b>sd</b> located on fr.islandswars.core.bukkit
- * sd is a part of islands.
+ * File <b>TimeType</b> located on fr.islandswars.api.task
+ * TimeType is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2021 Islands Wars.
  * <p>
@@ -17,13 +17,33 @@ package fr.islandswars.core.bukkit;
  * GNU General Public License for more details.
  * <p>
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * <p>
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
- * Created the 04/02/2021 at 17:50
- * @since TODO edit
+ * Created the 08/02/2021 at 16:25
+ * @since 0.1
  */
-public class sd {
+public enum TimeType {
 
+	TICK(1),
+	SECOND(20),
+	TWO_SECONDS(SECOND.timeInTick * 2),
+	THIRTY_SECONDS(SECOND.timeInTick * 30),
+	MINUTE(SECOND.timeInTick * 60),
+	HOUR(MINUTE.timeInTick * 60),
+	NONE(-1);
+
+	int timeInTick;
+
+	TimeType(int timeInTick) {
+		this.timeInTick = timeInTick;
+	}
+
+	/**
+	 * @return the time (in tick)
+	 */
+	public int getTimeInTick() {
+		return timeInTick;
+	}
 }
