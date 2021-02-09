@@ -1,18 +1,21 @@
 package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.i18n.I18nLoader;
 import fr.islandswars.api.i18n.Translatable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
+import fr.islandswars.api.module.ApiModule;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.NMSReflectionUtil;
+import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.bukkit.task.TaskManager;
@@ -54,6 +57,7 @@ import org.bukkit.entity.Player;
 public class IslandsCore extends IslandsApi {
 
 	private final PacketHandlerManager                packetManager;
+	private final BukkitBarManager                    barManager;
 	private final InternalLogger                      logger;
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
 	private final LocaleTranslatable                  translatable;
@@ -67,6 +71,7 @@ public class IslandsCore extends IslandsApi {
 		this.updaterManager = new TaskManager();
 		this.logger = new InternalLogger();
 		this.modules = new ArrayList<>();
+		this.barManager = registerModule(BukkitBarManager.class);
 	}
 
 	@Override
@@ -155,9 +160,15 @@ public class IslandsCore extends IslandsApi {
 	}
 
 	@Override
+	public BarManager getBarManager() {
+		return barManager;
+	}
+
+	@Override
 	public void onEnable() {
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Enable server in %s ms.").setServer(new Server(Status.ENABLE, ServerType.HUB)).log();
 		PacketInterceptor.inject();
+		registerApiModule(ApiModule.ARROW);
 		modules.forEach(Module::onEnable);
 		try {
 			new PlayerListener(this);

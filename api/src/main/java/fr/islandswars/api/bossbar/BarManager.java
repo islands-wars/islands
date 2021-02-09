@@ -1,5 +1,10 @@
 package fr.islandswars.api.bossbar;
 
+import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.module.Module;
+import net.minecraft.server.v1_16_R3.BossBattle;
+import org.bukkit.boss.BarFlag;
+
 /**
  * File <b>BarManager</b> located on fr.islandswars.api.bossbar
  * BarManager is a part of islands.
@@ -24,6 +29,31 @@ package fr.islandswars.api.bossbar;
  * Created the 08/02/2021 at 17:15
  * @since 0.1
  */
-public class BarManager {
+public abstract class BarManager extends Module {
+
+	public BarManager(IslandsApi api) {
+		super(api);
+	}
+
+	/**
+	 * Create a boss bossbar with the supplied parameters
+	 *
+	 * @param title bossbar's title (or translation key if used)
+	 * @param color bossbar's color
+	 * @param style bossbar's style
+	 * @param flags bossbar's flags
+	 * @return a bukkit wrapped boss bossbar
+	 */
+	public abstract Bar createBar(String title, BossBattle.BarColor color, BossBattle.BarStyle style, BarFlag... flags);
+
+	/**
+	 * Create a bossbar sequence to display multiples bars in a specific order
+	 *
+	 * @param properties bossbar properties, it will be set to each bossbar, except if
+	 *                   supplied bars already have some properties set
+	 * @param bars       minimum 1 bossbar to init sequence
+	 * @return an util class to manage this sequence
+	 */
+	public abstract BarSequence createSequence(BarProperties properties, Bar... bars);
 
 }

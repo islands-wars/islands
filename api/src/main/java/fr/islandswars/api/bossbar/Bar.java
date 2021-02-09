@@ -1,7 +1,7 @@
 package fr.islandswars.api.bossbar;
 
+import fr.islandswars.api.i18n.TranslationParameters;
 import fr.islandswars.api.player.IslandsPlayer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -28,7 +28,15 @@ import java.util.stream.Stream;
  * Created the 08/02/2021 at 17:14
  * @since 0.1
  */
-public interface Bar  {
+public interface Bar {
+
+	/**
+	 * Add some properties such as timer, etc to this bossbar
+	 *
+	 * @param properties bossbar's properties to deal with
+	 * @param erase      update properties, even if it's already set
+	 */
+	void provideProperties(BarProperties properties, boolean erase);
 
 	/**
 	 * @return this bossbar viewers
@@ -69,6 +77,13 @@ public interface Bar  {
 	 * @param progress a new progress
 	 */
 	void setProgress(float progress);
+
+	/**
+	 * Add a way to give variables for live translations
+	 *
+	 * @param parameters translations
+	 */
+	void setTranslationParameters(TranslationParameters parameters);
 
 }
 

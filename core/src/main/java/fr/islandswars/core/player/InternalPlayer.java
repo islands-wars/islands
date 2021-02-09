@@ -1,7 +1,15 @@
 package fr.islandswars.core.player;
 
+import fr.islandswars.api.bossbar.Bar;
+import fr.islandswars.api.bossbar.BarSequence;
+import fr.islandswars.api.i18n.Locale;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.IslandsRank;
+import fr.islandswars.api.utils.Preconditions;
+import fr.islandswars.core.bukkit.bossbar.InternalBar;
+import fr.islandswars.core.bukkit.bossbar.InternalBarSequence;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -31,20 +39,68 @@ import org.bukkit.entity.Player;
  */
 public class InternalPlayer implements IslandsPlayer {
 
-	private final CraftPlayer player;
+	private final transient List<Bar>         bars;
+	private final transient List<BarSequence> sequences;
+	private final transient CraftPlayer       player;
 
 	public InternalPlayer(Player player) {
 		this.player = (CraftPlayer) player;
+		this.bars = new ArrayList<>();
+		this.sequences = new ArrayList<>();
+	}
+
+	@Override
+	public List<Bar> getDisplayedBars() {
+		return bars;
+	}
+
+	@Override
+	public void displaySequence(BarSequence sequence) {
+		Preconditions.checkNotNull(sequence);
+
+		var internalSequence = (InternalBarSequence) sequence;
+		if (internalSequence.getViewers().noneMatch(p -> p.equals(this))) {
+			sequences.add(sequence);
+			internalSequence.addPlayer(this);
+		}
+	}
+
+	@Override
+	public void removeFromBar(Bar bar) {
+		Preconditions.checkNotNull(bar);
+
+		var internalBar = (InternalBar) bar;
+		if (bar.getViewers().anyMatch(p -> p.equals(this))) {
+			bars.remove(bar);
+			internalBar.removePlayer(this);
+		}
 	}
 
 	@Override
 	public void disconnect() {
+		bars.forEach(bar -> ((InternalBar) bar).removePlayer(this));
+		sequences.forEach(seq -> ((InternalBarSequence) seq).removePlayer(this));
+	}
 
+	@Override
+	public Locale getPlayerLocale() {
+		return Locale.FRENCH;
 	}
 
 	@Override
 	public CraftPlayer getCraftPlayer() {
 		return player;
+	}
+
+	@Override
+	public void displayBar(Bar bar) {
+		Preconditions.checkNotNull(bar);
+
+		var internalBar = (InternalBar) bar;
+		if (bar.getViewers().noneMatch(p -> p.equals(this))) {
+			bars.add(bar);
+			internalBar.addPlayer(this);
+		}
 	}
 
 	@Override

@@ -29,8 +29,8 @@ import fr.islandswars.api.i18n.Translatable;
  */
 public class LocaleTranslatable implements Translatable {
 
-	private static final Locale DEFAULT = Locale.FRENCH;
-	private final TranslatableLoader loader;
+	private static final Locale             DEFAULT = Locale.FRENCH;
+	private final        TranslatableLoader loader;
 
 	public LocaleTranslatable() {
 		this.loader = new TranslatableLoader();

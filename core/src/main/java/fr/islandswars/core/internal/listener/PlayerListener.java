@@ -54,5 +54,4 @@ public class PlayerListener extends LazyListener {
 		((IslandsCore) api).removePlayer(islandsPlayer);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + islandsPlayer.getCraftPlayer().getName() + " leaved the game.").setPlayer(islandsPlayer, Action.LEAVE).log();
 	}
-
 }

@@ -1,6 +1,10 @@
 package fr.islandswars.api.player;
 
+import fr.islandswars.api.bossbar.Bar;
+import fr.islandswars.api.bossbar.BarSequence;
+import fr.islandswars.api.i18n.Locale;
 import fr.islandswars.api.player.rank.IslandsRank;
+import java.util.List;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 
 /**
@@ -43,5 +47,35 @@ public interface IslandsPlayer {
 	 * @return the rank with the highest level
 	 */
 	IslandsRank getDisplayedRank();
+
+	/**
+	 * @return the current player language
+	 */
+	Locale getPlayerLocale();
+
+	/**
+	 * @return the bars that are actually displayed to this player
+	 */
+	List<Bar> getDisplayedBars();
+
+	/**
+	 * Display the given bossbar to this player
+	 *
+	 * @param bar a bossbar to display
+	 */
+	void displayBar(Bar bar);
+
+	/**
+	 * Hide this bossbar to the player
+	 *
+	 * @param bar a bossbar to remove this player
+	 */
+	void removeFromBar(Bar bar);
+
+	/**
+	 * qsdkhfgqdsk hdgqsh dgqjhd qshdg jqhs
+	 * @param sequence
+	 */
+	void displaySequence(BarSequence sequence);
 
 }

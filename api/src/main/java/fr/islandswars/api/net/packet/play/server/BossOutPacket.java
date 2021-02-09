@@ -38,6 +38,10 @@ public class BossOutPacket extends GamePacket<PacketPlayOutBoss> {
 		super(handle);
 	}
 
+	public BossOutPacket(PacketPlayOutBoss.Action action, BossBattle bar) {
+		this(new PacketPlayOutBoss(action, bar));
+	}
+
 	/**
 	 * @return boss bar action
 	 */
