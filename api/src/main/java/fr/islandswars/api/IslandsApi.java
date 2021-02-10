@@ -1,5 +1,6 @@
 package fr.islandswars.api;
 
+import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.i18n.I18nLoader;
 import fr.islandswars.api.i18n.Translatable;
 import fr.islandswars.api.lang.bukkit.ErrorHandlerRegisteredListener;
@@ -64,6 +65,13 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	public static IslandsApi getInstance() {
 		return instance;
 	}
+
+	/**
+	 * Interface to easily create complex boss bossbar pattern
+	 *
+	 * @return an abstract nms layer to easily deal with boss bossbar packet
+	 */
+	public abstract BarManager getBarManager();
 
 	/**
 	 * Retrieve an IslandsPlayer
