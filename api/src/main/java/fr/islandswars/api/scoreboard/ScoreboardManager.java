@@ -1,5 +1,6 @@
 package fr.islandswars.api.scoreboard;
 
+import fr.islandswars.api.i18n.DynamicTranslation;
 import fr.islandswars.api.i18n.TranslationParameters;
 import fr.islandswars.api.net.packet.play.server.ScoreboardTeamOutPacket;
 import fr.islandswars.api.player.IslandsPlayer;
@@ -31,7 +32,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
  * Created the 10/02/2021 at 18:17
  * @since 0.1
  */
-public interface ScoreboardManager {
+public interface ScoreboardManager extends DynamicTranslation<IslandsPlayer> {
 
 	default Scoreboard createTranslatedScoreboard(String key) {
 		return createTranslatedScoreboard(key, TranslationParameters.EMPTY);

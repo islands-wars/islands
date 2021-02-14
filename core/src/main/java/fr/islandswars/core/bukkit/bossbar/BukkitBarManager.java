@@ -5,6 +5,7 @@ import fr.islandswars.api.bossbar.Bar;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.bossbar.BarProperties;
 import fr.islandswars.api.bossbar.BarSequence;
+import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.TaskType;
 import fr.islandswars.api.task.TimeType;
 import fr.islandswars.api.task.Updater;
@@ -125,6 +126,18 @@ public class BukkitBarManager extends BarManager {
 				bar.setProgress(properties.useReverse() ? 1 : 0);
 				//updateBar(newBar, newBar.properties);
 			} //else updateBar(bar, properties);
+		});
+	}
+
+	@Override
+	public void updateLocale(IslandsPlayer object) {
+		updatableSequences.forEach(seq -> {
+			seq.removePlayer(object);
+			seq.addPlayer(object);
+		});
+		updatableBar.forEach(bar -> {
+			bar.removePlayer(object);
+			bar.addPlayer(object);
 		});
 	}
 

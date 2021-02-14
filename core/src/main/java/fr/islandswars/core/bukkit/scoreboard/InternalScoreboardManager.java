@@ -1,6 +1,5 @@
 package fr.islandswars.core.bukkit.scoreboard;
 
-import com.google.common.collect.Lists;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.i18n.TranslationParameters;
 import fr.islandswars.api.module.Module;
@@ -14,7 +13,6 @@ import fr.islandswars.api.task.TaskType;
 import fr.islandswars.api.task.TimeType;
 import fr.islandswars.api.task.Updater;
 import fr.islandswars.core.bukkit.scoreboard.team.InternalTeam;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;

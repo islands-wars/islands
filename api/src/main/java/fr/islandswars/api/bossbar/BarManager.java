@@ -1,7 +1,9 @@
 package fr.islandswars.api.bossbar;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.i18n.DynamicTranslation;
 import fr.islandswars.api.module.Module;
+import fr.islandswars.api.player.IslandsPlayer;
 import net.minecraft.server.v1_16_R3.BossBattle;
 import org.bukkit.boss.BarFlag;
 
@@ -29,7 +31,7 @@ import org.bukkit.boss.BarFlag;
  * Created the 08/02/2021 at 17:15
  * @since 0.1
  */
-public abstract class BarManager extends Module {
+public abstract class BarManager extends Module implements DynamicTranslation<IslandsPlayer> {
 
 	public BarManager(IslandsApi api) {
 		super(api);
