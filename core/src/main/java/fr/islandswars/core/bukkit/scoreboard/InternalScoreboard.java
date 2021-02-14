@@ -80,7 +80,7 @@ public class InternalScoreboard implements Scoreboard {
 
 	@Override
 	public void addPlayer(IslandsPlayer player) {
-		if (IslandsApi.getInstance().getScoreboaredManager().getScoreBoard(player).isPresent())
+		if (IslandsApi.getInstance().getScoreboardManager().getScoreBoard(player).isPresent())
 			return;
 
 		viewers.add(player);

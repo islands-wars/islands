@@ -26,6 +26,9 @@ package fr.islandswars.api.lang;
  */
 public class IslandsApiError extends RuntimeException {
 
+	/**
+	 * @param message a message to log when bad things occurs
+	 */
 	public IslandsApiError(String message) {
 		super(message);
 	}

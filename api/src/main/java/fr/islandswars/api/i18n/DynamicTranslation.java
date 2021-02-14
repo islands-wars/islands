@@ -26,6 +26,9 @@ package fr.islandswars.api.i18n;
  */
 public interface DynamicTranslation<T> {
 
+	/**
+	 * @param object a value to handle locale change
+	 */
 	void updateLocale(T object);
 
 }

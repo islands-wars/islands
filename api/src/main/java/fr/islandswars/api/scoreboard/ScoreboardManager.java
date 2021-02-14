@@ -34,18 +34,47 @@ import net.md_5.bungee.api.chat.BaseComponent;
  */
 public interface ScoreboardManager extends DynamicTranslation<IslandsPlayer> {
 
+	/**
+	 * Get a new wrapper to handle dynamic translated scoreboard
+	 *
+	 * @param key scoreboard title
+	 * @return a wrapper
+	 */
 	default Scoreboard createTranslatedScoreboard(String key) {
 		return createTranslatedScoreboard(key, TranslationParameters.EMPTY);
 	}
 
+	/**
+	 * Get a new wrapper to handle dynamic translated scoreboard
+	 *
+	 * @param key        scoreboard title
+	 * @param parameters title translation wrapper
+	 * @return a wrapper
+	 */
 	Scoreboard createTranslatedScoreboard(String key, TranslationParameters parameters);
 
-	void updateLocale(IslandsPlayer player);
-
+	/**
+	 * Try to get current scoreboard displayed for this player
+	 *
+	 * @param player a player to get data from
+	 * @return a scoreboard if found
+	 */
 	Optional<Scoreboard> getScoreBoard(IslandsPlayer player);
 
+	/**
+	 * Register a new team
+	 *
+	 * @param name team name
+	 * @return a team wrapper
+	 */
 	Team registerTeam(String name);
 
+	/**
+	 * Force update this team. Normally not needed
+	 *
+	 * @param team a team to update
+	 * @param mode a mode
+	 */
 	void updateTeam(Team team, ScoreboardTeamOutPacket.EnumTeamPush mode);
 
 }

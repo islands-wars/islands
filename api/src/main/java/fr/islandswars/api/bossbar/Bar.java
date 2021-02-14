@@ -85,7 +85,5 @@ public interface Bar {
 	 */
 	void setTranslationParameters(TranslationParameters parameters);
 
-	void forceUpdate(IslandsPlayer player);
-
 }
 

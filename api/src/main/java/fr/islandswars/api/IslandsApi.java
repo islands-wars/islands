@@ -79,7 +79,7 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	 *
 	 * @return an abstract nms layer to easily deal with scoreboard packet
 	 */
-	public abstract ScoreboardManager getScoreboaredManager();
+	public abstract ScoreboardManager getScoreboardManager();
 
 	/**
 	 * Retrieve an IslandsPlayer
@@ -146,16 +146,33 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	@Override
 	public abstract void onEnable();
 
+	/**
+	 * Used by {@link fr.islandswars.api.listener.LazyListener} to handle custom log
+	 *
+	 * @param listener a bukkit listener to register
+	 */
 	public void registerEvent(Listener listener) {
 		Preconditions.checkNotNull(listener);
 
 		getPluginLoader().createRegisteredListeners(listener, this).forEach((e, l) -> getHandlerList(e).registerAll(l.stream().map(r -> new ErrorHandlerRegisteredListener(r, handler)).collect(Collectors.toList())));
 	}
 
+	/**
+	 * Used by {@link UpdaterManager} to handle custom error log
+	 *
+	 * @param task a bukkit task to run
+	 * @return a bukit wrapper
+	 */
 	public BukkitTask runTask(Runnable task) {
 		return Bukkit.getScheduler().runTask(this, new ErrorHandlerRunnable(task, handler));
 	}
 
+	/**
+	 * Used by {@link UpdaterManager} to handle custom error log
+	 *
+	 * @param task a bukkit task to run asynchronously
+	 * @return a bukit wrapper
+	 */
 	public BukkitTask runTaskAsynchronously(Runnable task) {
 		return Bukkit.getScheduler().runTaskAsynchronously(this, new ErrorHandlerRunnable(task, handler));
 	}

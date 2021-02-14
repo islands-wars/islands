@@ -34,10 +34,17 @@ public class TranslationParameters {
 	public static final  TranslationParameters                       EMPTY        = new TranslationParameters((p) -> () -> EMPTY_OBJECT);
 	private final        Function<IslandsPlayer, Supplier<Object[]>> translate;
 
+	/**
+	 * @param translation a function that will be used to supply an object array when needed
+	 */
 	public TranslationParameters(Function<IslandsPlayer, Supplier<Object[]>> translation) {
 		this.translate = translation;
 	}
 
+	/**
+	 * @param player an islands player to apply to the function
+	 * @return a supplied that will give an array of objects
+	 */
 	public Supplier<Object[]> getTranslation(IslandsPlayer player) {
 		return translate.apply(player);
 	}

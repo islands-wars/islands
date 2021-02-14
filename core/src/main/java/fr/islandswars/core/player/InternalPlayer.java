@@ -84,7 +84,7 @@ public class InternalPlayer implements IslandsPlayer {
 	public void disconnect() {
 		bars.forEach(bar -> ((InternalBar) bar).removePlayer(this));
 		sequences.forEach(seq -> ((InternalBarSequence) seq).removePlayer(this));
-		((InternalScoreboardManager) IslandsApi.getInstance().getScoreboaredManager()).remove(this);
+		((InternalScoreboardManager) IslandsApi.getInstance().getScoreboardManager()).remove(this);
 	}
 
 	@Override
@@ -96,8 +96,8 @@ public class InternalPlayer implements IslandsPlayer {
 	public void setLocale(Locale locale) {
 		if (this.locale != locale) {
 			this.locale = locale;
-			IslandsApi.getInstance().getScoreboaredManager().updateLocale(this);
-			bars.forEach(bar -> bar.forceUpdate(this));
+			IslandsApi.getInstance().getScoreboardManager().updateLocale(this);
+			IslandsApi.getInstance().getBarManager().updateLocale(this);
 		}
 	}
 

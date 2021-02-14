@@ -131,14 +131,8 @@ public class BukkitBarManager extends BarManager {
 
 	@Override
 	public void updateLocale(IslandsPlayer object) {
-		updatableSequences.forEach(seq -> {
-			seq.removePlayer(object);
-			seq.addPlayer(object);
-		});
-		updatableBar.forEach(bar -> {
-			bar.removePlayer(object);
-			bar.addPlayer(object);
-		});
+		updatableSequences.forEach(seq -> ((InternalBar) seq.getCurrentBar()).forceUpdate(object));
+		updatableBar.forEach(bar -> bar.forceUpdate(object));
 	}
 
 	private void updateBar(InternalBar bar, BarProperties properties) {

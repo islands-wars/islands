@@ -102,7 +102,7 @@ public class TaskManager implements UpdaterManager {
 		Class updatableClass = updatable.getClass();
 		for (Method method : updatableClass.getDeclaredMethods()) {
 			if (method.isAnnotationPresent(Updater.class) & method.getParameterCount() == 0 & runningTasks.containsKey(method)) {
-				Bukkit.getScheduler().cancelTask(runningTasks.remove(method)); //TODO instance
+				Bukkit.getScheduler().cancelTask(runningTasks.remove(method));
 				method.setAccessible(false);
 			}
 		}

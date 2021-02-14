@@ -29,7 +29,7 @@ import net.minecraft.server.v1_16_R3.PacketPlayOutChat;
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 06/02/2021 at 17:46
- * @since TODO edit
+ * @since 0.1
  */
 public class ChatOutPacket extends GamePacket<PacketPlayOutChat> {
 

@@ -35,7 +35,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
  */
 public class ArrowModule extends Module {
 
-	private long removeTime = 10;
+	private long removeTime = 20; //in tick, 1 seconds
 
 	public ArrowModule(IslandsApi api) {
 		super(api);

@@ -46,6 +46,13 @@ public interface Scoreboard {
 	 */
 	Scoreboard addLine(String text);
 
+	/**
+	 * Append a new line to this scoreboard with dynamic format
+	 *
+	 * @param text       the line content
+	 * @param parameters translation wrapper
+	 * @return the current scoreboard
+	 */
 	Scoreboard addLineWithParameters(String text, TranslationParameters parameters);
 
 	/**
@@ -56,12 +63,28 @@ public interface Scoreboard {
 	 */
 	void addPlayer(IslandsPlayer player);
 
+	/**
+	 * @param player a player to remove from this scoreboard
+	 */
 	void removePlayer(IslandsPlayer player);
 
+	/**
+	 * 1 seconds == 20 tick
+	 *
+	 * @param tick delay between each update
+	 */
 	void paramTitleUpdate(int tick);
 
+	/**
+	 * 1 seconds == 20 tick
+	 *
+	 * @param tick delay between each update
+	 */
 	void paramScoreUpdate(int tick);
 
+	/**
+	 * @return players subscribed to this scoreboard
+	 */
 	Stream<IslandsPlayer> getViewers();
 
 }

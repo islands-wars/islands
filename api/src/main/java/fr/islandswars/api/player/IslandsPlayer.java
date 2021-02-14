@@ -73,12 +73,13 @@ public interface IslandsPlayer {
 	void removeFromBar(Bar bar);
 
 	/**
-	 * qsdkhfgqdsk hdgqsh dgqjhd qshdg jqhs
-	 *
-	 * @param sequence
+	 * @param sequence a list of bars to display
 	 */
 	void displaySequence(BarSequence sequence);
 
+	/**
+	 * @param locale a different locale
+	 */
 	void setLocale(Locale locale);
 
 }

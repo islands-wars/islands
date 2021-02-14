@@ -23,10 +23,6 @@ import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.i18n.LocaleTranslatable;
 import fr.islandswars.core.internal.listener.PlayerListener;
-import fr.islandswars.core.internal.listener.packet.ScoreboardDisplayObjectiveOutHandler;
-import fr.islandswars.core.internal.listener.packet.ScoreboardObjectiveOutHandler;
-import fr.islandswars.core.internal.listener.packet.ScoreboardScoreOutHandler;
-import fr.islandswars.core.internal.listener.packet.ScoreboardTeamOutHandler;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
 import java.util.*;
@@ -149,7 +145,7 @@ public class IslandsCore extends IslandsApi {
 	}
 
 	@Override
-	public ScoreboardManager getScoreboaredManager() {
+	public ScoreboardManager getScoreboardManager() {
 		return scoreboardManager;
 	}
 
@@ -185,10 +181,6 @@ public class IslandsCore extends IslandsApi {
 		modules.forEach(Module::onEnable);
 		try {
 			new PlayerListener(this);
-			getProtocolManager().subscribeHandler(new ScoreboardObjectiveOutHandler());
-			getProtocolManager().subscribeHandler(new ScoreboardDisplayObjectiveOutHandler());
-			getProtocolManager().subscribeHandler(new ScoreboardScoreOutHandler());
-			getProtocolManager().subscribeHandler(new ScoreboardTeamOutHandler());
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

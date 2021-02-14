@@ -47,7 +47,7 @@ public class PlayerListener extends LazyListener {
 		var p = event.getPlayer();
 		((IslandsCore) api).addPlayer(p);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
-		((InternalScoreboardManager) api.getScoreboaredManager()).injectTeams(getFromPlayer(p));
+		((InternalScoreboardManager) api.getScoreboardManager()).injectTeams(getFromPlayer(p));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

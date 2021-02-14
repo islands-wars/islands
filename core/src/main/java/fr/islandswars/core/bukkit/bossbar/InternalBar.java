@@ -118,7 +118,6 @@ public class InternalBar extends BossBattle implements Bar {
 		update(PacketPlayOutBoss.Action.UPDATE_PROPERTIES);
 	}
 
-	@Override
 	public void forceUpdate(IslandsPlayer player) {
 		var packet = getPacket(PacketPlayOutBoss.Action.UPDATE_NAME);
 		packet.setTitle(player.getPlayerLocale().format(title.getSiblings().get(0).getText(), parameters.getTranslation(player).get()));
