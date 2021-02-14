@@ -2,6 +2,8 @@ package fr.islandswars.api.net.packet.play.server;
 
 import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
+import fr.islandswars.api.utils.Preconditions;
+import java.util.Arrays;
 import net.minecraft.server.v1_16_R3.PacketPlayOutScoreboardDisplayObjective;
 
 /**
@@ -34,18 +36,22 @@ public class ScoreboardDisplayObjectiveOutPacket extends GamePacket<PacketPlayOu
 		super(handle);
 	}
 
+	public ScoreboardDisplayObjectiveOutPacket() {
+		super(new PacketPlayOutScoreboardDisplayObjective());
+	}
+
 	/**
 	 * @return concerned slot
 	 */
-	public int getSlot() {
-		return (int) getHandleValue("a");
+	public SlotMode getSlot() {
+		return SlotMode.getFromInt((int) getHandleValue("a"));
 	}
 
 	/**
 	 * @param slot a new objective slot
 	 */
-	public void setSlot(int slot) {
-		setHandleValue("a", slot);
+	public void setSlot(SlotMode slot) {
+		setHandleValue("a", slot.getMode());
 	}
 
 	/**
@@ -59,11 +65,33 @@ public class ScoreboardDisplayObjectiveOutPacket extends GamePacket<PacketPlayOu
 	 * @param objectiveName a new name
 	 */
 	public void setObjectiveName(String objectiveName) {
+		Preconditions.checkState(objectiveName, ref -> ref.length() <= 16);
 		setHandleValue("b", objectiveName);
 	}
 
 	@Override
 	public PacketType getType() {
 		return PacketType.Play.Server.SCOREBOARD_DISPLAY_OBJECTIVE_OUT;
+	}
+
+	public enum SlotMode {
+
+		LIST(0),
+		SIDEBAR(1),
+		BELOW_NAME(2);
+
+		private final int mode;
+
+		SlotMode(final int mode) {
+			this.mode = mode;
+		}
+
+		public static ScoreboardDisplayObjectiveOutPacket.SlotMode getFromInt(int mode) {
+			return Arrays.stream(values()).filter(slotMode -> slotMode.mode == mode).findFirst().orElse(null);
+		}
+
+		public final int getMode() {
+			return this.mode;
+		}
 	}
 }

@@ -74,8 +74,11 @@ public interface IslandsPlayer {
 
 	/**
 	 * qsdkhfgqdsk hdgqsh dgqjhd qshdg jqhs
+	 *
 	 * @param sequence
 	 */
 	void displaySequence(BarSequence sequence);
+
+	void setLocale(Locale locale);
 
 }

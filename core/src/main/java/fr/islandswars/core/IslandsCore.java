@@ -12,15 +12,21 @@ import fr.islandswars.api.module.ApiModule;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
+import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.i18n.LocaleTranslatable;
 import fr.islandswars.core.internal.listener.PlayerListener;
+import fr.islandswars.core.internal.listener.packet.ScoreboardDisplayObjectiveOutHandler;
+import fr.islandswars.core.internal.listener.packet.ScoreboardObjectiveOutHandler;
+import fr.islandswars.core.internal.listener.packet.ScoreboardScoreOutHandler;
+import fr.islandswars.core.internal.listener.packet.ScoreboardTeamOutHandler;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
 import java.util.*;
@@ -62,6 +68,7 @@ public class IslandsCore extends IslandsApi {
 	private final CopyOnWriteArrayList<IslandsPlayer> players;
 	private final LocaleTranslatable                  translatable;
 	private final UpdaterManager                      updaterManager;
+	private final ScoreboardManager                   scoreboardManager;
 	private final List<Module>                        modules;
 
 	public IslandsCore() {
@@ -72,6 +79,7 @@ public class IslandsCore extends IslandsApi {
 		this.logger = new InternalLogger();
 		this.modules = new ArrayList<>();
 		this.barManager = registerModule(BukkitBarManager.class);
+		this.scoreboardManager = registerModule(InternalScoreboardManager.class);
 	}
 
 	@Override
@@ -141,6 +149,11 @@ public class IslandsCore extends IslandsApi {
 	}
 
 	@Override
+	public ScoreboardManager getScoreboaredManager() {
+		return scoreboardManager;
+	}
+
+	@Override
 	public void onLoad() {
 		translatable.getLoader().registerCustomProperties(this);
 		getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Loading server...").setServer(new Server(Status.LOAD, ServerType.HUB)).log();
@@ -172,6 +185,10 @@ public class IslandsCore extends IslandsApi {
 		modules.forEach(Module::onEnable);
 		try {
 			new PlayerListener(this);
+			getProtocolManager().subscribeHandler(new ScoreboardObjectiveOutHandler());
+			getProtocolManager().subscribeHandler(new ScoreboardDisplayObjectiveOutHandler());
+			getProtocolManager().subscribeHandler(new ScoreboardScoreOutHandler());
+			getProtocolManager().subscribeHandler(new ScoreboardTeamOutHandler());
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

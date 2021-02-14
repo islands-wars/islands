@@ -5,6 +5,7 @@ import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.log.internal.Action;
 import fr.islandswars.api.log.internal.PlayerLog;
 import fr.islandswars.core.IslandsCore;
+import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import java.util.logging.Level;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,6 +47,7 @@ public class PlayerListener extends LazyListener {
 		var p = event.getPlayer();
 		((IslandsCore) api).addPlayer(p);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
+		((InternalScoreboardManager) api.getScoreboaredManager()).injectTeams(getFromPlayer(p));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -54,4 +56,5 @@ public class PlayerListener extends LazyListener {
 		((IslandsCore) api).removePlayer(islandsPlayer);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + islandsPlayer.getCraftPlayer().getName() + " leaved the game.").setPlayer(islandsPlayer, Action.LEAVE).log();
 	}
+
 }

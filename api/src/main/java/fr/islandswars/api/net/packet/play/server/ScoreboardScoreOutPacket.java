@@ -35,17 +35,21 @@ public class ScoreboardScoreOutPacket extends GamePacket<PacketPlayOutScoreboard
 		super(handle);
 	}
 
+	public ScoreboardScoreOutPacket() {
+		super(new PacketPlayOutScoreboardScore());
+	}
+
 	/**
 	 * @return score name
 	 */
-	public String getName() {
+	public String getLine() {
 		return (String) getHandleValue("a");
 	}
 
 	/**
 	 * @param name this score name
 	 */
-	public void setName(String name) {
+	public void setLine(String name) {
 		setHandleValue("a", name);
 	}
 
@@ -68,6 +72,13 @@ public class ScoreboardScoreOutPacket extends GamePacket<PacketPlayOutScoreboard
 	 */
 	public ScoreboardServer.Action getAction() {
 		return (ScoreboardServer.Action) getHandleValue("d");
+	}
+
+	/**
+	 * @param action an action to do
+	 */
+	public void setAction(ScoreboardServer.Action action) {
+		setHandleValue("d", action);
 	}
 
 	/**

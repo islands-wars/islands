@@ -227,6 +227,7 @@ public class PacketType<T extends GamePacket> {
 			public static final PacketType<ChatOutPacket>                       CHAT_OUT                         = new PacketType<>(ChatOutPacket.class, PacketPlayOutChat.class, Protocol.PLAY, OUT);
 			public static final PacketType<OpenWindowOutPacket>                 OPEN_WINDOW_OUT                  = new PacketType<>(OpenWindowOutPacket.class, PacketPlayOutOpenWindow.class, Protocol.PLAY, OUT);
 			public static final PacketType<ScoreboardDisplayObjectiveOutPacket> SCOREBOARD_DISPLAY_OBJECTIVE_OUT = new PacketType<>(ScoreboardDisplayObjectiveOutPacket.class, PacketPlayOutScoreboardDisplayObjective.class, Protocol.PLAY, OUT);
+			public static final PacketType<ScoreboardObjectiveOutPacket>        SCOREBOARD_OBJECTIVE_OUT         = new PacketType<>(ScoreboardObjectiveOutPacket.class, PacketPlayOutScoreboardObjective.class, Protocol.PLAY, OUT);
 			public static final PacketType<ScoreboardScoreOutPacket>            SCOREBOARD_SCORE_OUT             = new PacketType<>(ScoreboardScoreOutPacket.class, PacketPlayOutScoreboardScore.class, Protocol.PLAY, OUT);
 			public static final PacketType<ScoreboardTeamOutPacket>             SCOREBOARD_TEAM_OUT              = new PacketType<>(ScoreboardTeamOutPacket.class, PacketPlayOutScoreboardTeam.class, Protocol.PLAY, OUT);
 			public static final PacketType<SetSlotOutPacket>                    SET_SLOT_OUT                     = new PacketType<>(SetSlotOutPacket.class, PacketPlayOutSetSlot.class, Protocol.PLAY, OUT);

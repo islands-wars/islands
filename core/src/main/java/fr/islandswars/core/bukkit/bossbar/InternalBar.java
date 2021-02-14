@@ -119,6 +119,13 @@ public class InternalBar extends BossBattle implements Bar {
 	}
 
 	@Override
+	public void forceUpdate(IslandsPlayer player) {
+		var packet = getPacket(PacketPlayOutBoss.Action.UPDATE_NAME);
+		packet.setTitle(player.getPlayerLocale().format(title.getSiblings().get(0).getText(), parameters.getTranslation(player).get()));
+		packet.sendToPlayer(player.getCraftPlayer());
+	}
+
+	@Override
 	public void setProgress(float progress) {
 		Preconditions.checkState(progress, ref -> ref >= 0 && ref <= 1);
 

@@ -30,12 +30,12 @@ import java.util.function.Supplier;
  */
 public class TranslationParameters {
 
-	private static final Object[]                                    EMPTY_OBJECT = new Object[]{};
-	public static final  TranslationParameters                       EMPTY        = new TranslationParameters(() -> EMPTY_OBJECT);
+	private static final Object[]                                    EMPTY_OBJECT = new Object[0];
+	public static final  TranslationParameters                       EMPTY        = new TranslationParameters((p) -> () -> EMPTY_OBJECT);
 	private final        Function<IslandsPlayer, Supplier<Object[]>> translate;
 
-	public TranslationParameters(Supplier<Object[]> translation) {
-		this.translate = (player) -> translation;
+	public TranslationParameters(Function<IslandsPlayer, Supplier<Object[]>> translation) {
+		this.translate = translation;
 	}
 
 	public Supplier<Object[]> getTranslation(IslandsPlayer player) {

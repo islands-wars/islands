@@ -2,9 +2,13 @@ package fr.islandswars.api.net.packet.play.server;
 
 import fr.islandswars.api.net.GamePacket;
 import fr.islandswars.api.net.PacketType;
+import fr.islandswars.api.utils.Preconditions;
 import java.util.Arrays;
+import javax.annotation.Nullable;
+import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import net.minecraft.server.v1_16_R3.IScoreboardCriteria;
 import net.minecraft.server.v1_16_R3.PacketPlayOutScoreboardObjective;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 
 /**
  * File <b>ScoreboardObjectiveOutPacket</b> located on fr.islandswars.api.net.packet.play.server
@@ -36,24 +40,28 @@ public class ScoreboardObjectiveOutPacket extends GamePacket<PacketPlayOutScoreb
 		super(handle);
 	}
 
-	public ObjectiveMode getMode() {
-		return ObjectiveMode.getFromInt((int) getHandleValue("d"));
+	public ScoreboardObjectiveOutPacket() {
+		super(new PacketPlayOutScoreboardObjective());
 	}
 
-	public void setMode(ObjectiveMode mode) {
-		setHandleValue("d", mode.getMode());
+	public String getObjectiveName() {
+		return (String) getHandleValue("a");
 	}
 
+	public void setObjectiveName(String objectiveName) {
+		Preconditions.checkState(objectiveName, ref -> ref.length() <= 16);
 
-	/* TODO debug with scoreboard api util
-	// TODO field change, we have one string and one IChatBaseCOmponent now
-
-	public String getDisplayName() {
-		return (String) getHandleValue("b");
+		setHandleValue("a", objectiveName);
 	}
 
-	public ObjectiveDisplayType getDisplayType() {
-		return ObjectiveDisplayType.getHealthDisplay(((EnumScoreboardHealthDisplay) getHandleValue("c")).a());
+	public IChatBaseComponent getDisplayName() {
+		return (IChatBaseComponent) getHandleValue("b");
+	}
+
+	public void setDisplayName(String displayName) {
+		Preconditions.checkState(displayName, ref -> ref.length() <= 128);
+
+		setHandleValue("b", CraftChatMessage.fromStringOrNull(displayName));
 	}
 
 	@Nullable
@@ -61,36 +69,21 @@ public class ScoreboardObjectiveOutPacket extends GamePacket<PacketPlayOutScoreb
 		return ObjectiveMode.getFromInt((int) getHandleValue("d"));
 	}
 
-	public String getObjectiveName() {
-		return (String) getHandleValue("a");
-	}
-
-	@Override
-	public PacketType getType() {
-		return OBJECTIVE;
-	}
-
-	public void setDisplayName(String displayName) {
-		setHandleValue("b", displayName);
-	}
-
-	public void setDisplayType(ObjectiveDisplayType objectiveDisplayType) {
-		setHandleValue("c", EnumScoreboardHealthDisplay.a(objectiveDisplayType.getDisplay()));
-	}
-
 	public void setMode(ObjectiveMode mode) {
 		setHandleValue("d", mode.getMode());
 	}
 
-	public void setObjectiveName(String objectiveName) {
-		setHandleValue("a", objectiveName);
+	public IScoreboardCriteria.EnumScoreboardHealthDisplay getDisplayType() {
+		return (IScoreboardCriteria.EnumScoreboardHealthDisplay) getHandleValue("c");
 	}
 
-	 */
+	public void setDisplayType(IScoreboardCriteria.EnumScoreboardHealthDisplay objectiveDisplayType) {
+		setHandleValue("c", objectiveDisplayType);
+	}
 
 	@Override
 	public PacketType getType() {
-		return null;
+		return PacketType.Play.Server.SCOREBOARD_OBJECTIVE_OUT;
 	}
 
 	/**

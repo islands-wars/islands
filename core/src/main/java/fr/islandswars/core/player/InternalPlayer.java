@@ -1,5 +1,6 @@
 package fr.islandswars.core.player;
 
+import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.Bar;
 import fr.islandswars.api.bossbar.BarSequence;
 import fr.islandswars.api.i18n.Locale;
@@ -8,6 +9,7 @@ import fr.islandswars.api.player.rank.IslandsRank;
 import fr.islandswars.api.utils.Preconditions;
 import fr.islandswars.core.bukkit.bossbar.InternalBar;
 import fr.islandswars.core.bukkit.bossbar.InternalBarSequence;
+import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -42,11 +44,13 @@ public class InternalPlayer implements IslandsPlayer {
 	private final transient List<Bar>         bars;
 	private final transient List<BarSequence> sequences;
 	private final transient CraftPlayer       player;
+	private                 Locale            locale;
 
 	public InternalPlayer(Player player) {
 		this.player = (CraftPlayer) player;
 		this.bars = new ArrayList<>();
 		this.sequences = new ArrayList<>();
+		this.locale = Locale.FRENCH;
 	}
 
 	@Override
@@ -80,11 +84,21 @@ public class InternalPlayer implements IslandsPlayer {
 	public void disconnect() {
 		bars.forEach(bar -> ((InternalBar) bar).removePlayer(this));
 		sequences.forEach(seq -> ((InternalBarSequence) seq).removePlayer(this));
+		((InternalScoreboardManager) IslandsApi.getInstance().getScoreboaredManager()).remove(this);
 	}
 
 	@Override
 	public Locale getPlayerLocale() {
-		return Locale.FRENCH;
+		return locale;
+	}
+
+	@Override
+	public void setLocale(Locale locale) {
+		if (this.locale != locale) {
+			this.locale = locale;
+			IslandsApi.getInstance().getScoreboaredManager().updateLocale(this);
+			bars.forEach(bar -> bar.forceUpdate(this));
+		}
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import fr.islandswars.api.log.internal.ErrorLog;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.net.ProtocolManager;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ErrorHandler;
 import fr.islandswars.api.utils.Preconditions;
@@ -72,6 +73,13 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	 * @return an abstract nms layer to easily deal with boss bossbar packet
 	 */
 	public abstract BarManager getBarManager();
+
+	/**
+	 * Interface to easily create complex scoreboard
+	 *
+	 * @return an abstract nms layer to easily deal with scoreboard packet
+	 */
+	public abstract ScoreboardManager getScoreboaredManager();
 
 	/**
 	 * Retrieve an IslandsPlayer
