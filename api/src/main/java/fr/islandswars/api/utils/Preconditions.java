@@ -47,7 +47,7 @@ public class Preconditions {
 	 * @param <T>       ref type
 	 */
 	public static <T> void checkState(T reference, Function<T, Boolean> check) {
-		checkState(reference, check, "The given reference does not corresponding to the function");
+		checkState(reference, check, "The given reference does not match with the function");
 	}
 
 	/**

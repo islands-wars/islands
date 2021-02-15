@@ -7,10 +7,12 @@ import fr.islandswars.api.log.internal.PlayerLog;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import java.util.logging.Level;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 
 /**
  * File <b>PlayerListener</b> located on fr.islandswars.core.internal.listener
@@ -38,8 +40,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
+	private final TestInventory test;
+
 	public PlayerListener(IslandsApi api) {
 		super(api);
+		this.test = new TestInventory();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -48,6 +53,7 @@ public class PlayerListener extends LazyListener {
 		((IslandsCore) api).addPlayer(p);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
 		((InternalScoreboardManager) api.getScoreboardManager()).injectTeams(getFromPlayer(p));
+		test.openTo(getFromPlayer(p));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
