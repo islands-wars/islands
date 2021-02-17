@@ -56,7 +56,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew core:jar
+          ./gradlew api:jar core:jar
         env:
           ARTIFACTORY_USER: ${{ secrets.JFROG_USER }}
           ARTIFACTORY_PASSWORD: ${{ secrets.JFROG_PASSWORD }}
