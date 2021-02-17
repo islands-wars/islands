@@ -60,10 +60,27 @@ allprojects {
 subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
+    apply plugin: 'java-library'
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
 
     publishing {
         publications {
             mavenJava(MavenPublication) {
+                from components.java
+                pom {
+                    name = rootProject.name + '-' + project.name
+                    url = 'http://www.islandswars.fr'
+                    licenses {
+                        license {
+                            name = 'GNU GENERAL PUBLIC LICENSE, version 3'
+                            url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                        }
+                    }
+                }
                 artifact jar
             }
         }
@@ -132,7 +149,6 @@ task startDevServer(type: JavaExec) {
 artifactoryPublish.skip = true
 
 artifactory {
-    System.getenv()
     def parts = System.getenv("GITHUB_REF").split("/") //GITHUB_REF ref/heads/branchname
     def branch = String.join('-', Arrays.copyOfRange(parts, 2, parts.length))
     def user = System.getenv("ARTIFACTORY_USER")
