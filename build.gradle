@@ -65,7 +65,6 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
                 artifact jar
-
             }
         }
     }
@@ -133,10 +132,9 @@ task startDevServer(type: JavaExec) {
 artifactoryPublish.skip = true
 
 artifactory {
-    def parts = System.getenv("GITHUB_REF").split("/")
-    def branch = parts[2]
-    for(int i = 3; i < parts.length; i++)
-        branch += parts[i]
+    System.getenv()
+    def parts = System.getenv("GITHUB_REF").split("/") //GITHUB_REF ref/heads/branchname
+    def branch = String.join('-', Arrays.copyOfRange(parts, 2, parts.length))
     def user = System.getenv("ARTIFACTORY_USER")
     def pass = System.getenv("ARTIFACTORY_PASSWORD")
     println 'Build on branch : ' + branch
