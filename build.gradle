@@ -133,7 +133,7 @@ task startDevServer(type: JavaExec) {
 artifactoryPublish.skip = true
 
 artifactory {
-    def branch = System.getenv("GITHUB_REF").split("/")[2]
+    def branch = System.getenv("GITHUB_BRANCH")
     def user = System.getenv("ARTIFACTORY_USER")
     def pass = System.getenv("ARTIFACTORY_PASSWORD")
     println 'Build on branch : ' + branch
