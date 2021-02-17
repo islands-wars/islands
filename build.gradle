@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.+')
+    }
+}
+
 final def mcVersion = project.property("paper_version") as String
 final def EULA_ACCEPT = "True"
 final def folderName = (project.property("server_dir") as String) + "/"
@@ -9,7 +18,7 @@ final def JAVA_ARGS = ['-Xms512m', '-Xmx512m', '-XX:+UseG1GC', '-XX:+UnlockExper
                        '-XX:G1NewSizePercent=50', '-XX:G1MaxNewSizePercent=80', '-XX:G1MixedGCLiveThresholdPercent=50', '-XX:+AlwaysPreTouch']
 
 allprojects {
-    apply plugin: "java"
+    apply plugin: 'java'
 
     group = 'fr.islandswars'
     version = project.property("plugin_version")
@@ -44,6 +53,29 @@ allprojects {
 
     test {
         useJUnitPlatform()
+    }
+
+    task sourceJar(type: Jar, dependsOn: classes) {
+        from sourceSets.main.allSource
+    }
+
+}
+
+subprojects {
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.artifactory'
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        from sourceSets.main.allSource
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact jar
+
+            }
+        }
     }
 }
 
@@ -102,4 +134,33 @@ task startDevServer(type: JavaExec) {
     ignoreExitValue = true as JavaExecSpec
     args("nogui")
     jvmArgs JAVA_ARGS
+}
+
+// Setting this property to true will make the artifactoryPublish task
+// skip this module (in our case, the root module):
+artifactoryPublish.skip = true
+
+artifactory {
+    def branch = System.getenv("GITHUB_REF").split("/")[2]
+    def user = System.getenv("ARTIFACTORY_USER")
+    def pass = System.getenv("ARTIFACTORY_PASSWORD")
+    println 'Build on branch : ' + branch
+    if (branch != 'master')
+        version += '-' + branch
+
+    publish {
+        contextUrl = 'http://jfrog.islandswars.fr:8082/artifactory'
+        repository {
+            repoKey = 'islandswars'
+            username = user
+            password = pass
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+        publishBuildInfo = true
+        publishArtifacts = true
+        publishPom = true
+    }
 }

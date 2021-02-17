@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <a href="http://www.gnu.org/licenses/">GNU license</a>.
  * <p>
- * Inspired by TinyProtocol & SkyBeast https://github.com/cchudant/NMSProtocol/blob/master/src/main/java/me/skybeast/nmsprotocol/Protocol.java
+ * Inspired by TinyProtocol and SkyBeast <a href="https://github.com/cchudant/NMSProtocol/blob/master/src/main/java/me/skybeast/nmsprotocol/Protocol.java">protocol</a>.
  *
  * @author Valentin Burgaud (Xharos), {@literal <xharos@islandswars.fr>}
  * Created the 04/02/2021 at 17:50

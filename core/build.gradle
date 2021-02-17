@@ -9,7 +9,7 @@ processResources {
 }
 
 jar {
-    archivesBaseName = project.property("plugin_name")
+    archivesBaseName = project.property("plugin_name")+".jar"
     manifest {
         attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': project.version.toString(), 'Main-Class': project.property("main")
     }

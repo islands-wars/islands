@@ -28,9 +28,10 @@ import net.minecraft.server.v1_16_R3.PacketPlayInFlying;
  * Created the 05/02/2021 at 15:53
  * @since 0.1
  * <p>
- * If the distance between the last known position of the player on the server and the new position set by this packet is greater than 100 meters, the client will be kicked for “You moved too quickly :( (Hacking?)”.
+ * If the distance between the last known position of the player on the server and the new position set by this packet is greater than 100 meters, the client will be kicked for "You moved too
+ * quickly :( (Hacking?)".
  * <p>
- * Also if the fixed-point number of X or Z is set greater than 3.2E7D the client will be kicked for “Illegal position”.
+ * Also if the fixed-point number of X or Z is set greater than 3.2E7D the client will be kicked for "Illegal position".
  */
 public class FlyingInPacket extends GamePacket<PacketPlayInFlying> {
 

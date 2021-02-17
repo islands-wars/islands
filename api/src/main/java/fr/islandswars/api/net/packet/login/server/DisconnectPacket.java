@@ -43,7 +43,7 @@ public class DisconnectPacket extends GamePacket<PacketLoginOutDisconnect> {
 	}
 
 	/**
-	 * @return the reason of disconnection wrapped in json message
+	 * @param reason the reason of disconnection wrapped in json message
 	 */
 	public void setReason(IChatBaseComponent reason) {
 		setHandleValue("a", reason);
