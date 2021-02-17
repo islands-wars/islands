@@ -55,19 +55,11 @@ allprojects {
         useJUnitPlatform()
     }
 
-    task sourceJar(type: Jar, dependsOn: classes) {
-        from sourceSets.main.allSource
-    }
-
 }
 
 subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        from sourceSets.main.allSource
-    }
 
     publishing {
         publications {
@@ -146,7 +138,9 @@ artifactory {
     def pass = System.getenv("ARTIFACTORY_PASSWORD")
     println 'Build on branch : ' + branch
     if (branch != 'master')
-        version += '-' + branch
+        subprojects {
+            version = version + '-' + branch
+        }
 
     publish {
         contextUrl = 'http://jfrog.islandswars.fr:8082/artifactory'

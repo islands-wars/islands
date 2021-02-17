@@ -1,5 +1,16 @@
 def projectName = 'islands-core'
 
+javadoc {
+    doFirst {
+        options.setWindowTitle('Islands Wars - Core')
+        options.setDocTitle('Islands Wars - Core')
+        options.setUse(true)
+        options.setVersion(true)
+        options.setAuthor(true)
+        options.addBooleanOption('html5', true)
+    }
+}
+
 dependencies {
     implementation project(":api")
 }
