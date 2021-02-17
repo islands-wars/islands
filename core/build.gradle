@@ -1,5 +1,16 @@
 def projectName = 'islands-core'
 
+javadoc {
+    doFirst {
+        options.setWindowTitle('Islands Wars - Core')
+        options.setDocTitle('Islands Wars - Core')
+        options.setUse(true)
+        options.setVersion(true)
+        options.setAuthor(true)
+        options.addBooleanOption('html5', true)
+    }
+}
+
 dependencies {
     implementation project(":api")
 }
@@ -9,7 +20,7 @@ processResources {
 }
 
 jar {
-    archivesBaseName = project.property("plugin_name")
+    archivesBaseName = project.property("plugin_name")+".jar"
     manifest {
         attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': project.version.toString(), 'Main-Class': project.property("main")
     }

@@ -42,7 +42,7 @@ public class EncryptionRequestPacket extends GamePacket<PacketLoginOutEncryption
 	}
 
 	/**
-	 * @return the server id, appears to be empty
+	 * @param serverId a server to set
 	 */
 	public void setServerId(String serverId) {
 		setHandleValue("a", serverId);

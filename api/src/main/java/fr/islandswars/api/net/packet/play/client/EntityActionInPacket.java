@@ -64,7 +64,7 @@ public class EntityActionInPacket extends GamePacket<PacketPlayInEntityAction> {
 	}
 
 	/**
-	 * Only used by the “start jump with horse” action, in which case it ranges from 0 to 100. In all other cases it is 0.
+	 * Only used by the “start jump with horse" action, in which case it ranges from 0 to 100. In all other cases it is 0.
 	 *
 	 * @return horse jump boost
 	 */
@@ -73,9 +73,9 @@ public class EntityActionInPacket extends GamePacket<PacketPlayInEntityAction> {
 	}
 
 	/**
-	 * Only used by the “start jump with horse” action, in which case it ranges from 0 to 100. In all other cases it is 0.
+	 * Only used by the "start jump with horse" action, in which case it ranges from 0 to 100. In all other cases it is 0.
 	 *
-	 * @param boost hirse jump boost
+	 * @param boost horse jump boost
 	 */
 	public void setHorseBoost(int boost) {
 		Preconditions.checkState(boost, (b) -> b <= 100 && b >= 0);

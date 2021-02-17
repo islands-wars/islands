@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.+')
+    }
+}
+
 final def mcVersion = project.property("paper_version") as String
 final def EULA_ACCEPT = "True"
 final def folderName = (project.property("server_dir") as String) + "/"
@@ -9,7 +18,7 @@ final def JAVA_ARGS = ['-Xms512m', '-Xmx512m', '-XX:+UseG1GC', '-XX:+UnlockExper
                        '-XX:G1NewSizePercent=50', '-XX:G1MaxNewSizePercent=80', '-XX:G1MixedGCLiveThresholdPercent=50', '-XX:+AlwaysPreTouch']
 
 allprojects {
-    apply plugin: "java"
+    apply plugin: 'java'
 
     group = 'fr.islandswars'
     version = project.property("plugin_version")
@@ -44,6 +53,37 @@ allprojects {
 
     test {
         useJUnitPlatform()
+    }
+
+}
+
+subprojects {
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.artifactory'
+    apply plugin: 'java-library'
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                pom {
+                    name = rootProject.name + '-' + project.name
+                    url = 'http://www.islandswars.fr'
+                    licenses {
+                        license {
+                            name = 'GNU GENERAL PUBLIC LICENSE, version 3'
+                            url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                        }
+                    }
+                }
+                artifact jar
+            }
+        }
     }
 }
 
@@ -102,4 +142,36 @@ task startDevServer(type: JavaExec) {
     ignoreExitValue = true as JavaExecSpec
     args("nogui")
     jvmArgs JAVA_ARGS
+}
+
+// Setting this property to true will make the artifactoryPublish task
+// skip this module (in our case, the root module):
+artifactoryPublish.skip = true
+
+artifactory {
+    def parts = System.getenv("GITHUB_REF").split("/") //GITHUB_REF ref/heads/branchname
+    def branch = String.join('-', Arrays.copyOfRange(parts, 2, parts.length))
+    def user = System.getenv("ARTIFACTORY_USER")
+    def pass = System.getenv("ARTIFACTORY_PASSWORD")
+    println 'Build on branch : ' + branch
+    if (branch != 'master')
+        subprojects {
+            version = version + '-' + branch
+        }
+
+    publish {
+        contextUrl = 'http://jfrog.islandswars.fr:8082/artifactory'
+        repository {
+            repoKey = 'islandswars'
+            username = user
+            password = pass
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+        publishBuildInfo = true
+        publishArtifacts = true
+        publishPom = true
+    }
 }
