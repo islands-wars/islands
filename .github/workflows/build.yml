@@ -60,7 +60,6 @@ jobs:
         env:
           ARTIFACTORY_USER: ${{ secrets.JFROG_USER }}
           ARTIFACTORY_PASSWORD: ${{ secrets.JFROG_PASSWORD }}
-          GITHUB_BRANCH: ${GITHUB_REF##*/}
 
       - name: Deploy with maven publish to jfrog
         run: |
@@ -68,4 +67,3 @@ jobs:
         env:
           ARTIFACTORY_USER: ${{ secrets.JFROG_USER }}
           ARTIFACTORY_PASSWORD: ${{ secrets.JFROG_PASSWORD }}
-          GITHUB_BRANCH: ${GITHUB_REF##*/}
