@@ -83,6 +83,16 @@ public interface IslandsPlayer {
 	 */
 	void setLocale(Locale locale);
 
-	void setItem(IslandsItem item, int slot);
+	default void setItem(IslandsItem item, int slot) {
+		setItem(item, slot, 1);
+	}
+
+	void setItem(IslandsItem item, int slot, int amount);
+
+	default void addItem(IslandsItem item) {
+		addItem(item, 1);
+	}
+
+	void addItem(IslandsItem item, int amount);
 
 }

@@ -24,6 +24,7 @@ import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.i18n.LocaleTranslatable;
+import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
@@ -197,6 +198,7 @@ public class IslandsCore extends IslandsApi {
 		modules.forEach(Module::onEnable);
 		try {
 			new PlayerListener(this);
+			new ItemListener(this);
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}

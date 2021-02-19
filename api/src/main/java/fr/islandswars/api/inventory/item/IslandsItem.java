@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
@@ -43,10 +44,10 @@ public class IslandsItem {
 	private       String                                 nameKey;
 	private final List<Lore>                             lores;
 	private       TranslationParameters                  nameParam;
-	private       BiConsumer<IslandsPlayer, Cancellable> click;
+	private       BiConsumer<IslandsPlayer, Cancellable> click, interact;
 	private       ItemFlag[]                             flags;
 
-	private IslandsItem(Material material, int amount) {
+	protected IslandsItem(Material material, int amount) {
 		this.material = material;
 		this.amount = amount;
 		this.lores = new ArrayList<>();
@@ -103,9 +104,19 @@ public class IslandsItem {
 		return this;
 	}
 
+	public IslandsItem onInteract(BiConsumer<IslandsPlayer, Cancellable> interact) {
+		this.interact = interact;
+		return this;
+	}
+
 	public void handleClick(IslandsPlayer player, InventoryClickEvent event) {
 		if (click != null)
 			click.accept(player, event);
+	}
+
+	public void handleInteract(IslandsPlayer player, PlayerInteractEvent event) {
+		if (interact != null)
+			interact.accept(player, event);
 	}
 
 	private List<String> buildLore(IslandsPlayer player) {

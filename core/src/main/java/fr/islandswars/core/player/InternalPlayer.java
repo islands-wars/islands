@@ -129,10 +129,23 @@ public class InternalPlayer implements IslandsPlayer {
 	}
 
 	@Override
-	public void setItem(IslandsItem item, int slot) {
+	public void addItem(IslandsItem item, int amount) {
+		var slot = -1;
+		var inv  = getCraftPlayer().getInventory();
+		for (var i = 0; i < 35; i++) {
+			if (inv.getItem(i) == null) {
+				slot = i;
+				break;
+			}
+		}
+		if (slot != -1)
+			setItem(item, slot, amount);
+	}
+
+	@Override
+	public void setItem(IslandsItem item, int slot, int amount) {
 		var id = IslandsApi.getInstance().getItemManager().register(item);
-		if (id != 0)
-			setItem(item, slot, id);
+		updateInventory(item, slot, id, amount);
 	}
 
 	private void updateInventory() {
@@ -146,15 +159,16 @@ public class InternalPlayer implements IslandsPlayer {
 				if (container.has(key, PersistentDataType.INTEGER)) {
 					int id     = container.get(key, PersistentDataType.INTEGER);
 					int finalI = i;
-					IslandsApi.getInstance().getItemManager().exist(id).ifPresent(isItem -> setItem(isItem, finalI, id));
+					IslandsApi.getInstance().getItemManager().exist(id).ifPresent(isItem -> updateInventory(isItem, finalI, id, item.getAmount()));
 				}
 			}
 		}
 		player.getInventory().getContents();
 	}
 
-	private void setItem(IslandsItem item, int slot, int id) {
-		var it       = item.build(this);
+	private void updateInventory(IslandsItem item, int slot, int id, int amount) {
+		var it = item.build(this);
+		it.setAmount(amount);
 		var key      = IslandsApi.getInstance().getKey();
 		var itemMeta = it.getItemMeta();
 		itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, id);

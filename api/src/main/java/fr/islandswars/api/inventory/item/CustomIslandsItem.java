@@ -1,5 +1,7 @@
 package fr.islandswars.api.inventory.item;
 
+import org.bukkit.Material;
+
 /**
  * File <b>CustomIslandsItem</b> located on fr.islandswars.api.inventory.item
  * CustomIslandsItem is a part of islands.
@@ -24,8 +26,21 @@ package fr.islandswars.api.inventory.item;
  * Created the 19/02/2021 at 14:43
  * @since 0.1
  */
-public interface CustomIslandsItem {
+public class CustomIslandsItem {
 
-	int getId();
+	private final int         id;
+	private final IslandsItem item;
 
+	public CustomIslandsItem(IslandsItem item, int id) {
+		this.item = item;
+		this.id = id;
+	}
+
+	public int getID() {
+		return id;
+	}
+
+	public IslandsItem getItem() {
+		return item;
+	}
 }

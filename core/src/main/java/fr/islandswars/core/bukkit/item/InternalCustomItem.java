@@ -46,7 +46,7 @@ public class InternalCustomItem implements CustomItem {
 	@Override
 	public int register(IslandsItem item) {
 		if (items.values().stream().anyMatch(it -> it.equals(item)))
-			return 0;
+			return items.entrySet().stream().filter(entry -> item.equals(entry.getValue())).map(Map.Entry::getKey).findFirst().get();
 		var id = count.incrementAndGet();
 		items.put(id, item);
 		return id;
@@ -59,6 +59,6 @@ public class InternalCustomItem implements CustomItem {
 
 	@Override
 	public void supply(Stream<CustomIslandsItem> factoryItem) {
-
+		factoryItem.forEach(item -> items.put(item.getID(), item.getItem()));
 	}
 }
