@@ -1,15 +1,12 @@
 package fr.islandswars.core.internal.listener;
 
 import fr.islandswars.api.IslandsApi;
-import fr.islandswars.api.i18n.Locale;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.log.internal.Action;
 import fr.islandswars.api.log.internal.PlayerLog;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import java.util.logging.Level;
-import java.util.stream.Stream;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -43,7 +40,6 @@ public class PlayerListener extends LazyListener {
 
 	public PlayerListener(IslandsApi api) {
 		super(api);
-		api.getItemManager().supply(Stream.of(ItemRegistry.stick));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -52,12 +48,6 @@ public class PlayerListener extends LazyListener {
 		((IslandsCore) api).addPlayer(p);
 		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + p.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
 		((InternalScoreboardManager) api.getScoreboardManager()).injectTeams(getFromPlayer(p));
-		Bukkit.getScheduler().runTaskLater(api, () -> {
-			getFromPlayer(p).setItem(ItemRegistry.stick.getItem(), 1);
-		}, 1);
-		Bukkit.getScheduler().runTaskLater(api, () -> {
-			getFromPlayer(p).setLocale(Locale.ENGLISH);
-		}, 20 * 10);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

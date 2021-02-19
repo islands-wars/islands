@@ -41,6 +41,13 @@ public abstract class IslandsInventory extends LazyListener {
 	private final int           size;
 	private final IslandsItem[] items;
 
+	/**
+	 * Create a new inventory
+	 *
+	 * @param api  instance
+	 * @param name inventory translation key
+	 * @param size inventory size such as size %9 = 0
+	 */
 	public IslandsInventory(IslandsApi api, String name, int size) {
 		super(api);
 		this.name = name;
@@ -48,6 +55,11 @@ public abstract class IslandsInventory extends LazyListener {
 		this.items = new IslandsItem[size];
 	}
 
+	/**
+	 * Add an item to the next free slot
+	 *
+	 * @param item an item to add
+	 */
 	public void addItem(IslandsItem item) {
 		for (int i = 0; i < size; i++) {
 			if (items[i] == null) {
@@ -57,10 +69,23 @@ public abstract class IslandsInventory extends LazyListener {
 		}
 	}
 
+	/**
+	 * Set an item to the given slot, erases the previous item
+	 *
+	 * @param slot a slot
+	 * @param item an item to set
+	 */
 	public void setItem(int slot, IslandsItem item) {
 		items[slot] = item;
 	}
 
+	/**
+	 * Build this inventory, translating all item and inventory's name for the player
+	 *
+	 * @param player     target
+	 * @param parameters for name translation
+	 * @return a bukkit inventory
+	 */
 	public Inventory build(IslandsPlayer player, TranslationParameters parameters) {
 		Inventory inv = Bukkit.createInventory(null, size, player.getPlayerLocale().format(name, parameters.getTranslation(player).get()));
 		for (int i = 0; i < size; i++) {
@@ -70,6 +95,13 @@ public abstract class IslandsInventory extends LazyListener {
 		return inv;
 	}
 
+	/**
+	 * Handle click event
+	 *
+	 * @param player player who click
+	 * @param event  wrapper
+	 * @param slot   where the player click
+	 */
 	public void handleClick(IslandsPlayer player, InventoryClickEvent event, int slot) {
 		if (slot > size || slot < 0)
 			return;
@@ -78,6 +110,13 @@ public abstract class IslandsInventory extends LazyListener {
 		}
 	}
 
+	/**
+	 * Fill the inventory with the given item at a slot corresponding when the delimiter equals the pattern
+	 *
+	 * @param pattern   a string who has a length equals to this inventory size, ' ' and 'X' are reserved symbol
+	 * @param item      an item to set
+	 * @param delimiter the delimiter to set item from
+	 */
 	public void supplyPattern(String pattern, IslandsItem item, char delimiter) {
 		Preconditions.checkState(pattern, ref -> ref.length() == size);
 		Preconditions.checkNotNull(item);
@@ -91,6 +130,12 @@ public abstract class IslandsInventory extends LazyListener {
 		}
 	}
 
+	/**
+	 * Set an empty, non clickable item to the corresponding pattern {@link IslandsInventory#supplyPattern(String, IslandsItem, char)}
+	 *
+	 * @param pattern a string who has a length equals to this inventory size, where 'O' is the delimiter char
+	 * @param item    an item to set
+	 */
 	public void supplyDelimiter(String pattern, IslandsItem item) {
 		Preconditions.checkState(pattern, ref -> ref.length() == size);
 		Preconditions.checkNotNull(item);
@@ -99,10 +144,21 @@ public abstract class IslandsInventory extends LazyListener {
 		supplyPattern(pattern, item, 'O');
 	}
 
+	/**
+	 * Open this inventory to the player
+	 *
+	 * @param player a target
+	 */
 	public void open(IslandsPlayer player) {
 		open(player, TranslationParameters.EMPTY);
 	}
 
+	/**
+	 * Open this inventory to the player
+	 *
+	 * @param player     a target
+	 * @param parameters translation parameters
+	 */
 	public abstract void open(IslandsPlayer player, TranslationParameters parameters);
 
 }

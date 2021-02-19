@@ -30,9 +30,26 @@ import java.util.stream.Stream;
  */
 public interface CustomItem {
 
+	/**
+	 * Register this item, the locale change will be handled and also interaction and click
+	 *
+	 * @param item an islands item to regist
+	 * @return the id used to register this item
+	 */
 	int register(IslandsItem item);
 
+	/**
+	 * Return weither or not this item is registered
+	 *
+	 * @param id an id to try
+	 * @return an IslandsItem if founded
+	 */
 	Optional<IslandsItem> exist(int id);
 
+	/**
+	 * Supply a stream of "static" item to register
+	 *
+	 * @param factoryItem a bunch of item to register
+	 */
 	void supply(Stream<CustomIslandsItem> factoryItem);
 }

@@ -36,10 +36,16 @@ public class CustomIslandsItem {
 		this.id = id;
 	}
 
+	/**
+	 * @return this item id, must be negative to not break translated item registered on the fly
+	 */
 	public int getID() {
 		return id;
 	}
 
+	/**
+	 * @return a wrapper for bukkit item
+	 */
 	public IslandsItem getItem() {
 		return item;
 	}

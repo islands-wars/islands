@@ -139,8 +139,16 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	 */
 	public abstract UpdaterManager getUpdaterManager();
 
+	/**
+	 * Deal with translated item
+	 *
+	 * @return a wrapper to register / load / get translated item
+	 */
 	public abstract CustomItem getItemManager();
 
+	/**
+	 * @return a bukkit key used to write custom property in item NBTTag
+	 */
 	public abstract NamespacedKey getKey();
 
 	@Override
