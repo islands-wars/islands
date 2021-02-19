@@ -4,6 +4,7 @@ import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.Bar;
 import fr.islandswars.api.bossbar.BarSequence;
 import fr.islandswars.api.i18n.Locale;
+import fr.islandswars.api.inventory.item.IslandsItem;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.IslandsRank;
 import fr.islandswars.api.utils.Preconditions;
@@ -12,8 +13,12 @@ import fr.islandswars.core.bukkit.bossbar.InternalBarSequence;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * File <b>InternalPlayer</b> located on fr.islandswars.core.player
@@ -98,6 +103,7 @@ public class InternalPlayer implements IslandsPlayer {
 			this.locale = locale;
 			IslandsApi.getInstance().getScoreboardManager().updateLocale(this);
 			IslandsApi.getInstance().getBarManager().updateLocale(this);
+			updateInventory();
 		}
 	}
 
@@ -120,5 +126,39 @@ public class InternalPlayer implements IslandsPlayer {
 	@Override
 	public IslandsRank getDisplayedRank() {
 		return null;
+	}
+
+	@Override
+	public void setItem(IslandsItem item, int slot) {
+		var id = IslandsApi.getInstance().getItemManager().register(item);
+		if (id != 0)
+			setItem(item, slot, id);
+	}
+
+	private void updateInventory() {
+		var inv = getCraftPlayer().getInventory();
+		for (int i = 0; i < inv.getSize(); i++) {
+			var item = inv.getItem(i);
+			if (item != null && item.hasItemMeta()) {
+				var meta      = item.getItemMeta();
+				var container = meta.getPersistentDataContainer();
+				var key       = IslandsApi.getInstance().getKey();
+				if (container.has(key, PersistentDataType.INTEGER)) {
+					int id     = container.get(key, PersistentDataType.INTEGER);
+					int finalI = i;
+					IslandsApi.getInstance().getItemManager().exist(id).ifPresent(isItem -> setItem(isItem, finalI, id));
+				}
+			}
+		}
+		player.getInventory().getContents();
+	}
+
+	private void setItem(IslandsItem item, int slot, int id) {
+		var it       = item.build(this);
+		var key      = IslandsApi.getInstance().getKey();
+		var itemMeta = it.getItemMeta();
+		itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, id);
+		it.setItemMeta(itemMeta);
+		getCraftPlayer().getInventory().setItem(slot, it);
 	}
 }

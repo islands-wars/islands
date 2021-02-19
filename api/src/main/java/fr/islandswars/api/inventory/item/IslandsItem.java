@@ -104,7 +104,8 @@ public class IslandsItem {
 	}
 
 	public void handleClick(IslandsPlayer player, InventoryClickEvent event) {
-		click.accept(player, event);
+		if (click != null)
+			click.accept(player, event);
 	}
 
 	private List<String> buildLore(IslandsPlayer player) {

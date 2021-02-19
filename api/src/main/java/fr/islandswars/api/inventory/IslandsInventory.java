@@ -78,7 +78,7 @@ public abstract class IslandsInventory extends LazyListener {
 		}
 	}
 
-	public void supplyPattern(String pattern, IslandsItem item) {
+	public void supplyPattern(String pattern, IslandsItem item, char delimiter) {
 		Preconditions.checkState(pattern, ref -> ref.length() == size);
 		Preconditions.checkNotNull(item);
 
@@ -86,8 +86,8 @@ public abstract class IslandsInventory extends LazyListener {
 
 		for (var i = 0; i < pattern.length(); i++) {
 			char c = pattern.charAt(i);
-			if (c != ' ' && c != 'X')
-				System.out.println(i);
+			if (c != ' ' && c != 'X' && c == delimiter)
+				setItem(i, item);
 		}
 	}
 
@@ -96,7 +96,7 @@ public abstract class IslandsInventory extends LazyListener {
 		Preconditions.checkNotNull(item);
 
 		item.onClick((p, e) -> e.setCancelled(true)).withName("");
-		supplyPattern(pattern, item);
+		supplyPattern(pattern, item, 'O');
 	}
 
 	public void open(IslandsPlayer player) {

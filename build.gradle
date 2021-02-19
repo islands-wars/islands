@@ -118,15 +118,15 @@ task cleanPlugin() {
     description 'Cleans the plugin in the working directory up'
 
     File folder = new File(folderName)
-    delete folder.path + 'plugins/' + project.property("plugin_name") + '-' + project.version.toString() + '.jar'
+    delete folder.path + 'plugins/' + project.property("plugin_name") + '-' + project.version.toString() + '-local.jar'
 }
 
-task deployPlugin(type: Copy, dependsOn: ['cleanPlugin', 'core:jar']) {
+task deployPlugin(type: Copy, dependsOn: ['cleanPlugin', 'api:jar', 'core:jar']) {
     group 'deploy'
     description 'Deploy the plugin'
 
     File folder = new File(folderName)
-    from "core/build/libs/" + project.property("plugin_name") + '-' + project.version.toString() + '.jar'
+    from "core/build/libs/" + project.property("plugin_name") + '-' + project.version.toString() + '-local.jar'
     into folder.path + '/plugins'
 }
 
@@ -149,8 +149,12 @@ task startDevServer(type: JavaExec) {
 artifactoryPublish.skip = true
 
 artifactory {
-    def parts = System.getenv("GITHUB_REF").split("/") //GITHUB_REF ref/heads/branchname
-    def branch = String.join('-', Arrays.copyOfRange(parts, 2, parts.length))
+    def github = System.getenv("GITHUB_REF") //GITHUB_REF ref/heads/branchname
+    def branch = "local"
+    if (github != null) {
+        def parts = github.split("/")
+        branch = String.join('-', Arrays.copyOfRange(parts, 2, parts.length))
+    }
     def user = System.getenv("ARTIFACTORY_USER")
     def pass = System.getenv("ARTIFACTORY_PASSWORD")
     println 'Build on branch : ' + branch

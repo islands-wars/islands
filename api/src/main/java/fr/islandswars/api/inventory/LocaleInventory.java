@@ -64,8 +64,10 @@ public abstract class LocaleInventory extends IslandsInventory {
 		if (event.getWhoClicked() instanceof Player) {
 			var player = getFromPlayer((Player) event.getWhoClicked());
 			if (displayed.contains(player.getCraftPlayer().getUniqueId())) {
-				var slot = event.getSlot();
-				handleClick(player, event, slot);
+				if (event.getClickedInventory() != player.getCraftPlayer().getInventory()) {
+					var slot = event.getSlot();
+					handleClick(player, event, slot);
+				}
 			}
 		}
 	}

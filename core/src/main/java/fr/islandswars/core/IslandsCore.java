@@ -4,6 +4,7 @@ import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.i18n.I18nLoader;
 import fr.islandswars.api.i18n.Translatable;
+import fr.islandswars.api.inventory.item.CustomItem;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
@@ -17,6 +18,7 @@ import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.NMSReflectionUtil;
 import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
+import fr.islandswars.core.bukkit.item.InternalCustomItem;
 import fr.islandswars.core.bukkit.net.PacketHandlerManager;
 import fr.islandswars.core.bukkit.net.PacketInterceptor;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
@@ -30,6 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 /**
@@ -65,12 +68,15 @@ public class IslandsCore extends IslandsApi {
 	private final LocaleTranslatable                  translatable;
 	private final UpdaterManager                      updaterManager;
 	private final ScoreboardManager                   scoreboardManager;
+	private final CustomItem                          itemManager;
 	private final List<Module>                        modules;
+	private       NamespacedKey                       key;
 
 	public IslandsCore() {
 		this.packetManager = new PacketHandlerManager();
 		this.translatable = new LocaleTranslatable();
 		this.players = new CopyOnWriteArrayList<>();
+		this.itemManager = new InternalCustomItem();
 		this.updaterManager = new TaskManager();
 		this.logger = new InternalLogger();
 		this.modules = new ArrayList<>();
@@ -147,6 +153,16 @@ public class IslandsCore extends IslandsApi {
 	@Override
 	public ScoreboardManager getScoreboardManager() {
 		return scoreboardManager;
+	}
+
+	@Override
+	public CustomItem getItemManager() {
+		return itemManager;
+	}
+
+	@Override
+	public NamespacedKey getKey() {
+		return key == null ? key = new NamespacedKey(this, "is") : key;
 	}
 
 	@Override

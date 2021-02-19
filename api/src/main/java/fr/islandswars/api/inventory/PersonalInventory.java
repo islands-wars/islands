@@ -3,12 +3,13 @@ package fr.islandswars.api.inventory;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.i18n.TranslationParameters;
 import fr.islandswars.api.player.IslandsPlayer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 
 /**
  * File <b>PersonalInventory</b> located on fr.islandswars.api.inventory
@@ -56,9 +57,11 @@ public abstract class PersonalInventory extends IslandsInventory {
 	public void onClick(InventoryClickEvent event) {
 		if (event.getWhoClicked() instanceof Player) {
 			var player = getFromPlayer((Player) event.getWhoClicked());
-			if (inventories.contains(player.getCraftPlayer().getUniqueId())) {
-				var slot = event.getSlot();
-				handleClick(player, event, slot);
+			if (event.getClickedInventory() != player.getCraftPlayer().getInventory()) {
+				if (inventories.contains(player.getCraftPlayer().getUniqueId())) {
+					var slot = event.getSlot();
+					handleClick(player, event, slot);
+				}
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package fr.islandswars.api;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.i18n.I18nLoader;
 import fr.islandswars.api.i18n.Translatable;
+import fr.islandswars.api.inventory.item.CustomItem;
 import fr.islandswars.api.lang.bukkit.ErrorHandlerRegisteredListener;
 import fr.islandswars.api.lang.bukkit.ErrorHandlerRunnable;
 import fr.islandswars.api.log.InfraLogger;
@@ -22,6 +23,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -136,6 +138,10 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	 * @return an interface to register and run task
 	 */
 	public abstract UpdaterManager getUpdaterManager();
+
+	public abstract CustomItem getItemManager();
+
+	public abstract NamespacedKey getKey();
 
 	@Override
 	public abstract void onLoad();
