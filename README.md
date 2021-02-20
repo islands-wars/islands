@@ -3,7 +3,7 @@
 
 > Islands Wars is a Minecraft multiplayer server network.
 
-> This project is a spigot plugin interface with our infrastructure.
+> This project is a paperMC plugin interface with our infrastructure.
 
 ---
 

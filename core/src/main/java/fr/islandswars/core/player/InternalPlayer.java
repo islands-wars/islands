@@ -51,11 +51,11 @@ public class InternalPlayer implements IslandsPlayer {
 	private final transient CraftPlayer       player;
 	private                 Locale            locale;
 
-	public InternalPlayer(Player player) {
+	public InternalPlayer(Player player, Locale locale) {
 		this.player = (CraftPlayer) player;
 		this.bars = new ArrayList<>();
 		this.sequences = new ArrayList<>();
-		this.locale = Locale.FRENCH;
+		this.locale = locale;
 	}
 
 	@Override

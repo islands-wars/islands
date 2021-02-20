@@ -28,6 +28,7 @@ import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.InternalPlayer;
+import fr.islandswars.core.player.PlayerChannelListener;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
@@ -202,10 +203,12 @@ public class IslandsCore extends IslandsApi {
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}
+		getServer().getMessenger().registerOutgoingPluginChannel(this, getKey().getKey());
+		getServer().getMessenger().registerIncomingPluginChannel(this, getKey().getKey(), new PlayerChannelListener());
 	}
 
-	public void addPlayer(Player p) {
-		players.add(new InternalPlayer(p));
+	public void addPlayer(InternalPlayer p) {
+		players.add(p);
 	}
 
 	public void removePlayer(IslandsPlayer player) {
