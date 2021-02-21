@@ -3,12 +3,7 @@ package fr.islandswars.core.player;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.event.PlayerDataSynchronizeEvent;
 import fr.islandswars.api.i18n.Locale;
-import fr.islandswars.api.log.internal.Action;
-import fr.islandswars.api.log.internal.PlayerLog;
-import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
-import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
-import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -41,7 +36,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
  */
 public class PlayerChannelListener implements PluginMessageListener {
 
-	private static final String     CHANNEL = IslandsApi.getInstance().getKey().getKey();
+	private static final String     CHANNEL = ((IslandsCore) IslandsApi.getInstance()).getChannel();
 	private final        IslandsApi api     = IslandsApi.getInstance();
 
 	@Override
@@ -51,9 +46,6 @@ public class PlayerChannelListener implements PluginMessageListener {
 		}
 		var p = new InternalPlayer(player, Locale.FRENCH);
 		((IslandsCore) api).addPlayer(p);
-		var event = new PlayerDataSynchronizeEvent(p);
-		Bukkit.getPluginManager().callEvent(event);
-		api.getInfraLogger().createCustomLog(PlayerLog.class, Level.INFO, "Player " + player.getName() + " joined the game.").setPlayer(p, Action.CONNECT).log();
-		((InternalScoreboardManager) api.getScoreboardManager()).injectTeams(p);
+		Bukkit.getPluginManager().callEvent(new PlayerDataSynchronizeEvent(p));
 	}
 }

@@ -73,6 +73,8 @@ public class IslandsCore extends IslandsApi {
 	private final CustomItem                          itemManager;
 	private final List<Module>                        modules;
 	private       NamespacedKey                       key;
+	private final String                              channel;
+	private final boolean                              debug;
 
 	public IslandsCore() {
 		this.packetManager = new PacketHandlerManager();
@@ -84,6 +86,8 @@ public class IslandsCore extends IslandsApi {
 		this.modules = new ArrayList<>();
 		this.barManager = registerModule(BukkitBarManager.class);
 		this.scoreboardManager = registerModule(InternalScoreboardManager.class);
+		this.channel = "core:is";
+		this.debug = Boolean.parseBoolean(System.getenv("DEBUG"));
 	}
 
 	@Override
@@ -135,6 +139,11 @@ public class IslandsCore extends IslandsApi {
 	@Override
 	public ProtocolManager getProtocolManager() {
 		return packetManager;
+	}
+
+	@Override
+	public boolean debug() {
+		return debug;
 	}
 
 	@Override
@@ -203,8 +212,8 @@ public class IslandsCore extends IslandsApi {
 		} catch (Exception e) {
 			getInfraLogger().logError(e);
 		}
-		getServer().getMessenger().registerOutgoingPluginChannel(this, getKey().getKey());
-		getServer().getMessenger().registerIncomingPluginChannel(this, getKey().getKey(), new PlayerChannelListener());
+		getServer().getMessenger().registerOutgoingPluginChannel(this, getChannel());
+		getServer().getMessenger().registerIncomingPluginChannel(this, getChannel(), new PlayerChannelListener());
 	}
 
 	public void addPlayer(InternalPlayer p) {
@@ -214,5 +223,9 @@ public class IslandsCore extends IslandsApi {
 	public void removePlayer(IslandsPlayer player) {
 		player.disconnect();
 		players.remove(player);
+	}
+
+	public String getChannel() {
+		return channel;
 	}
 }

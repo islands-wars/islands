@@ -113,6 +113,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 	 */
 	public abstract ProtocolManager getProtocolManager();
 
+	public abstract boolean debug();
+
 	/**
 	 * @return an abstract logger to output custom log
 	 */

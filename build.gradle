@@ -140,6 +140,7 @@ task startDevServer(type: JavaExec) {
     main = 'org.bukkit.craftbukkit.Main'
     standardInput = System.in
     ignoreExitValue = true as JavaExecSpec
+    environment 'DEBUG', 'true'
     args("nogui")
     jvmArgs JAVA_ARGS
 }

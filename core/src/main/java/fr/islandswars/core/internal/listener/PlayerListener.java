@@ -2,12 +2,15 @@ package fr.islandswars.core.internal.listener;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.event.PlayerDataSynchronizeEvent;
+import fr.islandswars.api.i18n.Locale;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.log.internal.Action;
 import fr.islandswars.api.log.internal.PlayerLog;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
+import fr.islandswars.core.player.InternalPlayer;
 import java.util.logging.Level;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,11 +49,16 @@ public class PlayerListener extends LazyListener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onConnect(PlayerJoinEvent event) {
-		api.getServer().getScheduler().runTaskLater(api, () -> {
-			var player = event.getPlayer();
-			if (!((CraftPlayer) player).getHandle().playerConnection.isDisconnected())
-				player.kickPlayer("unable to retrieve data");
-		}, 20 * 5);
+		if (api.debug()) {
+			var p = new InternalPlayer(event.getPlayer(), Locale.FRENCH);
+			((IslandsCore) api).addPlayer(p);
+			Bukkit.getPluginManager().callEvent(new PlayerDataSynchronizeEvent(p));
+		} else
+			api.getServer().getScheduler().runTaskLater(api, () -> {
+				var player = event.getPlayer();
+				if (!((CraftPlayer) player).getHandle().playerConnection.isDisconnected())
+					player.kickPlayer("unable to retrieve data");
+			}, 20 * 5);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
