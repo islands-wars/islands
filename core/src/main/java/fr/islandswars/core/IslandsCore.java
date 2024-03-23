@@ -1,6 +1,15 @@
 package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.player.i18n.Locale;
+import fr.islandswars.api.player.i18n.Translatable;
+import fr.islandswars.core.internal.i18n.LocaleTranslatable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * File <b>IslandsCore</b> located on fr.islandswars.core
@@ -28,14 +37,36 @@ import fr.islandswars.api.IslandsApi;
  */
 public class IslandsCore extends IslandsApi {
 
+    private final List<IslandsPlayer> players;
+    private final LocaleTranslatable  translatable;
+
+    public IslandsCore() {
+        this.players = new ArrayList<>();
+        this.translatable = new LocaleTranslatable();
+    }
+
     @Override
     public void onLoad() {
+        translatable.getLoader().registerCustomProperties(this);
+    }
 
+    @Override
+    public List<? extends IslandsPlayer> getPlayers() {
+        return players;
+    }
+
+    @Override
+    public Optional<IslandsPlayer> getPlayer(UUID playerId) {
+        return players.stream().filter(p -> p.getBukkitPlayer().getUniqueId().equals(playerId)).findFirst();
+    }
+
+    @Override
+    public Translatable getTranslatable() {
+        return translatable;
     }
 
     @Override
     public void onEnable() {
-        System.out.println("test");
     }
 
     @Override

@@ -1,16 +1,11 @@
-package fr.islandswars.api;
+package fr.islandswars.core.internal.i18n;
 
-import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.player.i18n.Locale;
 import fr.islandswars.api.player.i18n.Translatable;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
- * File <b>IslandsApi</b> located on fr.islandswars.api
- * IslandsApi is a part of islands.
+ * File <b>LocaleTranslatable</b> located on fr.islandswars.core.internal.i18n
+ * LocaleTranslatable is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -29,34 +24,29 @@ import java.util.UUID;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 23/03/2024 at 19:59
+ * Created the 23/03/2024 at 22:39
  * @since 0.1
  */
-public abstract class IslandsApi extends JavaPlugin {
+public class LocaleTranslatable implements Translatable {
 
-    private static IslandsApi instance;
+    private final TranslatableLoader loader;
+    private final Locale             DEFAULT = Locale.FRENCH;
 
-    protected IslandsApi() {
-        if (instance == null)
-            instance = this;
+    public LocaleTranslatable() {
+        this.loader = new TranslatableLoader();
     }
 
-    public static IslandsApi getInstance() {
-        return instance;
+    public TranslatableLoader getLoader() {
+        return loader;
     }
 
     @Override
-    public abstract void onLoad();
+    public String format(String key, Object... parameters) {
+        return String.format(loader.values.get(DEFAULT).getOrDefault(key, key), parameters);
+    }
 
     @Override
-    public abstract void onEnable();
-
-    @Override
-    public abstract void onDisable();
-
-    public abstract List<? extends IslandsPlayer> getPlayers();
-
-    public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
-
-    public abstract Translatable getTranslatable();
+    public String format(Locale locale, String key, Object... parameters) {
+        return String.format(loader.values.get(locale).getOrDefault(key, key), parameters);
+    }
 }

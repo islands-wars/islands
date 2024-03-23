@@ -1,16 +1,15 @@
-package fr.islandswars.api;
+package fr.islandswars.core.player;
 
 import fr.islandswars.api.player.IslandsPlayer;
-import fr.islandswars.api.player.i18n.Translatable;
-import org.bukkit.plugin.java.JavaPlugin;
+import fr.islandswars.api.player.i18n.Locale;
+import fr.islandswars.api.player.rank.IslandsRank;
+import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
- * File <b>IslandsApi</b> located on fr.islandswars.api
- * IslandsApi is a part of islands.
+ * File <b>InternalPlayer</b> located on fr.islandswars.core.player
+ * InternalPlayer is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -29,34 +28,41 @@ import java.util.UUID;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 23/03/2024 at 19:59
+ * Created the 23/03/2024 at 22:33
  * @since 0.1
  */
-public abstract class IslandsApi extends JavaPlugin {
+public class InternalPlayer implements IslandsPlayer {
 
-    private static IslandsApi instance;
+    private final transient Player player;
+    private                 Locale locale;
 
-    protected IslandsApi() {
-        if (instance == null)
-            instance = this;
-    }
-
-    public static IslandsApi getInstance() {
-        return instance;
+    public InternalPlayer(Player player) {
+        this.player = player;
+        this.locale = Locale.FRENCH;
     }
 
     @Override
-    public abstract void onLoad();
+    public void disconnect() {
+        player.kick();
+    }
 
     @Override
-    public abstract void onEnable();
+    public IslandsRank getMainRank() {
+        return null;
+    }
 
     @Override
-    public abstract void onDisable();
+    public List<IslandsRank> getRanks() {
+        return null;
+    }
 
-    public abstract List<? extends IslandsPlayer> getPlayers();
+    @Override
+    public Locale getLocale() {
+        return locale;
+    }
 
-    public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
-
-    public abstract Translatable getTranslatable();
+    @Override
+    public Player getBukkitPlayer() {
+        return player;
+    }
 }
