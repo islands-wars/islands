@@ -1,10 +1,14 @@
 package fr.islandswars.core.internal.listener;
 
+import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.listener.LazyListener;
+import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.player.InternalPlayer;
+import fr.islandswars.core.player.rank.BoardManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -36,8 +40,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
+    private final BoardManager boardManager;
+
     public PlayerListener(IslandsApi api) {
         super(api);
+        this.boardManager = new BoardManager();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -45,11 +52,29 @@ public class PlayerListener extends LazyListener {
         var p = new InternalPlayer(event.getPlayer());
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
+        sendHeader(p);
+    }
+
+    private void sendHeader(IslandsPlayer p) {
+        final Component header = Component.translatable("core.tab.header");
+        final Component footer = Component.translatable("core.tab.footer", Component.text("Game").color(TextColor.color(15642)));
+        p.getBukkitPlayer().sendPlayerListHeaderAndFooter(header, footer);
+        boardManager.registerPlayer(p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerQuitEvent event) {
-        var islandsPlayer = api.getPlayer(event.getPlayer().getUniqueId());
+        var islandsPlayer = getOptionalPlayer(event.getPlayer());
+        islandsPlayer.ifPresent(boardManager::unregisterPlayer);
         islandsPlayer.ifPresent(((IslandsCore) api)::removePlayer);
+    }
+
+    @EventHandler
+    public void onLocaleChange(PlayerClientOptionsChangeEvent event) {
+        if (event.hasLocaleChanged()) {
+            //TODO NOT WORKING
+            getOptionalPlayer(event.getPlayer()).ifPresent(boardManager::updatePlayer);
+            getOptionalPlayer(event.getPlayer()).ifPresent(this::sendHeader);
+        }
     }
 }
