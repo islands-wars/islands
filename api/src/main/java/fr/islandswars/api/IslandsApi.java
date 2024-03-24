@@ -1,6 +1,7 @@
 package fr.islandswars.api;
 
 import fr.islandswars.api.locale.Translatable;
+import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.utils.Preconditions;
 import org.bukkit.event.Listener;
@@ -34,7 +35,7 @@ import java.util.UUID;
  * Created the 23/03/2024 at 19:59
  * @since 0.1
  */
-public abstract class IslandsApi extends JavaPlugin {
+public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     private static IslandsApi instance;
 

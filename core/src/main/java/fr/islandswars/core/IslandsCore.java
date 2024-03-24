@@ -2,7 +2,9 @@ package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.locale.Translatable;
+import fr.islandswars.api.module.Module;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.utils.ReflectionUtil;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 
@@ -38,10 +40,12 @@ import java.util.UUID;
 public class IslandsCore extends IslandsApi {
 
     private final List<IslandsPlayer> players;
+    private final List<Module>        modules;
     private final TranslationLoader   translatable;
 
     public IslandsCore() {
         this.players = new ArrayList<>();
+        this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
     }
 
@@ -81,5 +85,36 @@ public class IslandsCore extends IslandsApi {
 
     public void removePlayer(IslandsPlayer player) {
         players.remove(player);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Module> Optional<T> getModule(Class<T> module) {
+        return (Optional<T>) modules.stream().filter(m -> m.getClass().equals(module)).findFirst();
+    }
+
+    @Override
+    public <T extends Module> T registerModule(Class<T> module) {
+        try {
+            T mod = ReflectionUtil.getConstructorAccessor(module, IslandsApi.class).newInstance(IslandsApi.getInstance());
+            if (isEnabled()) {
+                mod.onLoad();
+                mod.onEnable();
+            }
+            modules.add(mod);
+            return mod;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public <T extends Module> void unregisterModule(Class<T> module) {
+        Optional<? extends Module> optionalModule = modules.stream().filter(m -> m.getClass().equals(module)).findFirst();
+        optionalModule.ifPresent(mod -> {
+            mod.onDisable();
+            modules.remove(mod);
+        });
     }
 }
