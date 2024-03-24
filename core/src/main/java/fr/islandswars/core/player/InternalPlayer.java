@@ -1,7 +1,6 @@
 package fr.islandswars.core.player;
 
 import fr.islandswars.api.player.IslandsPlayer;
-import fr.islandswars.api.player.i18n.Locale;
 import fr.islandswars.api.player.rank.IslandsRank;
 import org.bukkit.entity.Player;
 
@@ -33,12 +32,12 @@ import java.util.List;
  */
 public class InternalPlayer implements IslandsPlayer {
 
-    private final transient Player player;
-    private                 Locale locale;
+    private final transient Player       player;
+    private final           List<String> ranks;
 
     public InternalPlayer(Player player) {
         this.player = player;
-        this.locale = Locale.FRENCH;
+        this.ranks = List.of("ADMIN");
     }
 
     @Override
@@ -48,17 +47,7 @@ public class InternalPlayer implements IslandsPlayer {
 
     @Override
     public IslandsRank getMainRank() {
-        return null;
-    }
-
-    @Override
-    public List<IslandsRank> getRanks() {
-        return null;
-    }
-
-    @Override
-    public Locale getLocale() {
-        return locale;
+        return PlayerRank.getHighest(ranks);
     }
 
     @Override

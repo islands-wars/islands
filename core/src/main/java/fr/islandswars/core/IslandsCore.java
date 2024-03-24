@@ -1,10 +1,10 @@
 package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.player.IslandsPlayer;
-import fr.islandswars.api.player.i18n.Locale;
-import fr.islandswars.api.player.i18n.Translatable;
-import fr.islandswars.core.internal.i18n.LocaleTranslatable;
+import fr.islandswars.core.internal.listener.PlayerListener;
+import fr.islandswars.core.internal.locale.TranslationLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,16 +38,26 @@ import java.util.UUID;
 public class IslandsCore extends IslandsApi {
 
     private final List<IslandsPlayer> players;
-    private final LocaleTranslatable  translatable;
+    private final TranslationLoader   translatable;
 
     public IslandsCore() {
         this.players = new ArrayList<>();
-        this.translatable = new LocaleTranslatable();
+        this.translatable = new TranslationLoader();
     }
 
     @Override
     public void onLoad() {
-        translatable.getLoader().registerCustomProperties(this);
+        translatable.load("locale.core");
+    }
+
+    @Override
+    public void onDisable() {
+
+    }
+
+    @Override
+    public void onEnable() {
+        new PlayerListener(this);
     }
 
     @Override
@@ -65,12 +75,11 @@ public class IslandsCore extends IslandsApi {
         return translatable;
     }
 
-    @Override
-    public void onEnable() {
+    public void addPlayer(IslandsPlayer player) {
+        players.add(player);
     }
 
-    @Override
-    public void onDisable() {
-
+    public void removePlayer(IslandsPlayer player) {
+        players.remove(player);
     }
 }

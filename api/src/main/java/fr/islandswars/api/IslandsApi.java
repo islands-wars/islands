@@ -1,7 +1,9 @@
 package fr.islandswars.api;
 
+import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.player.IslandsPlayer;
-import fr.islandswars.api.player.i18n.Translatable;
+import fr.islandswars.api.utils.Preconditions;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -49,14 +51,21 @@ public abstract class IslandsApi extends JavaPlugin {
     public abstract void onLoad();
 
     @Override
-    public abstract void onEnable();
+    public abstract void onDisable();
 
     @Override
-    public abstract void onDisable();
+    public abstract void onEnable();
 
     public abstract List<? extends IslandsPlayer> getPlayers();
 
     public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
 
     public abstract Translatable getTranslatable();
+
+    public void registerEvent(Listener listener) {
+        Preconditions.checkNotNull(listener);
+
+        //TODO log
+        getServer().getPluginManager().registerEvents(listener, instance);
+    }
 }

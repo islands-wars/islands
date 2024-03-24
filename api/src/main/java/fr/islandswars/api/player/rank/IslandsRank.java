@@ -1,5 +1,6 @@
 package fr.islandswars.api.player.rank;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 /**
@@ -28,7 +29,7 @@ import net.kyori.adventure.text.format.TextColor;
  */
 public interface IslandsRank {
 
-    String getDisplayName();
+    Component getDisplayName();
 
     TextColor getRankColor();
 

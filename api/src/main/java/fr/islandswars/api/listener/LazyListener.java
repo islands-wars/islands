@@ -1,10 +1,15 @@
-package fr.islandswars.api.player.i18n;
+package fr.islandswars.api.listener;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.player.IslandsPlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+
+import java.util.Optional;
 
 /**
- * File <b>Locale</b> located on fr.islandswars.api.player.i18n
- * Locale is a part of islands.
+ * File <b>LazyListener</b> located on fr.islandswars.api.listener
+ * LazyListener is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -23,25 +28,19 @@ import fr.islandswars.api.IslandsApi;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 23/03/2024 at 22:29
+ * Created the 23/03/2024 at 23:11
  * @since 0.1
  */
-public enum Locale {
+public abstract class LazyListener implements Listener {
 
-    FRENCH("fr-FR"),
-    ENGLISH("en-GB");
+    protected final IslandsApi api;
 
-    private final String i18nName;
-
-    Locale(String i18nName) {
-        this.i18nName = i18nName;
+    public LazyListener(IslandsApi api) {
+        this.api = api;
+        api.registerEvent(this);
     }
 
-    public String format(String key, Object... parameters) {
-        return IslandsApi.getInstance().getTranslatable().format(this, key, parameters);
-    }
-
-    public String getI18nName() {
-        return i18nName;
+    protected Optional<IslandsPlayer> getOptionalPlayer(Player player) {
+        return api.getPlayer(player.getUniqueId());
     }
 }

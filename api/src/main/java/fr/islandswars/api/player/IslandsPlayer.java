@@ -1,10 +1,7 @@
 package fr.islandswars.api.player;
 
-import fr.islandswars.api.player.i18n.Locale;
 import fr.islandswars.api.player.rank.IslandsRank;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 /**
  * File <b>IslandsPlayer</b> located on fr.islandswars.api.player
@@ -35,10 +32,6 @@ public interface IslandsPlayer {
     void disconnect();
 
     IslandsRank getMainRank();
-
-    List<IslandsRank> getRanks();
-
-    Locale getLocale();
 
     Player getBukkitPlayer();
 

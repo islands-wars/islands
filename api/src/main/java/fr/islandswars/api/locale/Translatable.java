@@ -1,10 +1,14 @@
-package fr.islandswars.api.player.i18n;
+package fr.islandswars.api.locale;
 
-import org.bukkit.plugin.Plugin;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+
+import java.util.Locale;
+
 
 /**
- * File <b>I18nLoader</b> located on fr.islandswars.api.player.i18n
- * I18nLoader is a part of islands.
+ * File <b>Translatable</b> located on fr.islandswars.api.locale
+ * Translatable is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -23,13 +27,17 @@ import org.bukkit.plugin.Plugin;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 23/03/2024 at 22:29
+ * Created the 24/03/2024 at 00:21
  * @since 0.1
  */
-public interface I18nLoader {
+public interface Translatable {
 
-    void registerCustomProperties(Plugin plugin);
+    void load(String bundleName);
 
-    void registerDynamicProperty(Locale locale, String key, String value);
+    Component render(String key, ComponentLike... parameters);
+
+    Component render(Locale locale, String key, ComponentLike... parameters);
+
+    Component renderDefault(String key, ComponentLike... parameters);
 
 }
