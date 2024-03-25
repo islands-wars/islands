@@ -4,7 +4,9 @@ import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
+import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 
@@ -42,11 +44,13 @@ public class IslandsCore extends IslandsApi {
     private final List<IslandsPlayer> players;
     private final List<Module>        modules;
     private final TranslationLoader   translatable;
+    private final TaskManager         taskManager;
 
     public IslandsCore() {
         this.players = new ArrayList<>();
         this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
+        this.taskManager = new TaskManager();
     }
 
     @Override
@@ -72,6 +76,11 @@ public class IslandsCore extends IslandsApi {
     @Override
     public Optional<IslandsPlayer> getPlayer(UUID playerId) {
         return players.stream().filter(p -> p.getBukkitPlayer().getUniqueId().equals(playerId)).findFirst();
+    }
+
+    @Override
+    public UpdaterManager getUpdaterManager() {
+        return taskManager;
     }
 
     @Override

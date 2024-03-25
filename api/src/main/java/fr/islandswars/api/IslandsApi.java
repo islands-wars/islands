@@ -3,6 +3,7 @@ package fr.islandswars.api;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.Preconditions;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,8 +41,7 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     private static IslandsApi instance;
 
     protected IslandsApi() {
-        if (instance == null)
-            instance = this;
+        if (instance == null) instance = this;
     }
 
     public static IslandsApi getInstance() {
@@ -60,6 +60,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     public abstract List<? extends IslandsPlayer> getPlayers();
 
     public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
+
+    public abstract UpdaterManager getUpdaterManager();
 
     public abstract Translatable getTranslatable();
 
