@@ -2,6 +2,8 @@ package fr.islandswars.api.bossbar;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.module.Module;
+import fr.islandswars.api.player.IslandsPlayer;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -30,9 +32,31 @@ import net.kyori.adventure.text.Component;
  */
 public abstract class BarManager extends Module {
 
+    private final BossBar.Color DEFAULT_COLOR = BossBar.Color.RED;
+
     public BarManager(IslandsApi api) {
         super(api);
     }
 
-    public abstract Bar createBar(Component text);
+    public abstract void unregisterPlayer(IslandsPlayer player);
+
+    public Bar createBar(Component text) {
+        return createBar(text, DEFAULT_COLOR, BossBar.MAX_PROGRESS, BossBar.Overlay.PROGRESS);
+    }
+
+    public abstract Bar createBar(Component text, BossBar.Color color, float progress, BossBar.Overlay overlay);
+
+    public Bar createBar(Component text, float progress) {
+
+
+        return createBar(text, DEFAULT_COLOR, progress, BossBar.Overlay.PROGRESS);
+    }
+
+    public abstract void subscribeBar(Bar bar);
+
+    public abstract void unsubscribeBar(Bar bar);
+
+    public Bar createBar(Component text, BossBar.Color color) {
+        return createBar(text, color, BossBar.MAX_PROGRESS, BossBar.Overlay.PROGRESS);
+    }
 }

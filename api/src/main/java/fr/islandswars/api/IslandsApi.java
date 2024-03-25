@@ -1,5 +1,6 @@
 package fr.islandswars.api;
 
+import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
@@ -62,6 +63,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
 
     public abstract UpdaterManager getUpdaterManager();
+
+    public abstract BarManager getBarManager();
 
     public abstract Translatable getTranslatable();
 

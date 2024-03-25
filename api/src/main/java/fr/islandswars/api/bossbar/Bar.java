@@ -1,5 +1,8 @@
 package fr.islandswars.api.bossbar;
 
+import fr.islandswars.api.player.IslandsPlayer;
+import net.kyori.adventure.bossbar.BossBar;
+
 /**
  * File <b>Bar</b> located on fr.islandswars.api.bossbar
  * Bar is a part of islands.
@@ -25,4 +28,14 @@ package fr.islandswars.api.bossbar;
  * @since 0.1
  */
 public interface Bar {
+
+    Bar withFlag(BossBar.Flag... flags);
+
+    Bar withTimeOnScreen(long tickOnScreen, long delta);
+
+    Bar withAutoUpdate(boolean autoUpdate);
+
+    void displayTo(IslandsPlayer player);
+
+    void removeTo(IslandsPlayer player);
 }

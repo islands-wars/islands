@@ -1,11 +1,13 @@
 package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
+import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
@@ -45,6 +47,7 @@ public class IslandsCore extends IslandsApi {
     private final List<Module>        modules;
     private final TranslationLoader   translatable;
     private final TaskManager         taskManager;
+    private       BarManager          barManager;
 
     public IslandsCore() {
         this.players = new ArrayList<>();
@@ -55,16 +58,19 @@ public class IslandsCore extends IslandsApi {
 
     @Override
     public void onLoad() {
+        modules.forEach(Module::onLoad);
         translatable.load("locale.core");
     }
 
     @Override
     public void onDisable() {
-
+        modules.forEach(Module::onDisable);
     }
 
     @Override
     public void onEnable() {
+        this.barManager = registerModule(BukkitBarManager.class);
+        modules.forEach(Module::onEnable);
         new PlayerListener(this);
     }
 
@@ -81,6 +87,11 @@ public class IslandsCore extends IslandsApi {
     @Override
     public UpdaterManager getUpdaterManager() {
         return taskManager;
+    }
+
+    @Override
+    public BarManager getBarManager() {
+        return barManager;
     }
 
     @Override

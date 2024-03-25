@@ -2,11 +2,13 @@ package fr.islandswars.core.internal.listener;
 
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.bossbar.Bar;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.player.InternalPlayer;
 import fr.islandswars.core.player.rank.BoardManager;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.EventHandler;
@@ -40,11 +42,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
+    private final Bar          bar;
     private final BoardManager boardManager;
 
     public PlayerListener(IslandsApi api) {
         super(api);
         this.boardManager = new BoardManager();
+        this.bar = api.getBarManager().createBar(Component.text("Coucou toi"), BossBar.Color.GREEN, 1f, BossBar.Overlay.NOTCHED_20);
+        bar.withTimeOnScreen(20L * 10, 10).withAutoUpdate(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -53,6 +58,9 @@ public class PlayerListener extends LazyListener {
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
         sendHeader(p);
+
+        //TEST code
+        bar.displayTo(p);
     }
 
     private void sendHeader(IslandsPlayer p) {
@@ -66,6 +74,7 @@ public class PlayerListener extends LazyListener {
     public void onLeave(PlayerQuitEvent event) {
         var islandsPlayer = getOptionalPlayer(event.getPlayer());
         islandsPlayer.ifPresent(boardManager::unregisterPlayer);
+        islandsPlayer.ifPresent((p) -> api.getBarManager().unregisterPlayer(p));
         islandsPlayer.ifPresent(((IslandsCore) api)::removePlayer);
     }
 
