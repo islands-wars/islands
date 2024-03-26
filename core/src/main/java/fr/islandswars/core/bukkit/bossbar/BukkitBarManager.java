@@ -3,6 +3,7 @@ package fr.islandswars.core.bukkit.bossbar;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.Bar;
 import fr.islandswars.api.bossbar.BarManager;
+import fr.islandswars.api.bossbar.BarSequence;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.TaskType;
 import fr.islandswars.api.task.TimeType;
@@ -11,8 +12,8 @@ import fr.islandswars.api.utils.Preconditions;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * File <b>BukkitBarManager</b> located on fr.islandswars.core.bukkit.bossbar
@@ -40,21 +41,26 @@ import java.util.List;
  */
 public class BukkitBarManager extends BarManager {
 
-    private final List<InternalBar> updatableBar;
+    private final CopyOnWriteArrayList<InternalBar>         updatableBar;
+    private final CopyOnWriteArrayList<InternalBarSequence> updatableSequence;
 
     public BukkitBarManager(IslandsApi api) {
         super(api);
-        this.updatableBar = new ArrayList<>();
+        this.updatableSequence = new CopyOnWriteArrayList<>();
+        this.updatableBar = new CopyOnWriteArrayList<>();
     }
 
     @Override
     public void unregisterPlayer(IslandsPlayer player) {
-        for (InternalBar bar : updatableBar) {
+        updatableBar.forEach(bar -> {
             if (bar.viewer != null && bar.viewer.equals(player)) {
                 bar.timer = 0;
+                updatableBar.remove(bar);
             }
-        }
-        updatableBar.removeIf(bar -> bar.viewer != null && bar.viewer.equals(player));
+        });
+        updatableSequence.forEach(seq -> {
+            seq.unsubscribe(player);
+        });
     }
 
     @Override
@@ -64,18 +70,33 @@ public class BukkitBarManager extends BarManager {
         Preconditions.checkNotNull(overlay);
         Preconditions.checkState(progress, (p) -> p >= BossBar.MIN_PROGRESS && p <= BossBar.MAX_PROGRESS);
 
-        return new InternalBar(text, color, progress, overlay);
+        return new InternalBar(this, text, color, progress, overlay);
     }
 
     @Override
-    public void subscribeBar(Bar bar) {
-        updatableBar.add((InternalBar) bar);
+    public BarSequence createSequence(Bar... bars) {
+        for (Bar bar : bars) {
+            Preconditions.checkState(bar, (ref) -> ((InternalBar) bar).timeInTickOnScreen > 0);
+        }
+        return new InternalBarSequence(this, Arrays.copyOf(bars, bars.length, InternalBar[].class));
     }
 
-    @Override
-    public void unsubscribeBar(Bar bar) {
-        ((InternalBar) bar).timer = 0L;
+    public void subscribeBar(InternalBar bar) {
+        updatableBar.add(bar);
+    }
+
+    public void subscribeBarSequence(InternalBarSequence sequence) {
+        updatableSequence.add(sequence);
+    }
+
+    public void unsubscribeBar(InternalBar bar) {
+        bar.timer = 0L;
         updatableBar.remove(bar);
+    }
+
+    public void unsubscribeBarSequence(InternalBarSequence sequence) {
+        sequence.hide();
+        updatableSequence.remove(sequence);
     }
 
     @Override
@@ -95,19 +116,29 @@ public class BukkitBarManager extends BarManager {
 
     @Updater(type = TaskType.SYNC, time = TimeType.TICK, delta = 1)
     public void updateBar() {
-        for (InternalBar bar : updatableBar) {
+        updatableBar.forEach(bar -> {
             if (bar.timeInTickOnScreen >= 1) {
                 if (bar.timer > bar.timeInTickOnScreen) {
                     bar.removeTo(bar.viewer);
                 } else {
                     if (bar.autoUpdate) {
-                        if (bar.timer % bar.delta == 0)
-                            bar.setProgress(bar.initialProgress - bar.initialProgress / bar.timeInTickOnScreen * bar.timer);
+                        if (bar.timer % bar.delta == 0) bar.setProgress(bar.initialProgress - bar.initialProgress / bar.timeInTickOnScreen * bar.timer);
                     }
                     bar.timer += 1;
                 }
             }
-        }
-        updatableBar.removeIf(bar -> bar.timeInTickOnScreen >= 1 && bar.timer > bar.timeInTickOnScreen + 1);
+        });
+        updatableSequence.forEach(seq -> {
+            var bar = seq.bars.get(seq.index);
+            if (seq.timer > bar.timeInTickOnScreen) {
+                seq.timer = 0;
+                seq.bump();
+            } else {
+                if (bar.autoUpdate) {
+                    if (seq.timer % bar.delta == 0) bar.setProgress(bar.initialProgress - bar.initialProgress / bar.timeInTickOnScreen * seq.timer);
+                }
+                seq.timer += 1;
+            }
+        });
     }
 }

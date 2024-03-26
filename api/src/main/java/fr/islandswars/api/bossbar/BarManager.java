@@ -52,11 +52,9 @@ public abstract class BarManager extends Module {
         return createBar(text, DEFAULT_COLOR, progress, BossBar.Overlay.PROGRESS);
     }
 
-    public abstract void subscribeBar(Bar bar);
-
-    public abstract void unsubscribeBar(Bar bar);
-
     public Bar createBar(Component text, BossBar.Color color) {
         return createBar(text, color, BossBar.MAX_PROGRESS, BossBar.Overlay.PROGRESS);
     }
+
+    public abstract BarSequence createSequence(Bar... bars);
 }

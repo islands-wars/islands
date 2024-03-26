@@ -1,6 +1,5 @@
 package fr.islandswars.core.bukkit.bossbar;
 
-import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.Bar;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.utils.Preconditions;
@@ -33,17 +32,19 @@ import net.kyori.adventure.text.Component;
  */
 public class InternalBar implements Bar {
 
-    protected final float         initialProgress;
-    private final   BossBar       bukkitBar;
-    protected       IslandsPlayer viewer;
-    protected       long          timer;
-    protected       long          timeInTickOnScreen;
-    protected       long          delta;
-    protected       boolean       autoUpdate;
+    protected final float            initialProgress;
+    private final   BossBar          bukkitBar;
+    private final   BukkitBarManager manager;
+    protected       IslandsPlayer    viewer;
+    protected       long             timer;
+    protected       long             timeInTickOnScreen;
+    protected       long             delta;
+    protected       boolean          autoUpdate;
 
-    protected InternalBar(Component text, BossBar.Color color, float progress, BossBar.Overlay overlay) {
+    protected InternalBar(BukkitBarManager manager, Component text, BossBar.Color color, float progress, BossBar.Overlay overlay) {
         this.bukkitBar = BossBar.bossBar(text, progress, color, overlay);
         this.timer = 0L;
+        this.manager = manager;
         this.initialProgress = progress;
         this.timeInTickOnScreen = -1;
         this.autoUpdate = false;
@@ -73,7 +74,11 @@ public class InternalBar implements Bar {
     public void displayTo(IslandsPlayer player) {
         player.getBukkitPlayer().showBossBar(bukkitBar);
         if (timeInTickOnScreen >= 1) {
-            IslandsApi.getInstance().getBarManager().subscribeBar(this);
+            if (viewer != null) {
+                removeTo(viewer);
+                manager.unsubscribeBar(this);
+            }
+            manager.subscribeBar(this);
             this.viewer = player;
         }
     }
@@ -81,7 +86,11 @@ public class InternalBar implements Bar {
     @Override
     public void removeTo(IslandsPlayer player) {
         player.getBukkitPlayer().hideBossBar(bukkitBar);
-        this.timer = 0L;
+        if (viewer != null) {
+            this.viewer = null;
+            this.timer = 0L;
+            manager.unsubscribeBar(this);
+        }
     }
 
     protected void setProgress(float newProgress) {

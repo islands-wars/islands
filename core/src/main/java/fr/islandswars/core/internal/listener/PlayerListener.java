@@ -3,6 +3,7 @@ package fr.islandswars.core.internal.listener;
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.Bar;
+import fr.islandswars.api.bossbar.BarSequence;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
@@ -42,14 +43,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
-    private final Bar          bar;
     private final BoardManager boardManager;
+    private final BarSequence  sequence;
+    private final Bar          bar1, bar2;
 
     public PlayerListener(IslandsApi api) {
         super(api);
         this.boardManager = new BoardManager();
-        this.bar = api.getBarManager().createBar(Component.text("Coucou toi"), BossBar.Color.GREEN, 1f, BossBar.Overlay.NOTCHED_20);
-        bar.withTimeOnScreen(20L * 10, 10).withAutoUpdate(true);
+        this.bar1 = api.getBarManager().createBar(Component.text("Coucou toi"), BossBar.Color.GREEN, 1f, BossBar.Overlay.NOTCHED_20).withTimeOnScreen(20L * 10, 10).withAutoUpdate(true);
+        this.bar2 = api.getBarManager().createBar(Component.text("Bienvenue"), BossBar.Color.RED, 1f, BossBar.Overlay.NOTCHED_6).withTimeOnScreen(20L * 5, 10).withAutoUpdate(true);
+        this.sequence = api.getBarManager().createSequence(bar1, bar2);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -60,7 +63,9 @@ public class PlayerListener extends LazyListener {
         sendHeader(p);
 
         //TEST code
-        bar.displayTo(p);
+        //bar1.displayTo(p);
+        sequence.subscribe(p);
+        sequence.display();
     }
 
     private void sendHeader(IslandsPlayer p) {
