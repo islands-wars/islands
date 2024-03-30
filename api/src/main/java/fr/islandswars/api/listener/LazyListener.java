@@ -3,9 +3,15 @@ package fr.islandswars.api.listener;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.player.IslandsPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * File <b>LazyListener</b> located on fr.islandswars.api.listener
@@ -37,7 +43,40 @@ public abstract class LazyListener implements Listener {
 
     public LazyListener(IslandsApi api) {
         this.api = api;
-        api.registerEvent(this);
+        registerEventHandlers();
+    }
+
+    private void registerEventHandlers() {
+        Method[] methods = this.getClass().getDeclaredMethods();
+        for (Method method : methods) {
+            if (isValidEventHandler(method)) {
+                registerEventHandler(method);
+            }
+        }
+    }
+
+    private boolean isValidEventHandler(Method method) {
+        return method.isAnnotationPresent(EventHandler.class) &&
+                method.getParameterCount() == 1 &&
+                Event.class.isAssignableFrom(method.getParameterTypes()[0]) &&
+                method.getReturnType().equals(void.class) &&
+                Modifier.isPublic(method.getModifiers());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends Event> void registerEventHandler(Method method) {
+        EventHandler  annotation = method.getAnnotation(EventHandler.class);
+        EventPriority priority   = annotation.priority();
+
+        Class<T> eventType = (Class<T>) method.getParameterTypes()[0];
+        Consumer<T> consumer = event -> {
+            try {
+                method.invoke(this, event);
+            } catch (Exception e) {
+                api.getInfraLogger().logError(e);
+            }
+        };
+        IslandsApi.getInstance().registerEvent(eventType, consumer);
     }
 
     protected Optional<IslandsPlayer> getOptionalPlayer(Player player) {

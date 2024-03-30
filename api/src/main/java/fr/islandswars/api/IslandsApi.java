@@ -7,12 +7,15 @@ import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.Preconditions;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * File <b>IslandsApi</b> located on fr.islandswars.api
@@ -65,8 +68,6 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     public abstract UpdaterManager getUpdaterManager();
 
-    public abstract InfraLogger getInfraLogger();
-
     public abstract BarManager getBarManager();
 
     public abstract Translatable getTranslatable();
@@ -76,4 +77,19 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
         getServer().getPluginManager().registerEvents(listener, instance);
     }
+
+    public <T extends Event> void registerEvent(Class<T> eventType, Consumer<T> consumer) {
+        getServer().getPluginManager().registerEvent(eventType, new Listener() {
+        }, EventPriority.LOW, (listener, event) -> {
+            if (eventType.isInstance(event)) {
+                try {
+                    consumer.accept(eventType.cast(event));
+                } catch (Exception e) {
+                    getInfraLogger().logError(e);
+                }
+            }
+        }, this, false);
+    }
+
+    public abstract InfraLogger getInfraLogger();
 }

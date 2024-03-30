@@ -13,6 +13,9 @@ import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 import fr.islandswars.core.internal.log.InternalLogger;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerListPingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +76,6 @@ public class IslandsCore extends IslandsApi {
 
     @Override
     public void onEnable() {
-        logger.logInfo("test info");
-        logger.logDebug("test debug");
-        logger.logError(new Exception("Test error", new Throwable("shit")));
         this.barManager = registerModule(BukkitBarManager.class);
         modules.forEach(Module::onEnable);
         new PlayerListener(this);
@@ -97,11 +97,6 @@ public class IslandsCore extends IslandsApi {
     }
 
     @Override
-    public InfraLogger getInfraLogger() {
-        return logger;
-    }
-
-    @Override
     public BarManager getBarManager() {
         return barManager;
     }
@@ -109,6 +104,11 @@ public class IslandsCore extends IslandsApi {
     @Override
     public Translatable getTranslatable() {
         return translatable;
+    }
+
+    @Override
+    public InfraLogger getInfraLogger() {
+        return logger;
     }
 
     public void addPlayer(IslandsPlayer player) {
@@ -149,4 +149,15 @@ public class IslandsCore extends IslandsApi {
             modules.remove(mod);
         });
     }
+
+    private class Test implements Listener {
+
+        @EventHandler
+        public void onServerPing(ServerListPingEvent event) {
+            getInfraLogger().logInfo("ping event");
+            int i = 10 / 0;
+        }
+    }
+
+
 }

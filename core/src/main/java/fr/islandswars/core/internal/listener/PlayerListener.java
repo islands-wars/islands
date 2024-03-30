@@ -53,7 +53,6 @@ public class PlayerListener extends LazyListener {
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
         sendHeader(p);
-        int j = 1 / 0;
     }
 
     private void sendHeader(IslandsPlayer p) {
