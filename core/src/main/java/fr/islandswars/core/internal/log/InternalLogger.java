@@ -42,7 +42,8 @@ public class InternalLogger implements InfraLogger {
     private final boolean debug;
 
     public InternalLogger() {
-        this.gson = new GsonBuilder().registerTypeAdapter(Level.class, new Log4jLevelSerializer()).registerTypeAdapter(StackTraceElement.class, new StackTraceElementTypeAdapter()).create();
+        this.gson = new GsonBuilder().registerTypeAdapter(Level.class, new Log4jLevelSerializer())
+                .registerTypeAdapter(StackTraceElement.class, new StackTraceElementTypeAdapter()).create();
         try {
             Configurator.reconfigure(InternalLogger.class.getClassLoader().getResource("log4j2-islands.xml").toURI());
         } catch (URISyntaxException e) {

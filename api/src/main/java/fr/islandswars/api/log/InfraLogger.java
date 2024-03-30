@@ -2,6 +2,7 @@ package fr.islandswars.api.log;
 
 import fr.islandswars.api.log.internal.DefaultLog;
 import fr.islandswars.api.log.internal.ErrorLog;
+import fr.islandswars.api.utils.ReflectionUtil;
 import org.apache.logging.log4j.Level;
 
 
@@ -41,6 +42,10 @@ public interface InfraLogger {
 
     default void logDebug(String message) {
         log(Level.DEBUG, message);
+    }
+
+    default <T extends Log> T createCustomLog(Class<T> clazz, Level level, String message) {
+        return ReflectionUtil.getConstructorAccessor(clazz, Level.class, String.class).newInstance(level, message);
     }
 
     void sysout(Log object);

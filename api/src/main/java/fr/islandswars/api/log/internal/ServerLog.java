@@ -1,13 +1,12 @@
-package fr.islandswars.api.log;
+package fr.islandswars.api.log.internal;
 
-import com.google.gson.annotations.SerializedName;
-import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.log.Log;
+import fr.islandswars.api.utils.Preconditions;
 import org.apache.logging.log4j.Level;
 
-
 /**
- * File <b>Log</b> located on fr.islandswars.api.log
- * Log is a part of islands.
+ * File <b>ServerLog</b> located on fr.islandswars.api.log.internal
+ * ServerLog is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -26,33 +25,24 @@ import org.apache.logging.log4j.Level;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 26/03/2024 at 19:30
+ * Created the 30/03/2024 at 20:16
  * @since 0.1
  */
-public abstract class Log {
+public class ServerLog extends Log {
 
-    protected final Level  level;
-    @SerializedName("message")
-    protected final String msg;
+    private Server server;
 
-    protected Log(Level level, String msg) {
-        this.level = level;
-        this.msg = msg;
+    public ServerLog(Level level, String msg) {
+        super(level, msg);
     }
 
-    public void log() {
-        checkValue();
-
-        IslandsApi.getInstance().getInfraLogger().sysout(this);
+    @Override
+    public void checkValue() {
+        Preconditions.checkNotNull(server);
     }
 
-    protected abstract void checkValue();
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public String getMessage() {
-        return msg;
+    public ServerLog setServer(Server server) {
+        this.server = server;
+        return this;
     }
 }

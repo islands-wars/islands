@@ -1,13 +1,13 @@
-package fr.islandswars.api.log;
+package fr.islandswars.api.log.internal;
 
 import com.google.gson.annotations.SerializedName;
-import fr.islandswars.api.IslandsApi;
-import org.apache.logging.log4j.Level;
+import fr.islandswars.api.server.ServerType;
 
+import java.util.UUID;
 
 /**
- * File <b>Log</b> located on fr.islandswars.api.log
- * Log is a part of islands.
+ * File <b>Server</b> located on fr.islandswars.api.log.internal
+ * Server is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -26,33 +26,32 @@ import org.apache.logging.log4j.Level;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 26/03/2024 at 19:30
+ * Created the 30/03/2024 at 20:28
  * @since 0.1
  */
-public abstract class Log {
+public class Server {
 
-    protected final Level  level;
-    @SerializedName("message")
-    protected final String msg;
+    @SerializedName("server-type")
+    private final ServerType serverType;
 
-    protected Log(Level level, String msg) {
-        this.level = level;
-        this.msg = msg;
+    private final UUID   id;
+    private       String status;
+
+    public Server(Status status, ServerType type, UUID id) {
+        this.status = status.toString();
+        this.serverType = type;
+        this.id = id;
     }
 
-    public void log() {
-        checkValue();
-
-        IslandsApi.getInstance().getInfraLogger().sysout(this);
+    public UUID getId() {
+        return id;
     }
 
-    protected abstract void checkValue();
-
-    public Level getLevel() {
-        return level;
+    public ServerType getServerType() {
+        return serverType;
     }
 
-    public String getMessage() {
-        return msg;
+    public void setStatus(Status status) {
+        this.status = status.toString();
     }
 }

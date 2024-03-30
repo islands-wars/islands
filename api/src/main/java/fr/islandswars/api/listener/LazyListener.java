@@ -76,7 +76,8 @@ public abstract class LazyListener implements Listener {
                 api.getInfraLogger().logError(e);
             }
         };
-        IslandsApi.getInstance().registerEvent(eventType, consumer);
+        api.registerEvent(eventType, consumer);
+        api.getInfraLogger().logDebug("Register " + eventType.getSimpleName() + " on method " + method.getDeclaringClass().getName() + "." + method.getName());
     }
 
     protected Optional<IslandsPlayer> getOptionalPlayer(Player player) {

@@ -1,3 +1,5 @@
+import java.util.*
+
 plugins {
     id("xyz.jpenilla.run-paper") version "2.2.0"
     id("java")
@@ -54,6 +56,8 @@ tasks {
     runServer {
         dependsOn(jar)
         environment("DEBUG", "true")
+        environment("SERVER_TYPE", "HUB")
+        environment("SERVER_ID", UUID.randomUUID())
         minecraftVersion("1.20.4")
     }
 }

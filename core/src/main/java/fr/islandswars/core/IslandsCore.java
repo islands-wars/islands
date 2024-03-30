@@ -4,6 +4,7 @@ import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
+import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.UpdaterManager;
@@ -13,9 +14,6 @@ import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 import fr.islandswars.core.internal.log.InternalLogger;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerListPingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +65,13 @@ public class IslandsCore extends IslandsApi {
     public void onLoad() {
         modules.forEach(Module::onLoad);
         translatable.load("locale.core");
+        setServerStatus(Status.LOAD);
     }
 
     @Override
     public void onDisable() {
         modules.forEach(Module::onDisable);
+        setServerStatus(Status.DISABLE);
     }
 
     @Override
@@ -79,6 +79,12 @@ public class IslandsCore extends IslandsApi {
         this.barManager = registerModule(BukkitBarManager.class);
         modules.forEach(Module::onEnable);
         new PlayerListener(this);
+        setServerStatus(Status.ENABLE);
+    }
+
+    @Override
+    public InfraLogger getInfraLogger() {
+        return logger;
     }
 
     @Override
@@ -106,11 +112,6 @@ public class IslandsCore extends IslandsApi {
         return translatable;
     }
 
-    @Override
-    public InfraLogger getInfraLogger() {
-        return logger;
-    }
-
     public void addPlayer(IslandsPlayer player) {
         players.add(player);
     }
@@ -134,9 +135,10 @@ public class IslandsCore extends IslandsApi {
                 mod.onEnable();
             }
             modules.add(mod);
+            logger.logDebug("Register Module on " + module.getName());
             return mod;
         } catch (Exception e) {
-            e.printStackTrace();
+            getInfraLogger().logError(e);
             return null;
         }
     }
@@ -149,15 +151,4 @@ public class IslandsCore extends IslandsApi {
             modules.remove(mod);
         });
     }
-
-    private class Test implements Listener {
-
-        @EventHandler
-        public void onServerPing(ServerListPingEvent event) {
-            getInfraLogger().logInfo("ping event");
-            int i = 10 / 0;
-        }
-    }
-
-
 }

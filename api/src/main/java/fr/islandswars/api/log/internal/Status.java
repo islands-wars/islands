@@ -1,13 +1,8 @@
-package fr.islandswars.api.log;
-
-import com.google.gson.annotations.SerializedName;
-import fr.islandswars.api.IslandsApi;
-import org.apache.logging.log4j.Level;
-
+package fr.islandswars.api.log.internal;
 
 /**
- * File <b>Log</b> located on fr.islandswars.api.log
- * Log is a part of islands.
+ * File <b>Status</b> located on fr.islandswars.api.log.internal
+ * Status is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -26,33 +21,14 @@ import org.apache.logging.log4j.Level;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 26/03/2024 at 19:30
+ * Created the 30/03/2024 at 20:29
  * @since 0.1
  */
-public abstract class Log {
+public enum Status {
 
-    protected final Level  level;
-    @SerializedName("message")
-    protected final String msg;
+    LOAD,
+    ENABLE,
+    READY,
+    DISABLE,
 
-    protected Log(Level level, String msg) {
-        this.level = level;
-        this.msg = msg;
-    }
-
-    public void log() {
-        checkValue();
-
-        IslandsApi.getInstance().getInfraLogger().sysout(this);
-    }
-
-    protected abstract void checkValue();
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public String getMessage() {
-        return msg;
-    }
 }

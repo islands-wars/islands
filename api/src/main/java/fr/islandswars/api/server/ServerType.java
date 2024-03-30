@@ -1,13 +1,8 @@
-package fr.islandswars.api.log;
-
-import com.google.gson.annotations.SerializedName;
-import fr.islandswars.api.IslandsApi;
-import org.apache.logging.log4j.Level;
-
+package fr.islandswars.api.server;
 
 /**
- * File <b>Log</b> located on fr.islandswars.api.log
- * Log is a part of islands.
+ * File <b>ServerType</b> located on fr.islandswars.api.server
+ * ServerType is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -26,33 +21,26 @@ import org.apache.logging.log4j.Level;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 26/03/2024 at 19:30
+ * Created the 30/03/2024 at 20:10
  * @since 0.1
  */
-public abstract class Log {
+public enum ServerType {
 
-    protected final Level  level;
-    @SerializedName("message")
-    protected final String msg;
+    HUB(64, "hub");
 
-    protected Log(Level level, String msg) {
-        this.level = level;
-        this.msg = msg;
+    private final int    maxPlayer;
+    private final String name;
+
+    ServerType(int maxPlayer, String name) {
+        this.maxPlayer = maxPlayer;
+        this.name = name;
     }
 
-    public void log() {
-        checkValue();
-
-        IslandsApi.getInstance().getInfraLogger().sysout(this);
+    public int getMaxPlayer() {
+        return maxPlayer;
     }
 
-    protected abstract void checkValue();
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public String getMessage() {
-        return msg;
+    public String getTypeName() {
+        return name;
     }
 }
