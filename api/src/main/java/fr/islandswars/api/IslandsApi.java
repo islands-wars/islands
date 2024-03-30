@@ -1,6 +1,7 @@
 package fr.islandswars.api;
 
 import fr.islandswars.api.bossbar.BarManager;
+import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
@@ -12,6 +13,7 @@ import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.Preconditions;
 import org.apache.logging.log4j.Level;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -46,6 +48,10 @@ import java.util.function.Consumer;
  * Created the 23/03/2024 at 19:59
  * @since 0.1
  */
+//TODO list
+//item
+//inventory
+//scoreboard
 public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     private static IslandsApi instance;
@@ -95,6 +101,10 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     public abstract BarManager getBarManager();
 
     public abstract Translatable getTranslatable();
+
+    public abstract ItemManager getItemManager();
+
+    public abstract NamespacedKey getKey();
 
     public void registerEvent(Listener listener) {
         Preconditions.checkNotNull(listener);

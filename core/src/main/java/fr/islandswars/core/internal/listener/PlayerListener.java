@@ -2,6 +2,7 @@ package fr.islandswars.core.internal.listener;
 
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.inventory.item.FactoryItem;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
@@ -53,6 +54,8 @@ public class PlayerListener extends LazyListener {
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
         sendHeader(p);
+        p.getBukkitPlayer().getInventory().clear();
+        p.getBukkitPlayer().getInventory().setItem(0, FactoryItem.SUPER_SWORD.getItem().build());
     }
 
     private void sendHeader(IslandsPlayer p) {
