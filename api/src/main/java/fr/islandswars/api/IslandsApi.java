@@ -2,6 +2,7 @@ package fr.islandswars.api;
 
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.locale.Translatable;
+import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.UpdaterManager;
@@ -64,6 +65,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     public abstract UpdaterManager getUpdaterManager();
 
+    public abstract InfraLogger getInfraLogger();
+
     public abstract BarManager getBarManager();
 
     public abstract Translatable getTranslatable();
@@ -71,7 +74,6 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     public void registerEvent(Listener listener) {
         Preconditions.checkNotNull(listener);
 
-        //TODO log
         getServer().getPluginManager().registerEvents(listener, instance);
     }
 }

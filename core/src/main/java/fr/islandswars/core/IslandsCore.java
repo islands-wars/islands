@@ -3,6 +3,7 @@ package fr.islandswars.core;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.locale.Translatable;
+import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.UpdaterManager;
@@ -11,6 +12,7 @@ import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
+import fr.islandswars.core.internal.log.InternalLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,7 @@ public class IslandsCore extends IslandsApi {
     private final List<Module>        modules;
     private final TranslationLoader   translatable;
     private final TaskManager         taskManager;
+    private final InternalLogger      logger;
     private       BarManager          barManager;
 
     public IslandsCore() {
@@ -54,6 +57,7 @@ public class IslandsCore extends IslandsApi {
         this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
         this.taskManager = new TaskManager();
+        this.logger = new InternalLogger();
     }
 
     @Override
@@ -69,6 +73,9 @@ public class IslandsCore extends IslandsApi {
 
     @Override
     public void onEnable() {
+        logger.logInfo("test info");
+        logger.logDebug("test debug");
+        logger.logError(new Exception("Test error", new Throwable("shit")));
         this.barManager = registerModule(BukkitBarManager.class);
         modules.forEach(Module::onEnable);
         new PlayerListener(this);
@@ -87,6 +94,11 @@ public class IslandsCore extends IslandsApi {
     @Override
     public UpdaterManager getUpdaterManager() {
         return taskManager;
+    }
+
+    @Override
+    public InfraLogger getInfraLogger() {
+        return logger;
     }
 
     @Override

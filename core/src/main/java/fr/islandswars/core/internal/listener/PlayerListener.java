@@ -2,14 +2,11 @@ package fr.islandswars.core.internal.listener;
 
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
-import fr.islandswars.api.bossbar.Bar;
-import fr.islandswars.api.bossbar.BarSequence;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.player.InternalPlayer;
 import fr.islandswars.core.player.rank.BoardManager;
-import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.EventHandler;
@@ -44,15 +41,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerListener extends LazyListener {
 
     private final BoardManager boardManager;
-    private final BarSequence  sequence;
-    private final Bar          bar1, bar2;
 
     public PlayerListener(IslandsApi api) {
         super(api);
         this.boardManager = new BoardManager();
-        this.bar1 = api.getBarManager().createBar(Component.text("Coucou toi"), BossBar.Color.GREEN, 1f, BossBar.Overlay.NOTCHED_20).withTimeOnScreen(20L * 10, 10).withAutoUpdate(true);
-        this.bar2 = api.getBarManager().createBar(Component.text("Bienvenue"), BossBar.Color.RED, 1f, BossBar.Overlay.NOTCHED_6).withTimeOnScreen(20L * 5, 10).withAutoUpdate(true);
-        this.sequence = api.getBarManager().createSequence(bar1, bar2);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -61,11 +53,7 @@ public class PlayerListener extends LazyListener {
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
         sendHeader(p);
-
-        //TEST code
-        //bar1.displayTo(p);
-        sequence.subscribe(p);
-        sequence.display();
+        int j = 1 / 0;
     }
 
     private void sendHeader(IslandsPlayer p) {

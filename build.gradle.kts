@@ -53,6 +53,7 @@ tasks.jar {
 tasks {
     runServer {
         dependsOn(jar)
+        environment("DEBUG", "true")
         minecraftVersion("1.20.4")
     }
 }
