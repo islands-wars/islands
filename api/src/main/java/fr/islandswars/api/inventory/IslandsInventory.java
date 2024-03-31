@@ -1,9 +1,9 @@
 package fr.islandswars.api.inventory;
 
 import fr.islandswars.api.IslandsApi;
-import fr.islandswars.api.utils.Preconditions;
+import fr.islandswars.api.player.IslandsPlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,22 +27,24 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 30/03/2024 at 21:17
+ * Created the 31/03/2024 at 17:44
  * @since 0.1
  */
-public abstract class IslandsInventory implements InventoryHolder {
-    protected final IslandsApi api;
-    private final   Inventory  inventory;
+public class IslandsInventory extends BasicInventory {
 
-    public IslandsInventory(IslandsApi api, int size) {
-        this.api = api;
-        Preconditions.checkState(size, (ref) -> size % 9 == 0);
-        this.inventory = api.getServer().createInventory(this, size);
+    public IslandsInventory(IslandsApi api, int size, Component title) {
+        super(api, size, title);
     }
 
+    @Override
+    public void openTo(IslandsPlayer player) {
+        if (!isBuild())
+            build();
+        player.getBukkitPlayer().openInventory(getInventory());
+    }
 
     @Override
     public @NotNull Inventory getInventory() {
-        return null;
+        return inventory;
     }
 }

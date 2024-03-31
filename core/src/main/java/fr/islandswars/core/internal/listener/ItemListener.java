@@ -72,10 +72,8 @@ public class ItemListener extends LazyListener {
             player.ifPresent(p -> {
                 var it = event.getCurrentItem();
                 if (isCustom(it)) {
-                    api.getInfraLogger().logDebug(event.getAction().name());
                     var item = api.getItemManager().exist(getkey(it));
                     item.ifPresent(i -> i.handleClick(p, event));
-                    bukkitPlayer.updateInventory(); //TODO why ?
                 }
             });
         }

@@ -44,7 +44,6 @@ public class InternalItemManager implements ItemManager {
 
     @Override
     public int register(CustomIslandsItem item) {
-        IslandsApi.getInstance().getInfraLogger().logDebug("call");
         if (items.values().stream().anyMatch(it -> it.equals(item))) {
             IslandsApi.getInstance().getInfraLogger().logError(new Exception("Item " + item.toString() + "is already registered"));
             return 0;
@@ -57,7 +56,6 @@ public class InternalItemManager implements ItemManager {
 
     @Override
     public void registerFactory(CustomIslandsItem item, int key) {
-        IslandsApi.getInstance().getInfraLogger().logDebug("call factory");
         if (items.values().stream().anyMatch(it -> it == item))
             IslandsApi.getInstance().getInfraLogger().logError(new Exception("Item " + item.toString() + "is already registered"));
         else if (items.containsKey(key)) {

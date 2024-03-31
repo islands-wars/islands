@@ -2,7 +2,10 @@ package fr.islandswars.core.internal.listener;
 
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
-import fr.islandswars.api.inventory.item.FactoryItem;
+import fr.islandswars.api.inventory.BasicInventory;
+import fr.islandswars.api.inventory.IslandsInventory;
+import fr.islandswars.api.inventory.item.CustomIslandsItem;
+import fr.islandswars.api.inventory.item.IslandsItem;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.core.IslandsCore;
@@ -10,6 +13,7 @@ import fr.islandswars.core.player.InternalPlayer;
 import fr.islandswars.core.player.rank.BoardManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -41,11 +45,19 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
-    private final BoardManager boardManager;
+    private final BoardManager      boardManager;
+    private final BasicInventory    inv;
+    private final CustomIslandsItem item;
 
     public PlayerListener(IslandsApi api) {
         super(api);
         this.boardManager = new BoardManager();
+        this.inv = new IslandsInventory(api, 9 * 3, Component.text("le mien"));
+        this.item = new CustomIslandsItem(IslandsItem.builder(Material.GOLD_BLOCK)).onClick((p, e) -> {
+            e.setCancelled(true);
+        });
+        inv.setItem(item, 0);
+        inv.build();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -54,8 +66,10 @@ public class PlayerListener extends LazyListener {
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
         sendHeader(p);
+
+        p.getBukkitPlayer().openInventory(inv.getInventory());
         p.getBukkitPlayer().getInventory().clear();
-        p.getBukkitPlayer().getInventory().setItem(0, FactoryItem.SUPER_SWORD.getItem().build());
+        p.getBukkitPlayer().getInventory().setItem(0, item.build());
     }
 
     private void sendHeader(IslandsPlayer p) {
