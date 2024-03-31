@@ -2,18 +2,14 @@ package fr.islandswars.core.internal.listener;
 
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import fr.islandswars.api.IslandsApi;
-import fr.islandswars.api.inventory.BasicInventory;
-import fr.islandswars.api.inventory.IslandsInventory;
-import fr.islandswars.api.inventory.item.CustomIslandsItem;
-import fr.islandswars.api.inventory.item.IslandsItem;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.scoreboard.IslandsBoard;
 import fr.islandswars.core.IslandsCore;
 import fr.islandswars.core.player.InternalPlayer;
-import fr.islandswars.core.player.rank.BoardManager;
+import fr.islandswars.core.player.rank.InternalRankTeam;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -45,19 +41,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
-    private final BoardManager      boardManager;
-    private final BasicInventory    inv;
-    private final CustomIslandsItem item;
+    private final InternalRankTeam rankTeam;
+    private final IslandsBoard     board;
 
     public PlayerListener(IslandsApi api) {
         super(api);
-        this.boardManager = new BoardManager();
-        this.inv = new IslandsInventory(api, 9 * 3, Component.text("le mien"));
-        this.item = new CustomIslandsItem(IslandsItem.builder(Material.GOLD_BLOCK)).onClick((p, e) -> {
-            e.setCancelled(true);
-        });
-        inv.setItem(item, 0);
-        inv.build();
+        this.rankTeam = (InternalRankTeam) api.getScoreboardManager().getRankTeam();
+        this.board = api.getScoreboardManager().createNewScoreboard();
+        rankTeam.getTeams().forEach(board::registerTeam);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -66,24 +57,22 @@ public class PlayerListener extends LazyListener {
         ((IslandsCore) api).addPlayer(p);
         event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
         sendHeader(p);
-
-        p.getBukkitPlayer().openInventory(inv.getInventory());
-        p.getBukkitPlayer().getInventory().clear();
-        p.getBukkitPlayer().getInventory().setItem(0, item.build());
     }
 
     private void sendHeader(IslandsPlayer p) {
         final Component header = Component.translatable("core.tab.header");
         final Component footer = Component.translatable("core.tab.footer", Component.text("Game").color(TextColor.color(15642)));
         p.getBukkitPlayer().sendPlayerListHeaderAndFooter(header, footer);
-        boardManager.registerPlayer(p);
+        rankTeam.registerPlayer(p);
+        board.addPlayer(p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerQuitEvent event) {
         var islandsPlayer = getOptionalPlayer(event.getPlayer());
-        islandsPlayer.ifPresent(boardManager::unregisterPlayer);
-        islandsPlayer.ifPresent((p) -> api.getBarManager().unregisterPlayer(p));
+        islandsPlayer.ifPresent(rankTeam::unregisterPlayer);
+        islandsPlayer.ifPresent(p -> api.getScoreboardManager().release(p));
+        islandsPlayer.ifPresent(p -> api.getBarManager().unregisterPlayer(p));
         islandsPlayer.ifPresent(((IslandsCore) api)::removePlayer);
     }
 
@@ -91,7 +80,6 @@ public class PlayerListener extends LazyListener {
     public void onLocaleChange(PlayerClientOptionsChangeEvent event) {
         if (event.hasLocaleChanged()) {
             //TODO NOT WORKING
-            getOptionalPlayer(event.getPlayer()).ifPresent(boardManager::updatePlayer);
             getOptionalPlayer(event.getPlayer()).ifPresent(this::sendHeader);
         }
     }

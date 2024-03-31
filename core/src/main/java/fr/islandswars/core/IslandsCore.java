@@ -9,10 +9,12 @@ import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.module.bukkit.ItemModule;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
 import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
 import fr.islandswars.core.bukkit.item.InternalItemManager;
+import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
 import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
@@ -51,20 +53,22 @@ import java.util.UUID;
  */
 public class IslandsCore extends IslandsApi {
 
-    private final List<IslandsPlayer> players;
-    private final List<Module>        modules;
-    private final TranslationLoader   translatable;
-    private final TaskManager         taskManager;
-    private final InternalLogger      logger;
-    private final InternalItemManager itemManager;
-    private       NamespacedKey       key;
-    private       BarManager          barManager;
+    private final List<IslandsPlayer>       players;
+    private final List<Module>              modules;
+    private final TranslationLoader         translatable;
+    private final TaskManager               taskManager;
+    private final InternalLogger            logger;
+    private final InternalItemManager       itemManager;
+    private final InternalScoreboardManager scoreboardManager;
+    private       NamespacedKey             key;
+    private       BarManager                barManager;
 
     public IslandsCore() {
         this.players = new ArrayList<>();
         this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
         this.itemManager = new InternalItemManager();
+        this.scoreboardManager = new InternalScoreboardManager();
         this.taskManager = new TaskManager();
         this.logger = new InternalLogger();
     }
@@ -120,6 +124,11 @@ public class IslandsCore extends IslandsApi {
     @Override
     public Translatable getTranslatable() {
         return translatable;
+    }
+
+    @Override
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
     }
 
     @Override

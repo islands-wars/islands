@@ -9,6 +9,7 @@ import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.Preconditions;
@@ -49,9 +50,9 @@ import java.util.function.Consumer;
  * @since 0.1
  */
 //TODO list
-//item
-//inventory
-//scoreboard
+//command
+//bdd call
+//store game profile
 public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     private static IslandsApi instance;
@@ -101,6 +102,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     public abstract BarManager getBarManager();
 
     public abstract Translatable getTranslatable();
+
+    public abstract ScoreboardManager getScoreboardManager();
 
     public abstract ItemManager getItemManager();
 

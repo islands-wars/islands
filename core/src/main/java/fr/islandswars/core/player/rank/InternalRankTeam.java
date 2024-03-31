@@ -1,20 +1,21 @@
 package fr.islandswars.core.player.rank;
 
 import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.player.rank.RankTeam;
+import fr.islandswars.api.scoreboard.team.IslandsTeam;
+import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.player.PlayerRank;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * File <b>BoardManager</b> located on fr.islandswars.core.player.rank
- * BoardManager is a part of islands.
+ * File <b>InternalRankTeam</b> located on fr.islandswars.core.player.rank
+ * InternalRankTeam is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -33,42 +34,38 @@ import java.util.Map;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 24/03/2024 at 19:08
+ * Created the 31/03/2024 at 18:46
  * @since 0.1
  */
-public class BoardManager {
+public class InternalRankTeam implements RankTeam {
 
-    private static final Component             start = Component.text("[").color(TextColor.color(79, 79, 79)).decorate(TextDecoration.BOLD);
-    private static final Component             end   = Component.text("]").color(TextColor.color(79, 79, 79)).decorate(TextDecoration.BOLD);
-    private final        Scoreboard            board;
-    private final        Map<PlayerRank, Team> ranks;
+    private static final Component                    start = Component.text("[").color(TextColor.color(79, 79, 79)).decorate(TextDecoration.BOLD);
+    private static final Component                    end   = Component.text("]").color(TextColor.color(79, 79, 79)).decorate(TextDecoration.BOLD);
+    private final        Map<PlayerRank, IslandsTeam> ranks;
 
-    public BoardManager() {
-        board = Bukkit.getScoreboardManager().getNewScoreboard();
+    public InternalRankTeam(InternalScoreboardManager manager) {
         this.ranks = new HashMap<>();
-        fillTeam();
+        fillTeam(manager);
     }
 
-    private void fillTeam() {
+    private void fillTeam(InternalScoreboardManager manager) {
         for (PlayerRank rank : PlayerRank.values()) {
-            Team team = board.registerNewTeam(rank.name());
-            team.prefix(start.append(Component.translatable(rank.getShortName()).color(rank.getRankColor())).append(end).appendSpace());
+            IslandsTeam team = manager.createNewTeam(rank.name());
+            team.setPrefix(start.append(Component.translatable(rank.getShortName()).color(rank.getRankColor())).append(end).appendSpace());
             ranks.put(rank, team);
         }
     }
 
-    public void updatePlayer(IslandsPlayer player) {
-        unregisterPlayer(player);
-        registerPlayer(player);
-    }
-
     public void unregisterPlayer(IslandsPlayer player) {
-        ranks.get((PlayerRank) player.getMainRank()).removePlayer(player.getBukkitPlayer());
+        ranks.get((PlayerRank) player.getMainRank()).removePlayer(player);
     }
 
     public void registerPlayer(IslandsPlayer player) {
-        ranks.get((PlayerRank) player.getMainRank()).addPlayer(player.getBukkitPlayer());
-        player.getBukkitPlayer().setScoreboard(board);
+        ranks.get((PlayerRank) player.getMainRank()).addPlayer(player);
     }
 
+    @Override
+    public Collection<IslandsTeam> getTeams() {
+        return ranks.values();
+    }
 }

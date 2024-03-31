@@ -37,7 +37,8 @@ public class InternalPlayer implements IslandsPlayer {
 
     public InternalPlayer(Player player) {
         this.player = player;
-        this.ranks = List.of("ADMIN");
+        if (player.getName().equals("Jangliu")) this.ranks = List.of("ADMIN");
+        else this.ranks = List.of("PLAYER");
     }
 
     @Override
