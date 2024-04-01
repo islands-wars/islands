@@ -1,10 +1,15 @@
 package fr.islandswars.core.bukkit.scoreboard;
 
+import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.module.Module;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.RankTeam;
 import fr.islandswars.api.scoreboard.IslandsBoard;
 import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.scoreboard.team.IslandsTeam;
+import fr.islandswars.api.task.TaskType;
+import fr.islandswars.api.task.TimeType;
+import fr.islandswars.api.task.Updater;
 import fr.islandswars.api.utils.Preconditions;
 import fr.islandswars.core.bukkit.scoreboard.team.InternalTeam;
 import fr.islandswars.core.player.rank.InternalRankTeam;
@@ -37,18 +42,33 @@ import java.util.List;
  * Created the 31/03/2024 at 18:25
  * @since 0.1
  */
-public class InternalScoreboardManager implements ScoreboardManager {
+public class InternalScoreboardManager extends Module implements ScoreboardManager {
 
     private final InternalRankTeam         rankTeam;
     private final List<InternalTeam>       teams;
     private final List<InternalScoreboard> boards;
     private       int                      count;
 
-    public InternalScoreboardManager() {
+    public InternalScoreboardManager(IslandsApi api) {
+        super(api);
         this.teams = new ArrayList<>();
         this.boards = new ArrayList<>();
         this.rankTeam = new InternalRankTeam(this);
         this.count = 0;
+    }
+
+    @Override
+    public void onDisable() {
+        api.getUpdaterManager().stop(this);
+    }
+
+    @Override
+    public void onEnable() {
+        api.getUpdaterManager().register(this);
+    }
+
+    @Override
+    public void onLoad() {
     }
 
     @Override
@@ -72,8 +92,14 @@ public class InternalScoreboardManager implements ScoreboardManager {
     }
 
     @Override
+    public void release(IslandsBoard board) {
+        boards.remove((InternalScoreboard) board);
+    }
+
+    @Override
     public void release(IslandsPlayer player) {
         teams.forEach(t -> t.removePlayer(player));
+        boards.forEach(b -> b.removePlayer(player));
     }
 
     public void update(InternalTeam team) {
@@ -95,5 +121,10 @@ public class InternalScoreboardManager implements ScoreboardManager {
         boardTeam.color(team.getColor());
         boardTeam.displayName(team.getDisplayName());
         team.getMembers().forEach(ip -> boardTeam.addPlayer(ip.getBukkitPlayer()));
+    }
+
+    @Updater(type = TaskType.SYNC, time = TimeType.TICK, delta = 1)
+    public void updateBoard() {
+        boards.forEach(InternalScoreboard::updateDisplay);
     }
 }

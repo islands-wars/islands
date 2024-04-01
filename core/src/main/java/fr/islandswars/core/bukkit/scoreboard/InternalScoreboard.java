@@ -2,14 +2,18 @@ package fr.islandswars.core.bukkit.scoreboard;
 
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.scoreboard.IslandsBoard;
+import fr.islandswars.api.scoreboard.IslandsObjective;
 import fr.islandswars.api.scoreboard.team.IslandsTeam;
+import fr.islandswars.api.utils.Preconditions;
 import fr.islandswars.core.bukkit.scoreboard.team.InternalTeam;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * File <b>InternalScoreboard</b> located on fr.islandswars.core.bukkit.scoreboard
@@ -42,6 +46,13 @@ public class InternalScoreboard implements IslandsBoard {
     private final InternalScoreboardManager manager;
     private final List<IslandsTeam>         teams;
     private final List<IslandsPlayer>       viewers;
+    private       InternalObjective         objective;
+    private       int                       index  = 0;
+    private       boolean                   update = false;
+
+    private int pause                  = 0;
+    private int countTitle, countScore = 0;
+    private int deltaTitle, deltaScore = 0;
 
     public InternalScoreboard(int id, InternalScoreboardManager manager) {
         this.board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -52,14 +63,19 @@ public class InternalScoreboard implements IslandsBoard {
     }
 
     @Override
-    public IslandsBoard addLine(Component component) {
-        return null;
+    public IslandsObjective createObjective(String name, List<Component> title) {
+        Preconditions.checkState(title.size(), (ref) -> ref > 0);
+
+        var bukkitObjective = board.registerNewObjective(name, Criteria.DUMMY, title.get(0));
+        this.objective = new InternalObjective(bukkitObjective, title);
+        return objective;
     }
 
     @Override
     public void addPlayer(IslandsPlayer player) {
         viewers.add(player);
         player.getBukkitPlayer().setScoreboard(board);
+        if (objective != null) objective.render(player);
     }
 
     @Override
@@ -71,6 +87,14 @@ public class InternalScoreboard implements IslandsBoard {
     public void registerTeam(IslandsTeam team) {
         teams.add(team);
         update((InternalTeam) team);
+    }
+
+    @Override
+    public void updateDisplay(boolean status, int deltaTitle, int deltaScore, int pause) {
+        this.update = status;
+        this.deltaTitle = deltaTitle;
+        this.deltaScore = deltaScore;
+        this.pause = pause;
     }
 
     public void update(InternalTeam team) {
@@ -100,5 +124,36 @@ public class InternalScoreboard implements IslandsBoard {
             var bukkitTeam = board.getTeam(team.getName());
             if (bukkitTeam != null) bukkitTeam.removePlayer(player.getBukkitPlayer());
         }
+    }
+
+    public void updateDisplay() {
+        getObjective().ifPresent((obj) -> {
+            if (update) {
+                int totalTime = obj.title.size() * deltaTitle + pause;
+                countTitle++;
+                if (countTitle > totalTime - pause + 1) {
+                    if (!obj.getObjective().displayName().equals(obj.title.get(0))) {
+                        index = 0;
+                        obj.getObjective().displayName(obj.title.get(index));
+                    }
+                    if (countTitle >= totalTime) {
+                        countTitle = 0;
+                        index = 0;
+                    }
+                } else if (countTitle % deltaTitle == 0) obj.getObjective().displayName(obj.title.get(index++));
+                countScore++;
+                if (countScore % deltaScore == 0) {
+                    viewers.forEach(player -> obj.scores.forEach((name, line) -> {
+                        var score = obj.getObjective().getScore(name);
+                        score.customName(line.apply(player));
+                    }));
+                    countScore = 0;
+                }
+            }
+        });
+    }
+
+    public Optional<InternalObjective> getObjective() {
+        return Optional.ofNullable(objective);
     }
 }

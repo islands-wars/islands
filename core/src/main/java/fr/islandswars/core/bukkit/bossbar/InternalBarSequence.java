@@ -36,12 +36,12 @@ public class InternalBarSequence implements BarSequence {
 
     protected final List<InternalBar>   bars;
     private final   List<IslandsPlayer> viewers;
-    private final   BukkitBarManager    manager;
+    private final   InternalBarManager  manager;
     protected       boolean             start;
     protected       int                 index;
     protected       long                timer;
 
-    protected InternalBarSequence(BukkitBarManager manager, InternalBar... bars) {
+    protected InternalBarSequence(InternalBarManager manager, InternalBar... bars) {
         this.viewers = new ArrayList<>();
         this.manager = manager;
         this.bars = Arrays.asList(bars);

@@ -1,14 +1,13 @@
 package fr.islandswars.api.scoreboard;
 
 import fr.islandswars.api.player.IslandsPlayer;
-import fr.islandswars.api.scoreboard.team.IslandsTeam;
 import net.kyori.adventure.text.Component;
 
-import java.util.List;
+import java.util.function.Function;
 
 /**
- * File <b>IslandsBoard</b> located on fr.islandswars.api.scoreboard
- * IslandsBoard is a part of islands.
+ * File <b>IslandsObjective</b> located on fr.islandswars.api.scoreboard
+ * IslandsObjective is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -27,20 +26,12 @@ import java.util.List;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 31/03/2024 at 18:20
+ * Created the 01/04/2024 at 13:08
  * @since 0.1
  */
-public interface IslandsBoard {
+public interface IslandsObjective {
 
-    IslandsObjective createObjective(String name, List<Component> title);
+    void addUpdatedLine(int id, String name, Function<IslandsPlayer, Component> line);
 
-    void addPlayer(IslandsPlayer player);
-
-    void removePlayer(IslandsPlayer player);
-
-    void registerTeam(IslandsTeam team);
-
-    void updateDisplay(boolean status, int deltaTitle, int deltaScore, int pause);
-
-
+    void addLine(int id, String name, Component line);
 }

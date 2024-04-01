@@ -32,16 +32,16 @@ import net.kyori.adventure.text.Component;
  */
 public class InternalBar implements Bar {
 
-    protected final float            initialProgress;
-    private final   BossBar          bukkitBar;
-    private final   BukkitBarManager manager;
-    protected       IslandsPlayer    viewer;
-    protected       long             timer;
-    protected       long             timeInTickOnScreen;
-    protected       long             delta;
-    protected       boolean          autoUpdate;
+    protected final float              initialProgress;
+    private final   BossBar            bukkitBar;
+    private final   InternalBarManager manager;
+    protected       IslandsPlayer      viewer;
+    protected       long               timer;
+    protected       long               timeInTickOnScreen;
+    protected       long               delta;
+    protected       boolean            autoUpdate;
 
-    protected InternalBar(BukkitBarManager manager, Component text, BossBar.Color color, float progress, BossBar.Overlay overlay) {
+    protected InternalBar(InternalBarManager manager, Component text, BossBar.Color color, float progress, BossBar.Overlay overlay) {
         this.bukkitBar = BossBar.bossBar(text, progress, color, overlay);
         this.timer = 0L;
         this.manager = manager;

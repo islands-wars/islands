@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * File <b>BukkitBarManager</b> located on fr.islandswars.core.bukkit.bossbar
- * BukkitBarManager is a part of islands.
+ * File <b>InternalBarManager</b> located on fr.islandswars.core.bukkit.bossbar
+ * InternalBarManager is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -39,12 +39,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created the 25/03/2024 at 16:43
  * @since 0.1
  */
-public class BukkitBarManager extends BarManager {
+public class InternalBarManager extends BarManager {
 
     private final CopyOnWriteArrayList<InternalBar>         updatableBar;
     private final CopyOnWriteArrayList<InternalBarSequence> updatableSequence;
 
-    public BukkitBarManager(IslandsApi api) {
+    public InternalBarManager(IslandsApi api) {
         super(api);
         this.updatableSequence = new CopyOnWriteArrayList<>();
         this.updatableBar = new CopyOnWriteArrayList<>();

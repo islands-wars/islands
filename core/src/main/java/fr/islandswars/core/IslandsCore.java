@@ -12,7 +12,7 @@ import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
-import fr.islandswars.core.bukkit.bossbar.BukkitBarManager;
+import fr.islandswars.core.bukkit.bossbar.InternalBarManager;
 import fr.islandswars.core.bukkit.item.InternalItemManager;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
@@ -59,7 +59,7 @@ public class IslandsCore extends IslandsApi {
     private final TaskManager               taskManager;
     private final InternalLogger            logger;
     private final InternalItemManager       itemManager;
-    private final InternalScoreboardManager scoreboardManager;
+    private       InternalScoreboardManager scoreboardManager;
     private       NamespacedKey             key;
     private       BarManager                barManager;
 
@@ -68,7 +68,6 @@ public class IslandsCore extends IslandsApi {
         this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
         this.itemManager = new InternalItemManager();
-        this.scoreboardManager = new InternalScoreboardManager();
         this.taskManager = new TaskManager();
         this.logger = new InternalLogger();
     }
@@ -76,7 +75,8 @@ public class IslandsCore extends IslandsApi {
     @Override
     public void onLoad() {
         modules.forEach(Module::onLoad);
-        this.barManager = registerModule(BukkitBarManager.class);
+        this.barManager = registerModule(InternalBarManager.class);
+        this.scoreboardManager = registerModule(InternalScoreboardManager.class);
         registerModule(ItemModule.class);
         translatable.load("locale.core");
         setServerStatus(Status.LOAD);

@@ -36,5 +36,7 @@ public interface ScoreboardManager {
 
     RankTeam getRankTeam();
 
+    void release(IslandsBoard board);
+
     void release(IslandsPlayer player);
 }
