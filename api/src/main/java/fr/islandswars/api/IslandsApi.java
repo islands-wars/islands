@@ -1,6 +1,7 @@
 package fr.islandswars.api;
 
 import fr.islandswars.api.bossbar.BarManager;
+import fr.islandswars.api.command.CommandManager;
 import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
@@ -93,6 +94,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     public abstract InfraLogger getInfraLogger();
 
+    public abstract CommandManager getCommandManager();
+
     public abstract List<? extends IslandsPlayer> getPlayers();
 
     public abstract Optional<IslandsPlayer> getPlayer(UUID playerId);
@@ -115,9 +118,9 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
         getServer().getPluginManager().registerEvents(listener, instance);
     }
 
-    public <T extends Event> void registerEvent(Class<T> eventType, Consumer<T> consumer) {
+    public <T extends Event> void registerEvent(Class<T> eventType, Consumer<T> consumer, EventPriority priority) {
         getServer().getPluginManager().registerEvent(eventType, new Listener() {
-        }, EventPriority.LOW, (listener, event) -> {
+        }, priority, (listener, event) -> {
             if (eventType.isInstance(event)) {
                 try {
                     consumer.accept(eventType.cast(event));

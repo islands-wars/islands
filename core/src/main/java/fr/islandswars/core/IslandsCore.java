@@ -2,6 +2,7 @@ package fr.islandswars.core;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.BarManager;
+import fr.islandswars.api.command.CommandManager;
 import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
@@ -13,6 +14,7 @@ import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
 import fr.islandswars.core.bukkit.bossbar.InternalBarManager;
+import fr.islandswars.core.bukkit.command.InternalCommandManager;
 import fr.islandswars.core.bukkit.item.InternalItemManager;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
@@ -20,12 +22,14 @@ import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 import fr.islandswars.core.internal.log.InternalLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * File <b>IslandsCore</b> located on fr.islandswars.core
@@ -59,6 +63,7 @@ public class IslandsCore extends IslandsApi {
     private final TaskManager               taskManager;
     private final InternalLogger            logger;
     private final InternalItemManager       itemManager;
+    private final InternalCommandManager    commandManager;
     private       InternalScoreboardManager scoreboardManager;
     private       NamespacedKey             key;
     private       BarManager                barManager;
@@ -68,6 +73,7 @@ public class IslandsCore extends IslandsApi {
         this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
         this.itemManager = new InternalItemManager();
+        this.commandManager = new InternalCommandManager();
         this.taskManager = new TaskManager();
         this.logger = new InternalLogger();
     }
@@ -94,11 +100,35 @@ public class IslandsCore extends IslandsApi {
         new PlayerListener(this);
         new ItemListener(this);
         setServerStatus(Status.ENABLE);
+
+        var cmd = getCommand("help");
+        cmd.setExecutor(new CommandExecutor() {
+            @Override
+            public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+                sender.sendMessage("fdp va");
+                return true;
+            }
+        });
+        cmd.setTabCompleter((sender, command, label, args) -> Arrays.asList("sdfqsd", "sdqqsd"));
+        Bukkit.getCommandMap().getKnownCommands().forEach((s1, s2) -> {
+            if (s1.startsWith("islandscore:")) {
+                var result = s2.unregister(this.getServer().getCommandMap());
+                logger.logInfo("unregister" + result);
+            }
+            logger.logInfo("call");
+        });
+        Bukkit.getCommandMap().getKnownCommands().remove("islandscore:help");
+
     }
 
     @Override
     public InfraLogger getInfraLogger() {
         return logger;
+    }
+
+    @Override
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     @Override

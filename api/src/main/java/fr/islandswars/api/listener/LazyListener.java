@@ -76,7 +76,7 @@ public abstract class LazyListener implements Listener {
                 api.getInfraLogger().logError(e);
             }
         };
-        api.registerEvent(eventType, consumer);
+        api.registerEvent(eventType, consumer, priority);
         api.getInfraLogger().logDebug("Register " + eventType.getSimpleName() + " on method " + method.getDeclaringClass().getName() + "." + method.getName());
     }
 
