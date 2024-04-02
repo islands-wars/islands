@@ -51,7 +51,6 @@ import java.util.function.Consumer;
  * @since 0.1
  */
 //TODO list
-//command
 //bdd call
 //store game profile
 public abstract class IslandsApi extends JavaPlugin implements ModuleManager {

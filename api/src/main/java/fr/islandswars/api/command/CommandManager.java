@@ -25,4 +25,6 @@ package fr.islandswars.api.command;
  * @since 0.1
  */
 public interface CommandManager {
+
+    void registerCommand(IslandsCommand command);
 }

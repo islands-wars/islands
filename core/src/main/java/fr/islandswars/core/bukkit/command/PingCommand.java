@@ -1,14 +1,18 @@
-package fr.islandswars.core.player;
+package fr.islandswars.core.bukkit.command;
 
+import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.command.IslandsCommand;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.IslandsRank;
-import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.Command;
 
 import java.util.List;
 
 /**
- * File <b>InternalPlayer</b> located on fr.islandswars.core.player
- * InternalPlayer is a part of islands.
+ * File <b>PingCommand</b> located on fr.islandswars.core.bukkit.command
+ * PingCommand is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -27,31 +31,23 @@ import java.util.List;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 23/03/2024 at 22:33
+ * Created the 02/04/2024 at 19:44
  * @since 0.1
  */
-public class InternalPlayer implements IslandsPlayer {
+public class PingCommand extends IslandsCommand {
 
-    private final transient Player       player;
-    private final           List<String> ranks;
-
-    public InternalPlayer(Player player) {
-        this.player = player;
-        this.ranks = List.of("PLAYER");
+    public PingCommand(String cmd, IslandsApi api, IslandsRank rank) {
+        super(cmd, api, rank);
     }
 
     @Override
-    public void disconnect() {
-        player.kick();
+    public List<String> getCompleter(Command command, String label, String[] args) {
+        return null;
     }
 
     @Override
-    public IslandsRank getMainRank() {
-        return PlayerRank.getHighest(ranks);
-    }
-
-    @Override
-    public Player getBukkitPlayer() {
-        return player;
+    public boolean execute(IslandsPlayer sender, Command command, String label, String[] args) {
+        sender.getBukkitPlayer().sendMessage(Component.translatable("core.cmd.ping.execute", Component.text(sender.getBukkitPlayer().getPing()).color(NamedTextColor.RED)).color(NamedTextColor.GRAY));
+        return true;
     }
 }

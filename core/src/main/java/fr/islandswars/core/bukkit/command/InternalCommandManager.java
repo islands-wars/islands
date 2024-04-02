@@ -1,6 +1,8 @@
 package fr.islandswars.core.bukkit.command;
 
+import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.command.CommandManager;
+import fr.islandswars.api.command.IslandsCommand;
 import fr.islandswars.api.utils.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -39,8 +41,9 @@ public class InternalCommandManager implements CommandManager {
         unregisterDefaultCommand();
     }
 
+
     private void unregisterDefaultCommand() {
-        PluginManager        s             = (PluginManager) Bukkit.getServer().getPluginManager();
+        PluginManager        s             = Bukkit.getServer().getPluginManager();
         SimpleCommandMap     commandMap    = ReflectionUtil.getValue(s, "commandMap");
         Map<String, Command> knownCommands = ReflectionUtil.getValue(commandMap, "knownCommands");
         for (Map.Entry<String, Command> entry : knownCommands.entrySet()) {
@@ -49,5 +52,17 @@ public class InternalCommandManager implements CommandManager {
         knownCommands.clear();
         Bukkit.getCommandAliases().clear();
         Bukkit.getCommandMap().getKnownCommands().clear();
+    }
+
+    @Override
+    public void registerCommand(IslandsCommand command) {
+        command.getCommand().ifPresent(cmd -> {
+            Bukkit.getCommandMap().getKnownCommands().forEach((s1, s2) -> {
+                if (s1.startsWith(IslandsApi.getInstance().getName().toLowerCase() + ":")) s2.unregister(IslandsApi.getInstance().getServer().getCommandMap());
+            });
+            Bukkit.getCommandMap().getKnownCommands().remove(IslandsApi.getInstance().getName().toLowerCase() + ":" + cmd.getLabel());
+            var logger = IslandsApi.getInstance().getInfraLogger();
+            logger.logDebug("Register /" + cmd.getLabel() + " with rank " + command.getRank() + " on method " + command.getClass().getName());
+        });
     }
 }
