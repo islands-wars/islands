@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="com.mojang.util" shutdownHook="disable">
+    <Appenders>
+        <Queue name="ServerGuiConsole">
+            <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n"/>
+        </Queue>
+        <TerminalConsole name="TerminalConsole">
+            <PatternLayout>
+                <LoggerNamePatternSelector defaultPattern="%highlightError{[%d{HH:mm:ss} %level]: [%logger] %msg%n%xEx{full}}">
+                    <PatternMatch key=",fr.islandswars"
+                                  pattern="%highlightError{%msg%n%xEx{full}}"/>
+                </LoggerNamePatternSelector>
+            </PatternLayout>
+            <Filters>
+                <!-- Allow only log messages coming from fr.islandswars package -->
+                <RegexFilter regex="\{.*\}" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </TerminalConsole>
+        <Async name="Async">
+            <AppenderRef ref="rewrite"/>
+        </Async>
+        <Rewrite name="rewrite">
+            <StacktraceDeobfuscatingRewritePolicy/>
+            <AppenderRef ref="rewrite2"/>
+        </Rewrite>
+        <Rewrite name="rewrite2">
+            <ExtraClassInfoRewritePolicy/>
+            <AppenderRef ref="TerminalConsole" level="debug"/>
+            <AppenderRef ref="ServerGuiConsole" level="debug"/>
+        </Rewrite>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <filters>
+                <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </filters>
+            <AppenderRef ref="Async"/>
+        </Root>
+    </Loggers>
+</Configuration>
