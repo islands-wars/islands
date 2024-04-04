@@ -21,7 +21,7 @@ allprojects {
     }
 }
 
-version = "0.1"
+version = "0.2"
 
 val mergedJar by configurations.creating<Configuration> {
     isCanBeResolved = true

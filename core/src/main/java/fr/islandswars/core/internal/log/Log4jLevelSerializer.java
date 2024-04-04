@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
  * Created the 30/03/2024 at 17:51
- * @since 01
+ * @since 0.1
  */
 public class Log4jLevelSerializer implements JsonSerializer<Level> {
 
