@@ -16,10 +16,13 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build with Gradle
         run: ./gradlew jar
+        env:
+          USERNAME: ${{ secrets.GPR_ACTOR }}
+          TOKEN: ${{ secrets.GPR_TOKEN }}
 
       - name: Publish to GitHub Packages
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
