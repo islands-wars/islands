@@ -19,7 +19,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build with Gradle
-        run: ./gradlew jar
+        run: ./gradlew shadowJar
         env:
           USERNAME: ${{ secrets.GPR_ACTOR }}
           TOKEN: ${{ secrets.GPR_TOKEN }}

@@ -4,6 +4,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.2.0"
     id("java")
     id("maven-publish")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 allprojects {
@@ -31,38 +32,13 @@ allprojects {
 
 version = "0.1.3"
 
-val mergedJar by configurations.creating<Configuration> {
-    isCanBeResolved = true
-    isCanBeConsumed = false
-    isVisible = false
-}
-
 dependencies {
-    mergedJar(project(":core"))
-}
-
-tasks.jar {
-    dependsOn(mergedJar)
-
-    manifest {
-        attributes["Main-Class"] = "fr.islandswars.core.IslandsCore"
-    }
-
-    from({
-        mergedJar
-            .filter {
-                it.name.endsWith("jar") && it.path.contains(rootDir.path)
-            }
-            .map {
-                logger.lifecycle("depending on $it")
-                zipTree(it)
-            }
-    })
+    implementation(project(":core"))
 }
 
 tasks {
     runServer {
-        dependsOn(jar)
+        dependsOn(shadowJar)
         environment("DEBUG", "true")
         environment("SERVER_TYPE", "HUB")
         environment("SERVER_ID", UUID.randomUUID())
