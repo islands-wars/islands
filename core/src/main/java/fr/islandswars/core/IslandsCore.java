@@ -57,16 +57,16 @@ import java.util.UUID;
  */
 public class IslandsCore extends IslandsApi {
 
-    private final List<IslandsPlayer>       players;
-    private final List<Module>              modules;
-    private final TranslationLoader         translatable;
-    private final TaskManager               taskManager;
-    private final InternalLogger            logger;
-    private final InternalItemManager       itemManager;
-    private final InternalCommandManager    commandManager;
-    private       InternalScoreboardManager scoreboardManager;
-    private       NamespacedKey             key;
-    private       BarManager                barManager;
+    private final List<IslandsPlayer> players;
+    private final List<Module> modules;
+    private final TranslationLoader translatable;
+    private final TaskManager taskManager;
+    private final InternalLogger logger;
+    private final InternalItemManager itemManager;
+    private final InternalCommandManager commandManager;
+    private InternalScoreboardManager scoreboardManager;
+    private NamespacedKey key;
+    private BarManager barManager;
 
     public IslandsCore() {
         this.players = new ArrayList<>();

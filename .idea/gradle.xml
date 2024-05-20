@@ -8,9 +8,9 @@
         <option name="gradleHome" value="" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/api" />
-            <option value="$PROJECT_DIR$/core" />
+            <option value="$USER_HOME$/OneDrive/Documents/Code/islands wars/v2/islands" />
+            <option value="$USER_HOME$/OneDrive/Documents/Code/islands wars/v2/islands/api" />
+            <option value="$USER_HOME$/OneDrive/Documents/Code/islands wars/v2/islands/core" />
           </set>
         </option>
       </GradleProjectSettings>

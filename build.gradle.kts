@@ -3,17 +3,25 @@ import java.util.*
 plugins {
     id("xyz.jpenilla.run-paper") version "2.2.0"
     id("java")
+    id("maven-publish")
 }
 
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "maven-publish")
 
     group = "fr.islandswars"
-
 
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
+        maven {
+            url = uri("https://maven.pkg.github.com/islands-wars/commons")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
     }
 
     dependencies {
@@ -21,7 +29,7 @@ allprojects {
     }
 }
 
-version = "0.2"
+version = "0.1.1"
 
 val mergedJar by configurations.creating<Configuration> {
     isCanBeResolved = true
@@ -42,13 +50,13 @@ tasks.jar {
 
     from({
         mergedJar
-                .filter {
-                    it.name.endsWith("jar") && it.path.contains(rootDir.path)
-                }
-                .map {
-                    logger.lifecycle("depending on $it")
-                    zipTree(it)
-                }
+            .filter {
+                it.name.endsWith("jar") && it.path.contains(rootDir.path)
+            }
+            .map {
+                logger.lifecycle("depending on $it")
+                zipTree(it)
+            }
     })
 }
 
