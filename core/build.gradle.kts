@@ -1,5 +1,3 @@
-version = 0.1
-
 dependencies {
     implementation(project(":api"))
     implementation("org.apache.logging.log4j:log4j-core:2.17.1")
@@ -23,7 +21,7 @@ publishing {
             from(components["java"])
             groupId = rootProject.group.toString()
             artifactId = project.name
-            version = project.version.toString()
+            version = "0.1.1"
 
             artifact(sourceJar)
             artifact(javadocJar)
@@ -31,7 +29,7 @@ publishing {
             pom {
                 name.set(project.name)
                 description.set("Utility classes for connecting to islands-wars database")
-                url.set("https://github.com/islands-wars/commons")
+                url.set("https://github.com/islands-wars/islands")
 
                 licenses {
                     license {
@@ -47,9 +45,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/islands-wars/commons.git")
-                    developerConnection.set("scm:git:ssh://github.com:islands-wars/commons.git")
-                    url.set("https://github.com/islands-wars/commons")
+                    connection.set("scm:git:git://github.com/islands-wars/islands.git")
+                    developerConnection.set("scm:git:ssh://github.com:islands-wars/islands.git")
+                    url.set("https://github.com/islands-wars/islands")
                 }
             }
         }
@@ -58,7 +56,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/islands-wars/commons")
+            url = uri("https://maven.pkg.github.com/islands-wars/islands")
             credentials {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.token") as String? ?: System.getenv("TOKEN")
