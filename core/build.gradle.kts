@@ -1,6 +1,12 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
 dependencies {
     implementation(project(":api"))
-    implementation("org.apache.logging.log4j:log4j-core:2.17.1")
+    compileOnly("org.apache.logging.log4j:log4j-core:2.17.1")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("fr.islandswars:commons:0.2.6")
 }
@@ -13,6 +19,14 @@ val sourceJar by tasks.registering(Jar::class) {
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     from(tasks.javadoc.get().destinationDir)
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    dependsOn("jar")
+
+    dependencies {
+        exclude(dependency("org.apache.logging.log4j:"))
+    }
 }
 
 publishing {
