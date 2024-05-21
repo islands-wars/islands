@@ -1,0 +1,88 @@
+services:
+  redis:
+    build: redis/.
+    ports:
+      - '6379:6379'
+    environment:
+      REDIS_PASSWORD_FILE: /run/secrets/redis_password
+      REDIS_USERNAME_FILE: /run/secrets/redis_username
+      REDIS_DISABLE_DEFAULT_USER: true
+    secrets:
+      - redis_password
+      - redis_username
+    networks:
+      - islands_network
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -u redis://$(cat /run/secrets/redis_username):$(cat /run/secrets/redis_password)@redis:6379 PING | grep -q PONG" ]
+      interval: 2s
+      timeout: 12s
+      retries: 5
+      start_period: 10s
+
+  papermc:
+    image: phyremaster/papermc:latest
+    container_name: papermc
+    environment:
+      EULA: "TRUE"
+      MEMORY: "2G"
+      PAPERMC_VERSION: "1.20.6"
+      DEBUG: "true"
+      SERVER_TYPE: "HUB"
+      SERVER_ID: "464b3751-d328-48b4-9caf-cf68c6378de5"
+    ports:
+      - "25565:25565"
+    volumes:
+      - ./papermc:/papermc
+      - ./build/libs:/papermc/plugins/
+    networks:
+      - islands_network
+    depends_on:
+      redis:
+        condition: service_healthy
+    secrets:
+      - rmq_password
+      - rmq_username
+      - rmq_host
+      - rmq_port
+      - redis_password
+      - redis_host
+      - redis_port
+      - redis_username
+      - mongodb_password
+      - mongodb_username
+      - mongodb_host
+      - mongodb_port
+
+networks:
+  islands_network:
+    driver: bridge
+
+secrets:
+  rmq_password:
+    file: secrets/rmq_password
+  rmq_username:
+    file: secrets/rmq_username
+  rmq_host:
+    file: secrets/rmq_host
+  rmq_port:
+    file: secrets/rmq_port
+  redis_password:
+    file: secrets/redis_password
+  redis_host:
+    file: secrets/redis_host
+  redis_port:
+    file: secrets/redis_port
+  redis_username:
+    file: secrets/redis_username
+  mongodb_root_password:
+    file: secrets/mongodb_root_password
+  mongodb_root_username:
+    file: secrets/mongodb_root_username
+  mongodb_password:
+    file: secrets/mongodb_password
+  mongodb_username:
+    file: secrets/mongodb_username
+  mongodb_host:
+    file: secrets/mongodb_host
+  mongodb_port:
+    file: secrets/mongodb_port

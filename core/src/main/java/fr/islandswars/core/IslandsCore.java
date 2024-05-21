@@ -13,6 +13,7 @@ import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
+import fr.islandswars.commons.utils.LogUtils;
 import fr.islandswars.core.bukkit.bossbar.InternalBarManager;
 import fr.islandswars.core.bukkit.command.InternalCommandManager;
 import fr.islandswars.core.bukkit.command.PingCommand;
@@ -86,6 +87,7 @@ public class IslandsCore extends IslandsApi {
         registerModule(ItemModule.class);
         translatable.load("locale.core");
         setServerStatus(Status.LOAD);
+        LogUtils.setErrorConsummer(logger::logError);
     }
 
     @Override
