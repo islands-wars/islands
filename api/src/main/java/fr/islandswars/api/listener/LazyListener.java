@@ -1,6 +1,7 @@
 package fr.islandswars.api.listener;
 
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.player.IslandsPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -82,5 +83,9 @@ public abstract class LazyListener implements Listener {
 
     protected Optional<IslandsPlayer> getOptionalPlayer(Player player) {
         return api.getPlayer(player.getUniqueId());
+    }
+
+    protected InfraLogger getLogger() {
+        return api.getInfraLogger();
     }
 }

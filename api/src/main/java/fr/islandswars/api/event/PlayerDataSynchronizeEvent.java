@@ -29,6 +29,7 @@ import org.bukkit.event.HandlerList;
  * @since 0.1
  */
 public class PlayerDataSynchronizeEvent extends Event {
+    
     private static final HandlerList   HANDLERS = new HandlerList();
     private final        IslandsPlayer player;
 

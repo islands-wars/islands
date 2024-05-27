@@ -2,20 +2,18 @@ package fr.islandswars.core.internal.listener;
 
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.listener.LazyListener;
-import fr.islandswars.api.player.IslandsPlayer;
-import fr.islandswars.api.scoreboard.IslandsBoard;
-import fr.islandswars.api.utils.GradientComponent;
+import fr.islandswars.commons.service.redis.RedisConnection;
+import fr.islandswars.commons.utils.DatabaseError;
 import fr.islandswars.core.IslandsCore;
-import fr.islandswars.core.player.InternalPlayer;
-import fr.islandswars.core.player.rank.InternalRankTeam;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.UUID;
 
 /**
  * File <b>PlayerListener</b> located on fr.islandswars.core.internal.listener
@@ -43,51 +41,50 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerListener extends LazyListener {
 
-    private final InternalRankTeam rankTeam;
-    private final IslandsBoard     board;
+    private final RedisConnection redis;
 
-    public PlayerListener(IslandsApi api) {
+    public PlayerListener(IslandsApi api, RedisConnection redis) {
         super(api);
-        this.rankTeam = (InternalRankTeam) api.getScoreboardManager().getRankTeam();
-        this.board = api.getScoreboardManager().createNewScoreboard();
-        var obj = board.createObjective("main", GradientComponent.highlightCharacters("Islands Wars", TextColor.color(252, 194, 3), TextColor.color(103, 252, 3)));
-        obj.addUpdatedLine(2, "test", (player) -> Component.translatable("core.event.join.msg", Component.text(player.getBukkitPlayer().getLocation().getX()).color(NamedTextColor.AQUA)).color(NamedTextColor.RED));
-        obj.addLine(1, "test2", Component.translatable("core.event.quit.fete").color(NamedTextColor.GREEN));
-        rankTeam.getTeams().forEach(board::registerTeam);
-        board.updateDisplay(true, 2, 10, 2 * 20);
+        this.redis = redis;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+        retrievePlayerData(event.getUniqueId(), 0);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onConnect(PlayerJoinEvent event) {
-        var p = new InternalPlayer(event.getPlayer());
-        ((IslandsCore) api).addPlayer(p);
         event.joinMessage(Component.empty());
-        event.getPlayer().sendMessage(Component.translatable("core.event.join.msg", p.getMainRank().getDisplayName()));
-        board.addPlayer(p);
-        sendHeader(p);
-    }
-
-    private void sendHeader(IslandsPlayer p) {
-        var             p1     = PlainTextComponentSerializer.plainText().serialize(Component.translatable("core.tab.header.p1"));
-        var             p2     = PlainTextComponentSerializer.plainText().serialize(Component.translatable("core.tab.header.p2"));
-        var             p1c    = GradientComponent.gradient(p1, TextColor.color(82, 82, 82), TextColor.color(252, 194, 3), false, 0);
-        var             isc    = GradientComponent.gradient("Islands Wars", TextColor.color(252, 194, 3), TextColor.color(103, 252, 3), false, 0);
-        var             p2c    = GradientComponent.gradient(p2, TextColor.color(103, 252, 3), TextColor.color(82, 82, 82), false, 0);
-        var             header = p1c.appendSpace().append(isc).appendSpace().append(p2c).appendNewline();
-        final Component footer = Component.translatable("core.tab.footer", Component.text("Game").color(TextColor.color(15642)));
-        p.getBukkitPlayer().sendPlayerListHeaderAndFooter(header, footer);
-        rankTeam.registerPlayer(p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerQuitEvent event) {
         var islandsPlayer = getOptionalPlayer(event.getPlayer());
-        islandsPlayer.ifPresent(rankTeam::unregisterPlayer);
         islandsPlayer.ifPresent(p -> api.getScoreboardManager().release(p));
         islandsPlayer.ifPresent(p -> api.getBarManager().unregisterPlayer(p));
         islandsPlayer.ifPresent(((IslandsCore) api)::removePlayer);
         event.quitMessage(Component.empty());
+    }
 
-        api.getScoreboardManager().release(board);
+    private void retrievePlayerData(UUID uuid, int count) {
+        redis.getConnection().get(uuid + ":player").whenCompleteAsync((r, t) -> {
+            if (t != null) {
+                getLogger().logError(new DatabaseError(t.getMessage(), t));
+                Bukkit.getScheduler().runTask(api, () -> kickPlayer(uuid)); //ensure thread safety, maybe overkill ?
+            } else if (r != null) {
+                //TODO change
+                getLogger().logInfo("Result retrieved : " + r);
+            } else Bukkit.getScheduler().runTaskLaterAsynchronously(api, () -> {
+                if (count >= 5) Bukkit.getScheduler().runTask(api, () -> kickPlayer(uuid));
+                else retrievePlayerData(uuid, count + 1);
+            }, 1);
+        });
+    }
+
+    private void kickPlayer(UUID uuid) {
+        var player = Bukkit.getServer().getPlayer(uuid);
+        if (player != null) player.kick(Component.text("Database error..."));
+        else Bukkit.getScheduler().runTaskLater(api, () -> kickPlayer(uuid), 5);
     }
 }

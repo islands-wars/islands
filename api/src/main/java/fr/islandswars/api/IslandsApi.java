@@ -6,7 +6,6 @@ import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
 import fr.islandswars.api.log.internal.Server;
-import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
@@ -14,7 +13,6 @@ import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.Preconditions;
-import org.apache.logging.log4j.Level;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -51,12 +49,11 @@ import java.util.function.Consumer;
  * @since 0.1
  */
 //TODO list
-//bdd call
 //store game profile
 public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
-    private static IslandsApi instance;
-    private final  Server     server;
+    private static  IslandsApi instance;
+    protected final Server     server;
 
     protected IslandsApi() {
         if (instance == null) instance = this;
@@ -86,10 +83,7 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
         return server.getId();
     }
 
-    protected void setServerStatus(Status status) {
-        this.server.setStatus(status);
-        getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Server is now in " + status.toString() + " state.").setServer(server).log();
-    }
+    protected abstract void setServerStatus(Status status);
 
     public abstract InfraLogger getInfraLogger();
 

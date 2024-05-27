@@ -1,5 +1,6 @@
 package fr.islandswars.api.log;
 
+import fr.islandswars.api.lang.IslandsApiError;
 import fr.islandswars.api.log.internal.DefaultLog;
 import fr.islandswars.api.log.internal.ErrorLog;
 import fr.islandswars.api.utils.ReflectionUtil;
@@ -37,7 +38,10 @@ public interface InfraLogger {
     }
 
     default void log(Level level, String msg) {
-        new DefaultLog(level, msg).log();
+        if (level.equals(Level.ERROR))
+            logError(new IslandsApiError(msg));
+        else
+            new DefaultLog(level, msg).log();
     }
 
     default void logDebug(String message) {

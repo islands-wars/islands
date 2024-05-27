@@ -6,6 +6,7 @@ import fr.islandswars.api.command.CommandManager;
 import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
+import fr.islandswars.api.log.internal.ServerLog;
 import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.module.bukkit.ItemModule;
@@ -13,6 +14,8 @@ import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.scoreboard.ScoreboardManager;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
+import fr.islandswars.commons.service.redis.RedisConnection;
+import fr.islandswars.commons.utils.DatabaseError;
 import fr.islandswars.commons.utils.LogUtils;
 import fr.islandswars.core.bukkit.bossbar.InternalBarManager;
 import fr.islandswars.core.bukkit.command.InternalCommandManager;
@@ -25,6 +28,7 @@ import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 import fr.islandswars.core.internal.log.InternalLogger;
 import fr.islandswars.core.player.PlayerRank;
+import org.apache.logging.log4j.Level;
 import org.bukkit.NamespacedKey;
 
 import java.util.ArrayList;
@@ -58,16 +62,17 @@ import java.util.UUID;
  */
 public class IslandsCore extends IslandsApi {
 
-    private final List<IslandsPlayer> players;
-    private final List<Module> modules;
-    private final TranslationLoader translatable;
-    private final TaskManager taskManager;
-    private final InternalLogger logger;
-    private final InternalItemManager itemManager;
-    private final InternalCommandManager commandManager;
-    private InternalScoreboardManager scoreboardManager;
-    private NamespacedKey key;
-    private BarManager barManager;
+    private final List<IslandsPlayer>       players;
+    private final List<Module>              modules;
+    private final TranslationLoader         translatable;
+    private final TaskManager               taskManager;
+    private final InternalLogger            logger;
+    private final InternalItemManager       itemManager;
+    private final InternalCommandManager    commandManager;
+    private final RedisConnection           redis;
+    private       InternalScoreboardManager scoreboardManager;
+    private       NamespacedKey             key;
+    private       BarManager                barManager;
 
     public IslandsCore() {
         this.players = new ArrayList<>();
@@ -77,32 +82,45 @@ public class IslandsCore extends IslandsApi {
         this.commandManager = new InternalCommandManager();
         this.taskManager = new TaskManager();
         this.logger = new InternalLogger();
+        this.redis = new RedisConnection();
     }
 
     @Override
     public void onLoad() {
+        LogUtils.setErrorConsummer(logger::logError);
+        redis.load();
+        redis.connect();
+        setServerStatus(Status.LOAD);
         modules.forEach(Module::onLoad);
         this.barManager = registerModule(InternalBarManager.class);
         this.scoreboardManager = registerModule(InternalScoreboardManager.class);
         registerModule(ItemModule.class);
         translatable.load("locale.core");
-        setServerStatus(Status.LOAD);
-        LogUtils.setErrorConsummer(logger::logError);
     }
 
     @Override
     public void onDisable() {
         modules.forEach(Module::onDisable);
+        try {
+            redis.close();
+        } catch (Exception e) {
+            logger.logError(e);
+        }
         setServerStatus(Status.DISABLE);
     }
 
     @Override
     public void onEnable() {
         modules.forEach(Module::onEnable);
-        new PlayerListener(this);
+        new PlayerListener(this, redis);
         new ItemListener(this);
         new PingCommand("ping", this, PlayerRank.PLAYER);
-        setServerStatus(Status.ENABLE);
+        if (!redis.isClosed())
+            setServerStatus(Status.ENABLE);
+        else {
+            logger.log(Level.ERROR, "Database offline...");
+            getServer().shutdown();
+        }
     }
 
     @Override
@@ -193,5 +211,18 @@ public class IslandsCore extends IslandsApi {
             mod.onDisable();
             modules.remove(mod);
         });
+    }
+
+    @Override
+    protected void setServerStatus(Status status) {
+        redis.getConnection().set(server.getId().toString() + ":" + server.getServerType().toString(), status.toString()).whenCompleteAsync((r, t) -> {
+            if (t != null) {
+                logger.logError(new DatabaseError(t.getMessage(), t));
+            } else {
+                server.setStatus(status);
+                getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Server is now in " + status.toString() + " state.").setServer(server).log();
+            }
+        });
+
     }
 }
