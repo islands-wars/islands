@@ -55,7 +55,7 @@ public interface InfraLogger {
     void sysout(Log object);
 
     default void logError(Exception e) {
-        new ErrorLog(Level.ERROR, e.getMessage()).supplyStacktrace(e.fillInStackTrace()).log();
+        new ErrorLog(Level.ERROR, e.getMessage() == null ? "Error" : e.getMessage()).supplyStacktrace(e.fillInStackTrace()).log();
     }
 
 }

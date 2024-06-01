@@ -2,9 +2,12 @@ package fr.islandswars.core.player;
 
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.player.rank.IslandsRank;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * File <b>InternalPlayer</b> located on fr.islandswars.core.player
@@ -32,17 +35,12 @@ import java.util.List;
  */
 public class InternalPlayer implements IslandsPlayer {
 
-    private final transient Player       player;
-    private final           List<String> ranks;
-
-    public InternalPlayer(Player player) {
-        this.player = player;
-        this.ranks = List.of("PLAYER");
-    }
+    private UUID         uuid;
+    private List<String> ranks;
 
     @Override
     public void disconnect() {
-        player.kick();
+        getBukkitPlayer().ifPresent(Player::kick);
     }
 
     @Override
@@ -51,7 +49,19 @@ public class InternalPlayer implements IslandsPlayer {
     }
 
     @Override
-    public Player getBukkitPlayer() {
-        return player;
+    public Optional<Player> getBukkitPlayer() {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setRanks(List<String> ranks) {
+        this.ranks = ranks;
     }
 }

@@ -47,7 +47,9 @@ public class PingCommand extends IslandsCommand {
 
     @Override
     public boolean execute(IslandsPlayer sender, Command command, String label, String[] args) {
-        sender.getBukkitPlayer().sendMessage(Component.translatable("core.cmd.ping.execute", Component.text(sender.getBukkitPlayer().getPing()).color(NamedTextColor.RED)).color(NamedTextColor.GRAY));
+        sender.getBukkitPlayer().ifPresent(p -> {
+            p.sendMessage(Component.translatable("core.cmd.ping.execute", Component.text(p.getPing()).color(NamedTextColor.RED)).color(NamedTextColor.GRAY));
+        });
         return true;
     }
 }

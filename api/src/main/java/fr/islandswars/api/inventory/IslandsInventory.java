@@ -40,7 +40,7 @@ public class IslandsInventory extends BasicInventory {
     public void openTo(IslandsPlayer player) {
         if (!isBuild())
             build();
-        player.getBukkitPlayer().openInventory(getInventory());
+        player.getBukkitPlayer().ifPresent(p -> p.openInventory(getInventory()));
     }
 
     @Override

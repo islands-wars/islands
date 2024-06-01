@@ -1,10 +1,13 @@
 package fr.islandswars.core.internal.listener;
 
+import com.google.gson.Gson;
 import fr.islandswars.api.IslandsApi;
+import fr.islandswars.api.event.PlayerDataSynchronizeEvent;
 import fr.islandswars.api.listener.LazyListener;
 import fr.islandswars.commons.service.redis.RedisConnection;
 import fr.islandswars.commons.utils.DatabaseError;
 import fr.islandswars.core.IslandsCore;
+import fr.islandswars.core.player.InternalPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -42,10 +45,12 @@ import java.util.UUID;
 public class PlayerListener extends LazyListener {
 
     private final RedisConnection redis;
+    private final Gson            gson;
 
     public PlayerListener(IslandsApi api, RedisConnection redis) {
         super(api);
         this.redis = redis;
+        this.gson = new Gson();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -56,6 +61,11 @@ public class PlayerListener extends LazyListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onConnect(PlayerJoinEvent event) {
         event.joinMessage(Component.empty());
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onIslandsPlayerJoin(PlayerDataSynchronizeEvent event) {
+        getLogger().logInfo("New player with rank : " + event.getPlayer().getMainRank() + " join the game...");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -73,8 +83,12 @@ public class PlayerListener extends LazyListener {
                 getLogger().logError(new DatabaseError(t.getMessage(), t));
                 Bukkit.getScheduler().runTask(api, () -> kickPlayer(uuid)); //ensure thread safety, maybe overkill ?
             } else if (r != null) {
-                //TODO change
-                getLogger().logInfo("Result retrieved : " + r);
+                var player = gson.fromJson(r, InternalPlayer.class);
+
+                ((IslandsCore) api).addPlayer(player);
+                Bukkit.getScheduler().runTask(api, () -> {
+                    Bukkit.getPluginManager().callEvent(new PlayerDataSynchronizeEvent(player));
+                });
             } else Bukkit.getScheduler().runTaskLaterAsynchronously(api, () -> {
                 if (count >= 5) Bukkit.getScheduler().runTask(api, () -> kickPlayer(uuid));
                 else retrievePlayerData(uuid, count + 1);

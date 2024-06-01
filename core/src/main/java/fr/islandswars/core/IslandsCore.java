@@ -1,5 +1,6 @@
 package fr.islandswars.core;
 
+import com.google.gson.Gson;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.command.CommandManager;
@@ -27,14 +28,18 @@ import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 import fr.islandswars.core.internal.log.InternalLogger;
+import fr.islandswars.core.player.InternalPlayer;
 import fr.islandswars.core.player.PlayerRank;
 import org.apache.logging.log4j.Level;
 import org.bukkit.NamespacedKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * File <b>IslandsCore</b> located on fr.islandswars.core
@@ -62,20 +67,21 @@ import java.util.UUID;
  */
 public class IslandsCore extends IslandsApi {
 
-    private final List<IslandsPlayer>       players;
-    private final List<Module>              modules;
-    private final TranslationLoader         translatable;
-    private final TaskManager               taskManager;
-    private final InternalLogger            logger;
-    private final InternalItemManager       itemManager;
-    private final InternalCommandManager    commandManager;
-    private final RedisConnection           redis;
-    private       InternalScoreboardManager scoreboardManager;
-    private       NamespacedKey             key;
-    private       BarManager                barManager;
+    private static final Logger                    log = LoggerFactory.getLogger(IslandsCore.class);
+    private final        List<IslandsPlayer>       players;
+    private final        List<Module>              modules;
+    private final        TranslationLoader         translatable;
+    private final        TaskManager               taskManager;
+    private final        InternalLogger            logger;
+    private final        InternalItemManager       itemManager;
+    private final        InternalCommandManager    commandManager;
+    private final        RedisConnection           redis;
+    private              InternalScoreboardManager scoreboardManager;
+    private              NamespacedKey             key;
+    private              BarManager                barManager;
 
     public IslandsCore() {
-        this.players = new ArrayList<>();
+        this.players = new CopyOnWriteArrayList<>();
         this.modules = new ArrayList<>();
         this.translatable = new TranslationLoader();
         this.itemManager = new InternalItemManager();
@@ -115,12 +121,13 @@ public class IslandsCore extends IslandsApi {
         new PlayerListener(this, redis);
         new ItemListener(this);
         new PingCommand("ping", this, PlayerRank.PLAYER);
-        if (!redis.isClosed())
-            setServerStatus(Status.ENABLE);
+        if (!redis.isClosed()) setServerStatus(Status.ENABLE);
         else {
             logger.log(Level.ERROR, "Database offline...");
             getServer().shutdown();
         }
+        injectData();
+
     }
 
     @Override
@@ -140,7 +147,10 @@ public class IslandsCore extends IslandsApi {
 
     @Override
     public Optional<IslandsPlayer> getPlayer(UUID playerId) {
-        return players.stream().filter(p -> p.getBukkitPlayer().getUniqueId().equals(playerId)).findFirst();
+        return players.stream().filter(p -> {
+            if (p.getBukkitPlayer().isPresent()) return p.getBukkitPlayer().get().getUniqueId().equals(playerId);
+            else return false;
+        }).findFirst();
     }
 
     @Override
@@ -223,6 +233,17 @@ public class IslandsCore extends IslandsApi {
                 getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Server is now in " + status.toString() + " state.").setServer(server).log();
             }
         });
+    }
 
+    private void injectData() {
+        //TODO remove
+        var uuid = UUID.fromString("44aa2d56-5257-44ff-9efc-60ec11f78f39");
+        var p    = new InternalPlayer();
+        p.setUuid(uuid);
+        p.setRanks(List.of("ADMIN"));
+        var gson = new Gson();
+        var json = gson.toJson(p);
+
+        redis.getConnection().set("44aa2d56-5257-44ff-9efc-60ec11f78f39:player", json);
     }
 }

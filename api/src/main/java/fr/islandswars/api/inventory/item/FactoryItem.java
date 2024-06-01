@@ -29,8 +29,8 @@ import org.bukkit.Material;
  */
 public enum FactoryItem {
 
-    SUPER_SWORD(new CustomIslandsItem(IslandsItem.builder(Material.DIAMOND_SWORD, 1), 0).onInteract((p, e) -> {
-        p.getBukkitPlayer().sendMessage(Component.text("Super sword magic power..."));
+    SUPER_SWORD(new CustomIslandsItem(IslandsItem.builder(Material.DIAMOND_SWORD, 1), 0).onInteract((ip, e) -> {
+        ip.getBukkitPlayer().ifPresent(p -> p.sendMessage(Component.text("Super sword magic power...")));
         e.setCancelled(true);
     }).onClick((p, e) -> e.setCancelled(true)));
 

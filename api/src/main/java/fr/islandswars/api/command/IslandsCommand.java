@@ -78,7 +78,7 @@ public abstract class IslandsCommand implements CommandExecutor {
             if (islandsPlayer.isPresent()) {
                 var p = islandsPlayer.get();
                 if (p.getMainRank().getRankLevel() <= rank.getRankLevel()) return execute(p, command, label, args);
-                else p.getBukkitPlayer().sendMessage(Component.translatable("core.cmd.permission").color(NamedTextColor.RED));
+                else p.getBukkitPlayer().ifPresent(pl -> pl.sendMessage(Component.translatable("core.cmd.permission").color(NamedTextColor.RED)));
             }
         }
         return true;

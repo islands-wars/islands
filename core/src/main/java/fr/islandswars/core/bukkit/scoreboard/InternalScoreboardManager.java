@@ -120,7 +120,9 @@ public class InternalScoreboardManager extends Module implements ScoreboardManag
         boardTeam.suffix(team.getSuffix());
         boardTeam.color(team.getColor());
         boardTeam.displayName(team.getDisplayName());
-        team.getMembers().forEach(ip -> boardTeam.addPlayer(ip.getBukkitPlayer()));
+        team.getMembers().forEach(ip -> {
+            ip.getBukkitPlayer().ifPresent(boardTeam::addPlayer);
+        });
     }
 
     @Updater(type = TaskType.SYNC, time = TimeType.TICK, delta = 1)

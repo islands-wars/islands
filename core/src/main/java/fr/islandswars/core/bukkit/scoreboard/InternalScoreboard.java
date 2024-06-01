@@ -74,7 +74,7 @@ public class InternalScoreboard implements IslandsBoard {
     @Override
     public void addPlayer(IslandsPlayer player) {
         viewers.add(player);
-        player.getBukkitPlayer().setScoreboard(board);
+        player.getBukkitPlayer().ifPresent(p -> p.setScoreboard(board));
         if (objective != null) objective.render(player);
     }
 
@@ -115,14 +115,14 @@ public class InternalScoreboard implements IslandsBoard {
     public void updateAddPlayer(InternalTeam team, IslandsPlayer player) {
         if (teams.contains(team)) {
             var bukkitTeam = board.getTeam(team.getName());
-            if (bukkitTeam != null) bukkitTeam.addPlayer(player.getBukkitPlayer());
+            if (bukkitTeam != null) player.getBukkitPlayer().ifPresent(bukkitTeam::addPlayer);
         }
     }
 
     public void updateRemovePlayer(InternalTeam team, IslandsPlayer player) {
         if (teams.contains(team)) {
             var bukkitTeam = board.getTeam(team.getName());
-            if (bukkitTeam != null) bukkitTeam.removePlayer(player.getBukkitPlayer());
+            if (bukkitTeam != null) player.getBukkitPlayer().ifPresent(bukkitTeam::removePlayer);
         }
     }
 

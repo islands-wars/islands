@@ -82,7 +82,9 @@ public class IslandsItem {
     }
 
     public IslandsItem setOwner(IslandsPlayer player) {
-        this.owningPlayer = player.getBukkitPlayer();
+        player.getBukkitPlayer().ifPresent(p -> {
+            this.owningPlayer = p;
+        });
         return this;
     }
 

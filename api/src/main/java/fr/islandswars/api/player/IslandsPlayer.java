@@ -3,6 +3,8 @@ package fr.islandswars.api.player;
 import fr.islandswars.api.player.rank.IslandsRank;
 import org.bukkit.entity.Player;
 
+import java.util.Optional;
+
 /**
  * File <b>IslandsPlayer</b> located on fr.islandswars.api.player
  * IslandsPlayer is a part of islands.
@@ -33,6 +35,6 @@ public interface IslandsPlayer {
 
     IslandsRank getMainRank();
 
-    Player getBukkitPlayer();
+    Optional<Player> getBukkitPlayer();
 
 }

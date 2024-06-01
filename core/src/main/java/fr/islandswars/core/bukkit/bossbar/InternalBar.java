@@ -72,25 +72,31 @@ public class InternalBar implements Bar {
 
     @Override
     public void displayTo(IslandsPlayer player) {
-        player.getBukkitPlayer().showBossBar(bukkitBar);
-        if (timeInTickOnScreen >= 1) {
-            if (viewer != null) {
-                removeTo(viewer);
-                manager.unsubscribeBar(this);
+        player.getBukkitPlayer().ifPresent(p -> {
+            p.showBossBar(bukkitBar);
+            if (timeInTickOnScreen >= 1) {
+                if (viewer != null) {
+                    removeTo(viewer);
+                    manager.unsubscribeBar(this);
+                }
+                manager.subscribeBar(this);
+                this.viewer = player;
             }
-            manager.subscribeBar(this);
-            this.viewer = player;
-        }
+        });
+
     }
 
     @Override
     public void removeTo(IslandsPlayer player) {
-        player.getBukkitPlayer().hideBossBar(bukkitBar);
-        if (viewer != null) {
-            this.viewer = null;
-            this.timer = 0L;
-            manager.unsubscribeBar(this);
-        }
+        player.getBukkitPlayer().ifPresent(p -> {
+            p.hideBossBar(bukkitBar);
+            if (viewer != null) {
+                this.viewer = null;
+                this.timer = 0L;
+                manager.unsubscribeBar(this);
+            }
+        });
+
     }
 
     protected void setProgress(float newProgress) {
