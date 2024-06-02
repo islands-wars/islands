@@ -118,7 +118,7 @@ public class IslandsCore extends IslandsApi {
     @Override
     public void onEnable() {
         modules.forEach(Module::onEnable);
-        new PlayerListener(this, redis);
+        taskManager.register(new PlayerListener(this, redis));
         new ItemListener(this);
         new PingCommand("ping", this, PlayerRank.PLAYER);
         if (!redis.isClosed()) setServerStatus(Status.ENABLE);
@@ -127,7 +127,6 @@ public class IslandsCore extends IslandsApi {
             getServer().shutdown();
         }
         injectData();
-
     }
 
     @Override
@@ -235,15 +234,14 @@ public class IslandsCore extends IslandsApi {
         });
     }
 
+    //TODO remove
     private void injectData() {
-        //TODO remove
         var uuid = UUID.fromString("44aa2d56-5257-44ff-9efc-60ec11f78f39");
         var p    = new InternalPlayer();
         p.setUuid(uuid);
         p.setRanks(List.of("ADMIN"));
         var gson = new Gson();
         var json = gson.toJson(p);
-
         redis.getConnection().set("44aa2d56-5257-44ff-9efc-60ec11f78f39:player", json);
     }
 }

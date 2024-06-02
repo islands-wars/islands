@@ -2,8 +2,13 @@ package fr.islandswars.core.internal.listener;
 
 import com.google.gson.Gson;
 import fr.islandswars.api.IslandsApi;
-import fr.islandswars.api.event.PlayerDataSynchronizeEvent;
+import fr.islandswars.api.event.IslandsPlayerJoinEvent;
+import fr.islandswars.api.event.IslandsPlayerQuitEvent;
 import fr.islandswars.api.listener.LazyListener;
+import fr.islandswars.api.player.IslandsPlayer;
+import fr.islandswars.api.task.TaskType;
+import fr.islandswars.api.task.TimeType;
+import fr.islandswars.api.task.Updater;
 import fr.islandswars.commons.service.redis.RedisConnection;
 import fr.islandswars.commons.utils.DatabaseError;
 import fr.islandswars.core.IslandsCore;
@@ -64,17 +69,32 @@ public class PlayerListener extends LazyListener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onIslandsPlayerJoin(PlayerDataSynchronizeEvent event) {
+    public void onIslandsPlayerJoin(IslandsPlayerJoinEvent event) {
         getLogger().logInfo("New player with rank : " + event.getPlayer().getMainRank() + " join the game...");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerQuitEvent event) {
         var islandsPlayer = getOptionalPlayer(event.getPlayer());
+        islandsPlayer.ifPresent(p -> {
+            var islandsPlayerQuitEvent = new IslandsPlayerQuitEvent(p);
+            Bukkit.getPluginManager().callEvent(islandsPlayerQuitEvent);
+            event.quitMessage(islandsPlayerQuitEvent.getQuitMessage());
+        });
+        islandsPlayer.ifPresent(this::savePlayerData);
         islandsPlayer.ifPresent(p -> api.getScoreboardManager().release(p));
         islandsPlayer.ifPresent(p -> api.getBarManager().unregisterPlayer(p));
         islandsPlayer.ifPresent(((IslandsCore) api)::removePlayer);
-        event.quitMessage(Component.empty());
+    }
+
+    @Updater(type = TaskType.ASYNC, time = TimeType.MINUTE, delta = 1)
+    public void saveIslandsPlayers() {
+        api.getPlayers().forEach(this::savePlayerData);
+    }
+
+    private void savePlayerData(IslandsPlayer p) {
+        var json = gson.toJson(p);
+        redis.getConnection().set(p.getUUID() + ":player", json);
     }
 
     private void retrievePlayerData(UUID uuid, int count) {
@@ -86,9 +106,7 @@ public class PlayerListener extends LazyListener {
                 var player = gson.fromJson(r, InternalPlayer.class);
 
                 ((IslandsCore) api).addPlayer(player);
-                Bukkit.getScheduler().runTask(api, () -> {
-                    Bukkit.getPluginManager().callEvent(new PlayerDataSynchronizeEvent(player));
-                });
+                Bukkit.getScheduler().runTask(api, () -> Bukkit.getPluginManager().callEvent(new IslandsPlayerJoinEvent(player)));
             } else Bukkit.getScheduler().runTaskLaterAsynchronously(api, () -> {
                 if (count >= 5) Bukkit.getScheduler().runTask(api, () -> kickPlayer(uuid));
                 else retrievePlayerData(uuid, count + 1);

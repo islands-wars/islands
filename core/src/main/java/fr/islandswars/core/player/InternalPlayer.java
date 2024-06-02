@@ -53,6 +53,7 @@ public class InternalPlayer implements IslandsPlayer {
         return Optional.ofNullable(Bukkit.getPlayer(uuid));
     }
 
+    @Override
     public UUID getUUID() {
         return uuid;
     }

@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * File <b>PlayerDataSynchronizeEvent</b> located on fr.islandswars.api.event
- * PlayerDataSynchronizeEvent is a part of islands.
+ * File <b>IslandsPlayerJoinEvent</b> located on fr.islandswars.api.event
+ * IslandsPlayerJoinEvent is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -28,12 +28,12 @@ import org.bukkit.event.HandlerList;
  * Created the 24/03/2024 at 02:18
  * @since 0.1
  */
-public class PlayerDataSynchronizeEvent extends Event {
-    
+public class IslandsPlayerJoinEvent extends Event {
+
     private static final HandlerList   HANDLERS = new HandlerList();
     private final        IslandsPlayer player;
 
-    public PlayerDataSynchronizeEvent(IslandsPlayer player) {
+    public IslandsPlayerJoinEvent(IslandsPlayer player) {
         this.player = player;
     }
 

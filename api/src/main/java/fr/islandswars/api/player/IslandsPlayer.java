@@ -4,6 +4,7 @@ import fr.islandswars.api.player.rank.IslandsRank;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * File <b>IslandsPlayer</b> located on fr.islandswars.api.player
@@ -36,5 +37,7 @@ public interface IslandsPlayer {
     IslandsRank getMainRank();
 
     Optional<Player> getBukkitPlayer();
+
+    UUID getUUID();
 
 }
