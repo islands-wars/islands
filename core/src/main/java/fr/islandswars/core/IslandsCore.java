@@ -1,20 +1,24 @@
 package fr.islandswars.core;
 
 import com.google.gson.Gson;
+import com.rabbitmq.client.BuiltinExchangeType;
 import fr.islandswars.api.IslandsApi;
 import fr.islandswars.api.bossbar.BarManager;
 import fr.islandswars.api.command.CommandManager;
 import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
+import fr.islandswars.api.log.internal.Server;
 import fr.islandswars.api.log.internal.ServerLog;
-import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.Module;
 import fr.islandswars.api.module.bukkit.ItemModule;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.scoreboard.ScoreboardManager;
+import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.ReflectionUtil;
+import fr.islandswars.commons.service.rabbitmq.RabbitMQConnection;
+import fr.islandswars.commons.service.rabbitmq.packet.server.StatusRequestPacket;
 import fr.islandswars.commons.service.redis.RedisConnection;
 import fr.islandswars.commons.utils.DatabaseError;
 import fr.islandswars.commons.utils.LogUtils;
@@ -24,10 +28,12 @@ import fr.islandswars.core.bukkit.command.PingCommand;
 import fr.islandswars.core.bukkit.item.InternalItemManager;
 import fr.islandswars.core.bukkit.scoreboard.InternalScoreboardManager;
 import fr.islandswars.core.bukkit.task.TaskManager;
+import fr.islandswars.core.internal.InternalServer;
 import fr.islandswars.core.internal.listener.ItemListener;
 import fr.islandswars.core.internal.listener.PlayerListener;
 import fr.islandswars.core.internal.locale.TranslationLoader;
 import fr.islandswars.core.internal.log.InternalLogger;
+import fr.islandswars.core.internal.mq.IslandsExchange;
 import fr.islandswars.core.player.InternalPlayer;
 import fr.islandswars.core.player.PlayerRank;
 import org.apache.logging.log4j.Level;
@@ -35,6 +41,8 @@ import org.bukkit.NamespacedKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,6 +84,9 @@ public class IslandsCore extends IslandsApi {
     private final        InternalItemManager       itemManager;
     private final        InternalCommandManager    commandManager;
     private final        RedisConnection           redis;
+    private final        RabbitMQConnection        rabbit;
+    private final        InternalServer            server;
+    private              IslandsExchange           isExchange;
     private              InternalScoreboardManager scoreboardManager;
     private              NamespacedKey             key;
     private              BarManager                barManager;
@@ -89,14 +100,26 @@ public class IslandsCore extends IslandsApi {
         this.taskManager = new TaskManager();
         this.logger = new InternalLogger();
         this.redis = new RedisConnection();
+        this.rabbit = new RabbitMQConnection();
+        var type = ServerType.valueOf(System.getenv("SERVER_TYPE"));
+        var id   = UUID.fromString(System.getenv("SERVER_ID"));
+        this.server = new InternalServer(StatusRequestPacket.ServerStatus.STARTED, type, id);
     }
 
     @Override
     public void onLoad() {
         LogUtils.setErrorConsummer(logger::logError);
-        redis.load();
-        redis.connect();
-        setServerStatus(Status.LOAD);
+        try {
+            redis.load();
+            redis.connect();
+            rabbit.load();
+            rabbit.connect();
+        } catch (Exception e) {
+            logger.logError(e);
+            getServer().shutdown();
+        }
+        this.isExchange = new IslandsExchange(rabbit, this);
+        setServerStatus(StatusRequestPacket.ServerStatus.STARTED);
         modules.forEach(Module::onLoad);
         this.barManager = registerModule(InternalBarManager.class);
         this.scoreboardManager = registerModule(InternalScoreboardManager.class);
@@ -109,10 +132,11 @@ public class IslandsCore extends IslandsApi {
         modules.forEach(Module::onDisable);
         try {
             redis.close();
+            rabbit.close();
         } catch (Exception e) {
             logger.logError(e);
         }
-        setServerStatus(Status.DISABLE);
+        setServerStatus(StatusRequestPacket.ServerStatus.SHUTDOWN); //TODO stopped....
     }
 
     @Override
@@ -121,12 +145,13 @@ public class IslandsCore extends IslandsApi {
         taskManager.register(new PlayerListener(this, redis));
         new ItemListener(this);
         new PingCommand("ping", this, PlayerRank.PLAYER);
-        if (!redis.isClosed()) setServerStatus(Status.ENABLE);
+        if (!redis.isClosed() && !rabbit.isClosed()) setServerStatus(StatusRequestPacket.ServerStatus.READY);
         else {
             logger.log(Level.ERROR, "Database offline...");
             getServer().shutdown();
         }
         injectData();
+        testrmq();
     }
 
     @Override
@@ -222,16 +247,30 @@ public class IslandsCore extends IslandsApi {
         });
     }
 
-    @Override
-    protected void setServerStatus(Status status) {
+    public void setServerStatus(StatusRequestPacket.ServerStatus status) {
         redis.getConnection().set(server.getId().toString() + ":" + server.getServerType().toString(), status.toString()).whenCompleteAsync((r, t) -> {
             if (t != null) {
                 logger.logError(new DatabaseError(t.getMessage(), t));
             } else {
                 server.setStatus(status);
-                getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Server is now in " + status.toString() + " state.").setServer(server).log();
+                var serverLog = new Server(status.toString(), server.getServerType(), server.getId());
+                getInfraLogger().createCustomLog(ServerLog.class, Level.INFO, "Server is now in " + status.toString() + " state.").setServer(serverLog).log();
             }
         });
+    }
+
+    @Override
+    public void stop() {
+        //TODO close properly connection and player
+        getServer().shutdown();
+    }
+
+    public IslandsExchange getIsExchange() {
+        return isExchange;
+    }
+
+    public InternalServer getInternalServer() {
+        return server;
     }
 
     //TODO remove
@@ -243,5 +282,22 @@ public class IslandsCore extends IslandsApi {
         var gson = new Gson();
         var json = gson.toJson(p);
         redis.getConnection().set("44aa2d56-5257-44ff-9efc-60ec11f78f39:player", json);
+    }
+
+    //TODO remove
+    private void testrmq() {
+        var channel = rabbit.getConnection();
+        try {
+            final String              EXCHANGE_NAME = "islands";
+            final BuiltinExchangeType EXCHANGE_TYPE = BuiltinExchangeType.TOPIC;
+            final var                 queue         = "server";
+            channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
+
+            channel.basicPublish(EXCHANGE_NAME, queue + "." + server.getServerType().toString() + "." + server.getId(), null, "send to server.hub.1234".getBytes(StandardCharsets.UTF_8));
+            channel.basicPublish(EXCHANGE_NAME, queue + "." + server.getServerType().toString() + "." + UUID.randomUUID(), null, "should not be sent to server.hub.1234".getBytes(StandardCharsets.UTF_8));
+            channel.basicPublish(EXCHANGE_NAME, queue + "." + server.getServerType().toString() + ".all", null, "sent to all hub".getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

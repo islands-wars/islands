@@ -9,9 +9,11 @@ import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.task.TaskType;
 import fr.islandswars.api.task.TimeType;
 import fr.islandswars.api.task.Updater;
+import fr.islandswars.commons.service.rabbitmq.packet.server.StatusRequestPacket;
 import fr.islandswars.commons.service.redis.RedisConnection;
 import fr.islandswars.commons.utils.DatabaseError;
 import fr.islandswars.core.IslandsCore;
+import fr.islandswars.core.internal.InternalServer;
 import fr.islandswars.core.player.InternalPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -51,16 +53,19 @@ public class PlayerListener extends LazyListener {
 
     private final RedisConnection redis;
     private final Gson            gson;
+    private final InternalServer  server;
 
     public PlayerListener(IslandsApi api, RedisConnection redis) {
         super(api);
         this.redis = redis;
+        this.server = ((IslandsCore) api).getInternalServer();
         this.gson = new Gson();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPreLogin(AsyncPlayerPreLoginEvent event) {
-        retrievePlayerData(event.getUniqueId(), 0);
+        if (server.getStatus() == StatusRequestPacket.ServerStatus.ENABLE)
+            retrievePlayerData(event.getUniqueId(), 0);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

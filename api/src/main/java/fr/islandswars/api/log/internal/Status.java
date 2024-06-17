@@ -26,9 +26,10 @@ package fr.islandswars.api.log.internal;
  */
 public enum Status {
 
-    LOAD,
-    ENABLE,
-    READY,
-    DISABLE,
+    STARTED, //sent in onLoad method
+    READY, //sent in onEnable method
+    ENABLE, //ready to accept players
+    DISABLE, //will no longer accept new players
+    SHUTDOWN;
 
 }

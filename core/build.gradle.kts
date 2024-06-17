@@ -9,7 +9,8 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.17.1")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("io.lettuce:lettuce-core:6.3.2.RELEASE")
-    implementation("fr.islandswars:commons:0.2.7")
+    implementation("com.rabbitmq:amqp-client:5.21.0")
+    implementation("fr.islandswars:commons:0.3")
 }
 
 val sourceJar by tasks.registering(Jar::class) {

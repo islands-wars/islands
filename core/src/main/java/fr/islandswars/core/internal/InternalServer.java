@@ -1,13 +1,14 @@
-package fr.islandswars.api.log.internal;
+package fr.islandswars.core.internal;
 
 import com.google.gson.annotations.SerializedName;
 import fr.islandswars.api.server.ServerType;
+import fr.islandswars.commons.service.rabbitmq.packet.server.StatusRequestPacket;
 
 import java.util.UUID;
 
 /**
- * File <b>Server</b> located on fr.islandswars.api.log.internal
- * Server is a part of islands.
+ * File <b>InternalServer</b> located on fr.islandswars.core.internal
+ * InternalServer is a part of islands.
  * <p>
  * Copyright (c) 2017 - 2024 Islands Wars.
  * <p>
@@ -26,18 +27,18 @@ import java.util.UUID;
  * <p>
  *
  * @author Jangliu, {@literal <jangliu@islandswars.fr>}
- * Created the 30/03/2024 at 20:28
+ * Created the 16/06/2024 at 23:03
  * @since 0.1
  */
-public class Server {
+public class InternalServer {
 
     @SerializedName("server-type")
     private final ServerType serverType;
 
-    private final UUID   id;
-    private       String status;
+    private final UUID                             id;
+    private       StatusRequestPacket.ServerStatus status;
 
-    public Server(String status, ServerType type, UUID id) {
+    public InternalServer(StatusRequestPacket.ServerStatus status, ServerType type, UUID id) {
         this.status = status;
         this.serverType = type;
         this.id = id;
@@ -47,11 +48,11 @@ public class Server {
         return id;
     }
 
-    public String getStatus() {
+    public StatusRequestPacket.ServerStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusRequestPacket.ServerStatus status) {
         this.status = status;
     }
 

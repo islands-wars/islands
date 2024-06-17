@@ -19,6 +19,25 @@ services:
       retries: 5
       start_period: 10s
 
+  rabbitmq:
+    build: rmq/.
+    ports:
+      - '5672:5672'
+    environment:
+      RMQ_PASSWORD_FILE: /run/secrets/rmq_password
+      RMQ_USERNAME_FILE: /run/secrets/rmq_username
+    secrets:
+      - rmq_password
+      - rmq_username
+    networks:
+      - islands_network
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      interval: 2s
+      timeout: 12s
+      retries: 5
+      start_period: 10s
+
   papermc:
     image: phyremaster/papermc:latest
     container_name: papermc
@@ -38,6 +57,8 @@ services:
       - islands_network
     depends_on:
       redis:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     secrets:
       - rmq_password

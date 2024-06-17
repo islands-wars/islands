@@ -5,12 +5,9 @@ import fr.islandswars.api.command.CommandManager;
 import fr.islandswars.api.inventory.item.ItemManager;
 import fr.islandswars.api.locale.Translatable;
 import fr.islandswars.api.log.InfraLogger;
-import fr.islandswars.api.log.internal.Server;
-import fr.islandswars.api.log.internal.Status;
 import fr.islandswars.api.module.ModuleManager;
 import fr.islandswars.api.player.IslandsPlayer;
 import fr.islandswars.api.scoreboard.ScoreboardManager;
-import fr.islandswars.api.server.ServerType;
 import fr.islandswars.api.task.UpdaterManager;
 import fr.islandswars.api.utils.Preconditions;
 import org.bukkit.NamespacedKey;
@@ -48,18 +45,12 @@ import java.util.function.Consumer;
  * Created the 23/03/2024 at 19:59
  * @since 0.1
  */
-//TODO list
-//store game profile
 public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
-    private static  IslandsApi instance;
-    protected final Server     server;
+    private static IslandsApi instance;
 
     protected IslandsApi() {
         if (instance == null) instance = this;
-        var type = ServerType.valueOf(System.getenv("SERVER_TYPE"));
-        var id   = UUID.fromString(System.getenv("SERVER_ID"));
-        this.server = new Server(Status.LOAD, type, id);
     }
 
     public static IslandsApi getInstance() {
@@ -74,16 +65,6 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
 
     @Override
     public abstract void onEnable();
-
-    public ServerType getServerType() {
-        return server.getServerType();
-    }
-
-    public UUID getServerId() {
-        return server.getId();
-    }
-
-    protected abstract void setServerStatus(Status status);
 
     public abstract InfraLogger getInfraLogger();
 
@@ -104,6 +85,8 @@ public abstract class IslandsApi extends JavaPlugin implements ModuleManager {
     public abstract ItemManager getItemManager();
 
     public abstract NamespacedKey getKey();
+
+    public abstract void stop();
 
     public void registerEvent(Listener listener) {
         Preconditions.checkNotNull(listener);
